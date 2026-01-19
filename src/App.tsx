@@ -1,12 +1,16 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Route, Routes } from 'react-router-dom'
+import useMediaQuery from './hooks/useMediaQuery'
 import Home from './pages/Home'
+import Landing from './pages/Landing'
+import MobileOnly from './pages/MobileOnly'
 import NotFound from './pages/NotFound'
 import Status from './pages/Status'
 
 function App() {
   const { t, i18n } = useTranslation()
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en'
@@ -27,6 +31,9 @@ function App() {
         : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700',
     ].join(' ')
   const currentLanguage = i18n.resolvedLanguage ?? 'en'
+  const headerDescription = isDesktop
+    ? t('app.descriptionDesktop')
+    : t('app.descriptionMobile')
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-white to-emerald-50 text-slate-900">
@@ -40,18 +47,20 @@ function App() {
               {t('app.title')}
             </h1>
             <p className="mt-2 max-w-xl text-sm text-slate-600">
-              {t('app.description')}
+              {headerDescription}
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:items-end">
-            <nav className="flex flex-wrap gap-3">
-              <NavLink className={navLinkClass} to="/">
-                {t('app.nav.overview')}
-              </NavLink>
-              <NavLink className={navLinkClass} to="/status">
-                {t('app.nav.status')}
-              </NavLink>
-            </nav>
+            {!isDesktop ? (
+              <nav className="flex flex-wrap gap-3">
+                <NavLink className={navLinkClass} to="/">
+                  {t('app.nav.overview')}
+                </NavLink>
+                <NavLink className={navLinkClass} to="/status">
+                  {t('app.nav.status')}
+                </NavLink>
+              </nav>
+            ) : null}
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 {t('app.language.label')}
@@ -76,9 +85,18 @@ function App() {
 
         <main className="flex-1">
           <Routes>
-            <Route element={<Home />} path="/" />
-            <Route element={<Status />} path="/status" />
-            <Route element={<NotFound />} path="*" />
+            {isDesktop ? (
+              <>
+                <Route element={<Landing />} path="/" />
+                <Route element={<MobileOnly />} path="*" />
+              </>
+            ) : (
+              <>
+                <Route element={<Home />} path="/" />
+                <Route element={<Status />} path="/status" />
+                <Route element={<NotFound />} path="*" />
+              </>
+            )}
           </Routes>
         </main>
       </div>

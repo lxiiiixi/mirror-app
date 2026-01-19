@@ -1,8 +1,9 @@
 {
   "app": {
     "eyebrow": "Mirror 工作台",
-    "title": "路由预览",
-    "description": "此导航由 React Router 提供，已准备好承载多页面。",
+    "title": "Mirror 工作台",
+    "descriptionDesktop": "桌面端展示项目介绍，完整功能请使用 H5 体验。",
+    "descriptionMobile": "当前为 H5 体验，已开启核心功能。",
     "nav": {
       "overview": "概览",
       "status": "状态"
@@ -12,6 +13,27 @@
       "en": "English",
       "zh": "中文"
     }
+  },
+  "landing": {
+    "eyebrow": "桌面端介绍页",
+    "title": "项目介绍",
+    "description": "简洁展示 Mirror 的定位、价值与使用场景。",
+    "highlights": {
+      "overview": "桌面端仅保留单页介绍",
+      "mobile": "完整功能聚焦在 H5 体验",
+      "handoff": "从桌面到手机的顺畅衔接"
+    },
+    "h5": {
+      "title": "打开 H5 体验",
+      "placeholder": "请使用手机打开本站或扫描二维码。",
+      "description": "主要流程与实时功能请在移动端继续。"
+    }
+  },
+  "mobileOnly": {
+    "eyebrow": "仅限移动端",
+    "title": "请在手机打开",
+    "description": "该页面仅在 H5 体验中提供，请使用手机访问。",
+    "back": "返回介绍页"
   },
   "home": {
     "badge": "Tailwind 就绪",

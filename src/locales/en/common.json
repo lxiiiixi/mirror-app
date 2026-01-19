@@ -1,8 +1,9 @@
 {
   "app": {
     "eyebrow": "Mirror Workspace",
-    "title": "Routing Preview",
-    "description": "This navigation is powered by React Router, ready for multiple pages.",
+    "title": "Mirror Workspace",
+    "descriptionDesktop": "Desktop shows the project introduction. For full features, please use the H5 experience.",
+    "descriptionMobile": "You are in the H5 experience with the core features enabled.",
     "nav": {
       "overview": "Overview",
       "status": "Status"
@@ -12,6 +13,27 @@
       "en": "English",
       "zh": "中文"
     }
+  },
+  "landing": {
+    "eyebrow": "Desktop Landing",
+    "title": "Project Introduction",
+    "description": "A concise overview of Mirror, its mission, and the value it brings to your workflow.",
+    "highlights": {
+      "overview": "Single-page introduction for desktop visitors",
+      "mobile": "Full functionality lives in the H5 experience",
+      "handoff": "Seamless handoff from desktop to mobile"
+    },
+    "h5": {
+      "title": "Open the H5 experience",
+      "placeholder": "Use your phone to open this site or scan a QR code.",
+      "description": "For the main workflows and real-time features, please continue on mobile."
+    }
+  },
+  "mobileOnly": {
+    "eyebrow": "Mobile Only",
+    "title": "Open on Mobile",
+    "description": "This page is available on the H5 experience. Please open it on your phone.",
+    "back": "Back to landing"
   },
   "home": {
     "badge": "Tailwind Ready",
