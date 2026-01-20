@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { NavLink, Route, Routes } from 'react-router-dom'
 import useMediaQuery from './hooks/useMediaQuery'
 import Home from './pages/Home'
-import Landing from './pages/Landing'
-import MobileOnly from './pages/MobileOnly'
 import NotFound from './pages/NotFound'
 import Status from './pages/Status'
 import UIShowcase from './pages/UIShowcase'
@@ -12,6 +10,13 @@ import UIShowcase from './pages/UIShowcase'
 function App() {
   const { t, i18n } = useTranslation()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+  // 桌面端自动重定向到白皮书网站
+  useEffect(() => {
+    if (isDesktop) {
+      window.location.href = 'https://whitepaper.mirror.fan/'
+    }
+  }, [isDesktop])
 
   useEffect(() => {
     document.documentElement.lang = i18n.resolvedLanguage ?? 'en'
@@ -32,9 +37,11 @@ function App() {
         : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700',
     ].join(' ')
   const currentLanguage = i18n.resolvedLanguage ?? 'en'
-  const headerDescription = isDesktop
-    ? t('app.descriptionDesktop')
-    : t('app.descriptionMobile')
+
+  // 如果是桌面端，先不渲染任何内容（等待重定向）
+  if (isDesktop) {
+    return null
+  }
 
   return (
     <div className="min-h-screen w-full bg-linear-to-br from-slate-50 via-white to-emerald-50 text-slate-900">
@@ -48,23 +55,21 @@ function App() {
               {t('app.title')}
             </h1>
             <p className="mt-2 max-w-xl text-sm text-slate-600">
-              {headerDescription}
+              {t('app.descriptionMobile')}
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:items-end">
-            {!isDesktop ? (
-              <nav className="flex flex-wrap gap-3">
-                <NavLink className={navLinkClass} to="/" >
-                  {t('app.nav.overview')}
-                </NavLink>
-                <NavLink className={navLinkClass} to="/status">
-                  {t('app.nav.status')}
-                </NavLink>
-                <NavLink className={navLinkClass} to="/ui">
-                  {t('app.nav.ui')}
-                </NavLink>
-              </nav>
-            ) : null}
+            <nav className="flex flex-wrap gap-3">
+              <NavLink className={navLinkClass} to="/">
+                {t('app.nav.overview')}
+              </NavLink>
+              <NavLink className={navLinkClass} to="/status">
+                {t('app.nav.status')}
+              </NavLink>
+              <NavLink className={navLinkClass} to="/ui">
+                UI
+              </NavLink>
+            </nav>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                 {t('app.language.label')}
@@ -89,19 +94,10 @@ function App() {
 
         <main className="flex-1">
           <Routes>
-            {isDesktop ? (
-              <>
-                <Route element={<Landing />} path="/" />
-                <Route element={<MobileOnly />} path="*" />
-              </>
-            ) : (
-              <>
-                <Route element={<Home />} path="/" />
-                <Route element={<Status />} path="/status" />
-                <Route element={<UIShowcase />} path="/ui" />
-                <Route element={<NotFound />} path="*" />
-              </>
-            )}
+            <Route element={<Home />} path="/" />
+            <Route element={<Status />} path="/status" />
+            <Route element={<UIShowcase />} path="/ui" />
+            <Route element={<NotFound />} path="*" />
           </Routes>
         </main>
       </div>

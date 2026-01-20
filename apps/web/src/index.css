@@ -43,6 +43,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  
+  /* H5 移动端优化 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior-y: contain;
 }
 
 h1 {
@@ -67,6 +72,26 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* H5 移动端全局样式优化 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 禁止长按选择文本（可选，根据需求调整） */
+img {
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 移动端安全区域适配 */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
 }
 
 @media (prefers-color-scheme: light) {
