@@ -10,6 +10,7 @@ import {
   Banner,
   BannerItem,
   Notice,
+  TicketItemCard,
 } from '../ui'
 
 /**
@@ -34,6 +35,7 @@ function UIShowcase() {
     productCard: true,
     banner: true,
     notice: true,
+    ticketItemCard: true,
   })
 
   // ProductCard 示例数据
@@ -124,6 +126,10 @@ function UIShowcase() {
 
   const handleNoticeJump = () => {
     alert('跳转到公告详情页')
+  }
+
+  const handleTicketAction = (name: string) => {
+    alert(`点击了 TicketItemCard：${name}`)
   }
 
   // 切换 section 的展开/折叠状态
@@ -382,6 +388,101 @@ function UIShowcase() {
                 autoplay={true}
                 autoplayInterval={5000}
               />
+          </div>
+        </div>
+      </section>
+
+      {/* TicketItemCard 组件展示 */}
+      <section className="space-y-6">
+        <div
+          className="cursor-pointer select-none"
+          onClick={() => toggleSection('ticketItemCard')}
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-white">TicketItemCard 票券卡片</h3>
+            <span
+              className={`text-white transition-transform duration-300 ${
+                expandedSections.ticketItemCard ? 'rotate-180' : ''
+              }`}
+            >
+              ▼
+            </span>
+          </div>
+          <p className="mt-1 text-sm text-[--color-text-muted]">
+            复刻旧版票券卡片样式，支持发售 / 寄售 / 持有三种形态
+          </p>
+        </div>
+
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            expandedSections.ticketItemCard ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="flex flex-wrap items-start gap-6 rounded-3xl border border-white/10 bg-white/5 p-8">
+            <TicketItemCard
+              cardType={1}
+              imgShadow="pink"
+              countdown="02:14:08"
+              actionText="立即购买"
+              onAction={() => handleTicketAction('发售卡片')}
+              data={{
+                name: 'The Mirror Ticket',
+                coverUrl: 'https://picsum.photos/seed/ticket1/400/600',
+                risingDay: 12,
+                presaleUserText: '预售人数 128',
+                priceText: '12.50 USDT',
+                supplyText: '120 / 300 份',
+                timeText: '2024.08.01 - 2024.08.15',
+              }}
+              labels={{
+                price: 'Price',
+                numberOfIssues: 'Issues',
+                day: 'day',
+              }}
+            />
+
+            <TicketItemCard
+              cardType={2}
+              imgShadow="purple"
+              actionText="立即购买"
+              actionState="waiting"
+              onAction={() => handleTicketAction('寄售卡片')}
+              data={{
+                name: 'Genesis Ticket',
+                coverUrl: 'https://picsum.photos/seed/ticket2/400/600',
+                risingDay: 5,
+                priceText: '18.80 USDT',
+                offerPriceText: '12.00 USDT',
+                rateText: '+56%',
+                sellInfoText: '剩余 42 份可售',
+              }}
+              labels={{
+                price: 'Price',
+                offerPrice: 'Offer price',
+                profitLoss: 'Profit/Loss',
+                day: 'day',
+              }}
+            />
+
+            <TicketItemCard
+              cardType={3}
+              imgShadow="pink"
+              actionText="发售"
+              actionDisabled={true}
+              onAction={() => handleTicketAction('持有卡片')}
+              data={{
+                name: 'Collector Ticket',
+                coverUrl: 'https://picsum.photos/seed/ticket3/400/600',
+                risingDay: 20,
+                buyPriceText: '6.60 USDT',
+                rateText: '+12%',
+              }}
+              labels={{
+                buyPrice: 'Buy price',
+                profitLoss: 'Profit/Loss',
+                day: 'day',
+              }}
+            />
           </div>
         </div>
       </section>

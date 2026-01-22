@@ -172,6 +172,10 @@ import worksProductRegular from './images/works/product/regular.svg'
 import worksProductTv from './images/works/product/tv.svg'
 import worksProductVlog from './images/works/product/vlog.svg'
 
+// Ticket related
+import ticketCountdownIcon from './images/ticket/countdown-icon.png'
+import ticketUpDayIcon from './images/ticket/up-day-icon.png'
+
 // IDO 相关
 import idoLook from './images/ido/look.png'
 import idoMore from './images/ido/more.png'
@@ -328,6 +332,12 @@ export const images = {
       tv: worksProductTv,
       vlog: worksProductVlog,
     },
+  },
+
+  // Ticket related
+  ticket: {
+    countdownIcon: ticketCountdownIcon,
+    upDayIcon: ticketUpDayIcon,
   },
 
   // IDO 相关
