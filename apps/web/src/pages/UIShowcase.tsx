@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { images } from '@mirror/assets'
 import {
   Button,
   Card,
@@ -11,6 +12,7 @@ import {
   BannerItem,
   Notice,
   TicketItemCard,
+  ProjectTabs,
 } from '../ui'
 
 /**
@@ -22,6 +24,7 @@ function UIShowcase() {
   const [modalOpen, setModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
   const [email, setEmail] = useState('')
+  const [activeProjectTab, setActiveProjectTab] = useState(0)
   
   // 管理每个 section 的折叠状态
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -36,6 +39,7 @@ function UIShowcase() {
     banner: true,
     notice: true,
     ticketItemCard: true,
+    projectTabs: true,
   })
 
   // ProductCard 示例数据
@@ -131,6 +135,21 @@ function UIShowcase() {
   const handleTicketAction = (name: string) => {
     alert(`点击了 TicketItemCard：${name}`)
   }
+
+  const projectTabs = [
+    {
+      label: 'VIP',
+      iconSrc: images.home.tokenTab2,
+    },
+    {
+      label: 'My Mining',
+      iconSrc: images.home.tokenTab1,
+    },
+    {
+      label: 'Node',
+      iconSrc: images.home.tokenTab2,
+    },
+  ]
 
   // 切换 section 的展开/折叠状态
   const toggleSection = (sectionId: string) => {
@@ -484,6 +503,46 @@ function UIShowcase() {
               }}
             />
           </div>
+        </div>
+      </section>
+
+      {/* ProjectTabs 组件展示 */}
+      <section className="space-y-6">
+        <div
+          className="cursor-pointer select-none"
+          onClick={() => toggleSection('projectTabs')}
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-white">ProjectTabs 标签切换</h3>
+            <span
+              className={`text-white transition-transform duration-300 ${
+                expandedSections.projectTabs ? 'rotate-180' : ''
+              }`}
+            >
+              ▼
+            </span>
+          </div>
+          <p className="mt-1 text-sm text-[--color-text-muted]">
+            复刻旧版 ProjectTabs 的玻璃质感与激活态
+          </p>
+        </div>
+
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            expandedSections.projectTabs ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+            <ProjectTabs
+              tabs={projectTabs}
+              activeIndex={activeProjectTab}
+              onChange={(index) => setActiveProjectTab(index)}
+              padded={true}
+            />
+            <ProjectTabs
+              tabs={projectTabs}
+              activeIndex={activeProjectTab}
+              onChange={(index) => setActiveProjectTab(index)}
+            />
         </div>
       </section>
 
