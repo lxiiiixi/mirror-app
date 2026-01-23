@@ -34,7 +34,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
     const variantClasses: Record<CardVariant, string[]> = {
       glass: [
-        'border-[--color-card-border]',
+        'border-[#727272]',
         'bg-[image:var(--gradient-card)]',
         'bg-[color:rgba(255,255,255,0.04)]',
       ],

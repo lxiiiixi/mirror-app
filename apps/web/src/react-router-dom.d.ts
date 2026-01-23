@@ -9,6 +9,7 @@ declare global {
     type JSXElementConstructor<P = object> =
       | ((props: P) => ReactNode | Promise<ReactNode>)
       | (new (props: P) => Component<P, object>)
+      | ExoticComponent<P>
   }
 }
 

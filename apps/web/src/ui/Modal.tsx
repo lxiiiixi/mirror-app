@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react'
-
+import { X } from 'lucide-react'
 export interface ModalProps {
   /**
    * 是否显示弹窗
@@ -70,30 +70,28 @@ export function Modal({
       role="presentation"
     >
       <div
-        className="w-full max-w-lg overflow-hidden rounded-3xl border border-[--color-card-border] bg-[image:var(--gradient-card)] text-[--color-text] shadow-[0_30px_80px_rgba(3,6,32,0.6)] backdrop-blur-3xl"
+        className="w-full max-w-lg overflow-hidden rounded-xl border border-[#727272] bg-[image:var(--gradient-card)] text-[--color-text] shadow-[0_30px_80px_rgba(3,6,32,0.6)] backdrop-blur-3xl"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
         {(title || onClose) && (
-          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-6 py-4">
+          <div className="relative px-6 py-4 text-center">
             {title ? (
               <h3 className="text-lg font-semibold">
-                <span className="bg-[image:var(--gradient-primary)] bg-clip-text text-transparent">
+                <span className="text-center">
                   {title}
                 </span>
               </h3>
-            ) : (
-              <span />
-            )}
+            ) : null}
             {onClose ? (
               <button
                 type="button"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-xl text-white/80 transition hover:border-white/40 hover:text-white"
+                className="absolute right-4 top-4 inline-flex items-center justify-center text-white/80 transition hover:border-white/40 hover:text-white"
                 onClick={onClose}
                 aria-label="Close"
               >
-                ×
+                <X className="h-5 w-5" />
               </button>
             ) : null}
           </div>
@@ -106,3 +104,4 @@ export function Modal({
     </div>
   )
 }
+

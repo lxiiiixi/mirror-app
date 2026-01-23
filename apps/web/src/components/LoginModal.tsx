@@ -52,17 +52,22 @@ export function LoginModal({ onWalletLogin, onEmailLogin }: LoginModalProps) {
         .login-modal {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 18px;
           padding: 8px 0 12px;
         }
 
+        :global(.login-modal-panel) {
+          backdrop-filter: blur(35px);
+          box-shadow: 0 0 5px 10px #00000040;
+          border: 2px solid #727272;
+        }
+
         .login-option {
-          height: 64px;
-          border-radius: 18px;
+          height: 48px;
+          border-radius: 6px;
           border: 1px solid rgba(255, 255, 255, 0.6);
-          background: rgba(255, 255, 255, 0.08);
           color: #fff;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 600;
           letter-spacing: 0.2px;
           cursor: pointer;
