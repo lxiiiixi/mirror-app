@@ -51,9 +51,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@mirror/api':
+        specifier: workspace:*
+        version: link:../../packages/api
       '@mirror/assets':
         specifier: workspace:*
         version: link:../../packages/assets
+      '@mirror/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@mirror/locales':
         specifier: workspace:*
         version: link:../../packages/locales
@@ -128,6 +134,12 @@ importers:
   packages/api: {}
 
   packages/assets: {}
+
+  packages/hooks:
+    dependencies:
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
 
   packages/locales: {}
 

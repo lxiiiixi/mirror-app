@@ -40,9 +40,13 @@ function App() {
 
   const handleLanguageToggle = () => {
     const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? 'en'
-    const regionLanguage = localStorage.getItem('user-lang-region') ?? 'zh-HK'
+    const normalizedCurrent = currentLanguage.toLowerCase()
+    const availableLanguages = ['en', 'zh-HK', 'zh-CN']
+    const currentIndex = availableLanguages.findIndex(
+      (lang) => lang.toLowerCase() === normalizedCurrent
+    )
     const nextLanguage =
-      currentLanguage.toLowerCase() === 'en' ? regionLanguage : 'en'
+      availableLanguages[(currentIndex + 1) % availableLanguages.length]
     console.log(`[Change_Language] currentLanguage: ${currentLanguage}, nextLanguage: ${nextLanguage}`)
     localStorage.setItem('user-lang', nextLanguage)
     void i18n.changeLanguage(nextLanguage)

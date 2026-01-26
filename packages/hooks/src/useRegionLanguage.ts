@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export type RegionLanguage = 'zh-CN' | 'zh-HK' | 'en' | string
 
@@ -68,20 +68,40 @@ export const useRegionLanguage = ({
   mapCountryToLanguage = defaultCountryToLanguage,
 }: UseRegionLanguageOptions): UseRegionLanguageState => {
   const [state, setState] = useState<UseRegionLanguageState>({ status: 'idle' })
+  const apiRef = useRef(api)
+  const storageRef = useRef(storage)
+  const onResolveRef = useRef(onResolve)
+  const mapCountryRef = useRef(mapCountryToLanguage)
+
+  useEffect(() => {
+    apiRef.current = api
+  }, [api])
+
+  useEffect(() => {
+    storageRef.current = storage
+  }, [storage])
+
+  useEffect(() => {
+    onResolveRef.current = onResolve
+  }, [onResolve])
+
+  useEffect(() => {
+    mapCountryRef.current = mapCountryToLanguage
+  }, [mapCountryToLanguage])
 
   useEffect(() => {
     if (!isEnabled) {
       return
     }
 
-    const resolvedStorage = resolveStorage(storage)
+    const resolvedStorage = resolveStorage(storageRef.current)
     const storedLanguage = resolvedStorage?.getItem(userKey) ?? null
     const storedRegionLanguage = resolvedStorage?.getItem(regionKey) ?? null
 
     if (storedRegionLanguage) {
       if (!storedLanguage) {
         resolvedStorage?.setItem(userKey, storedRegionLanguage)
-        onResolve?.(storedRegionLanguage)
+        onResolveRef.current?.(storedRegionLanguage)
       }
 
       setState({ status: 'resolved', language: storedRegionLanguage })
@@ -94,18 +114,18 @@ export const useRegionLanguage = ({
       setState({ status: 'loading' })
 
       try {
-        const response = await api.getRegion()
+        const response = await apiRef.current.getRegion()
         const country = (
           response.data?.country ?? response.data?.country_code ?? ''
         ).toUpperCase()
-        const resolvedLanguage = mapCountryToLanguage(country)
+        const resolvedLanguage = mapCountryRef.current(country)
 
         resolvedStorage?.setItem(regionKey, resolvedLanguage)
 
         if (!storedLanguage) {
           resolvedStorage?.setItem(userKey, resolvedLanguage)
           if (!cancelled) {
-            onResolve?.(resolvedLanguage)
+            onResolveRef.current?.(resolvedLanguage)
           }
         }
 
@@ -124,15 +144,7 @@ export const useRegionLanguage = ({
     return () => {
       cancelled = true
     }
-  }, [
-    api,
-    isEnabled,
-    storage,
-    regionKey,
-    userKey,
-    onResolve,
-    mapCountryToLanguage,
-  ])
+  }, [isEnabled, regionKey, userKey])
 
   return state
 }
