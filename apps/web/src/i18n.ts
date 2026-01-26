@@ -4,10 +4,12 @@ import { initReactI18next } from 'react-i18next'
 
 import en from '@mirror/locales/en.json'
 import zhHK from '@mirror/locales/zh-HK.json'
+import zhCN from '@mirror/locales/zh-CN.json'
 
 const resources = {
   en: { common: en },
   'zh-HK': { common: zhHK },
+  'zh-CN': { common: zhCN },
 }
 
 void i18n
@@ -16,7 +18,7 @@ void i18n
   .init({
     resources,
     fallbackLng: 'en',
-    supportedLngs: ['en', 'zh-HK'],
+    supportedLngs: ['en', 'zh-HK', 'zh-CN'],
     defaultNS: 'common',
     ns: ['common'],
     interpolation: {

@@ -9,6 +9,8 @@ import { AppLayout } from './ui'
 import { images } from '@mirror/assets'
 import { LoginModal } from './components'
 import { useLoginModalStore } from './store/useLoginModalStore'
+import { artsApiClient } from './api/artsClient'
+import { useRegionLanguage } from '@mirror/hooks'
 
 function App() {
   const { t, i18n } = useTranslation()
@@ -28,9 +30,19 @@ function App() {
     document.documentElement.lang = i18n.resolvedLanguage ?? i18n.language ?? 'en'
   }, [i18n.resolvedLanguage, i18n.language])
 
+  useRegionLanguage({
+    api: artsApiClient.user,
+    isEnabled: !isDesktop,
+    onResolve: (language) => {
+      void i18n.changeLanguage(language)
+    },
+  })
+
   const handleLanguageToggle = () => {
     const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? 'en'
-    const nextLanguage = currentLanguage.toLowerCase() === 'en' ? 'zh-HK' : 'en'
+    const regionLanguage = localStorage.getItem('user-lang-region') ?? 'zh-HK'
+    const nextLanguage =
+      currentLanguage.toLowerCase() === 'en' ? regionLanguage : 'en'
     console.log(`[Change_Language] currentLanguage: ${currentLanguage}, nextLanguage: ${nextLanguage}`)
     localStorage.setItem('user-lang', nextLanguage)
     void i18n.changeLanguage(nextLanguage)

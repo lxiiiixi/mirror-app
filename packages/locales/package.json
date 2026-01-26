@@ -6,7 +6,8 @@
   "types": "index.d.ts",
   "files": [
     "en.json",
-    "zh-hk.json",
+    "zh-HK.json",
+    "zh-CN.json",
     "index.js"
   ]
 }

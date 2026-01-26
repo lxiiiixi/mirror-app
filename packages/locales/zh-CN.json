@@ -1,0 +1,556 @@
+{
+  "banners": [
+    {
+      "img": "banner1_cn",
+      "link": ""
+    },
+    {
+      "img": "banner2_cn",
+      "link": ""
+    },
+    {
+      "img": "banner3_cn",
+      "link": ""
+    },
+    {
+      "img": "banner4_cn",
+      "link": ""
+    },
+    {
+      "img": "banner5_cn",
+      "link": ""
+    }
+  ],
+  "header": {
+    "assets": "資產",
+    "login": "登錄",
+    "language": "简体",
+    "invites": "邀請",
+    "wallet": "錢包"
+  },
+  "loginModal": {
+    "title": "登錄方式",
+    "wallet": "錢包登錄",
+    "email": "郵箱登錄"
+  },
+  "works": {
+    "filterTagDialog": {
+      "title": "所有頻道",
+      "rating": "評級",
+      "popularity": "流行度",
+      "channels": "頻道",
+      "all": "全部",
+      "types": {
+        "tvDrama": "電視劇",
+        "playlet": "短劇",
+        "animation": "動畫",
+        "vlog": "視頻博客",
+        "comic": "漫畫",
+        "music": "音樂",
+        "novel": "小說",
+        "animatedFilm": "動畫電影",
+        "movie": "電影"
+      }
+    },
+    "tokenFilter": {
+      "metaToken": "IP代幣",
+      "ticketToken": "票券"
+    },
+    "detail": {
+      "communityOpened": "推广已成功打開",
+      "chapterContents": "章節目錄：",
+      "previousPage": "上一頁",
+      "nextPage": "下一頁"
+    },
+    "unlockChapterDialog": {
+      "title": "解鎖章節",
+      "purchasePrompt": "觀看後續章節前請先購買，每章 {price} {label}",
+      "paymentMethod": "支付方式",
+      "chapters": "章節",
+      "pay": "支付 {totalPrice} {label}",
+      "inviteToEarn": "邀請賺取代幣",
+      "rechargeUsdt": "充值 USDT",
+      "comingSoon": "敬請期待",
+      "purchaseSuccess": "購買成功",
+      "purchaseFailed": "購買失敗"
+    },
+    "externalLink": {
+      "add": "添加外部鏈接"
+    },
+    "productShare": {
+      "fundraisingTarget": "籌款目標",
+      "price": "價格：1 {tokenName} = {price} SOL",
+      "buy": "購買 {buyNum} SOL",
+      "pledgeInfo": "總元宇宙代幣的 {percentage}% 將被質押到 SWAP 並銷毀",
+      "checkRecord": "< 查看記錄",
+      "initiator": "發起人：{creatorId}",
+      "checked": "已簽到",
+      "checkIn": "簽到",
+      "initiatingTge": "發起 TGE",
+      "retweetReward": "轉發鏈接到 X，<br />每次成功邀請獎勵 <b class=\"red-text\">5 個代幣</b>",
+      "xForward": "X 轉發",
+      "invitedPpl": "已邀請 {inviteNum} 人",
+      "copySuccess": "複製成功"
+    },
+    "invitedListDialog": {
+      "title": "邀請列表",
+      "wallet": "錢包",
+      "invitationTime": "邀請時間",
+      "noData": "暫無數據"
+    }
+  },
+  "ticket": {
+    "tabs": {
+      "theFirst": "首次發售",
+      "onConsignment": "寄售中"
+    },
+    "empty": "暫無數據",
+    "ticketItemCard": {
+      "countDown": "倒计时",
+      "buy": "搶購",
+      "nobuy": "購買上限",
+      "soldOut": "已售罄",
+      "presale": "預搶購",
+      "waiting_presale": "即将开始",
+      "waiting_buy": "即將搶購",
+      "notStarted": "未開始",
+      "numberOfIssues": "發行量",
+      "numberOfOrder": "销量",
+      "copies": "份",
+      "freeStorage": "上漲天數",
+      "nextTime": "等待上架",
+      "day": "天",
+      "salePrice": "售價",
+      "offerPrice": "發行價",
+      "buyPrice": "買入价",
+      "price": "價格",
+      "profitLoss": "盈虧",
+      "quantity": "數量",
+      "sell": "上架",
+      "sellDown": "下架",
+      "back": "返回",
+      "sell_down": "自动下架时间 {time}",
+      "sell_up": "可上架时间 {time}",
+      "sell_time_tip1": "預搶購時間：{time}",
+      "sell_time_tip2": "搶購時間：{time1}-次日{time2}",
+      "sell_info1": "已上架{n}份",
+      "sell_info2": "上漲週期 {d}天",
+      "presale_user": "{n}人正在搶購"
+    },
+    "detail": {
+      "releaseProcess": "發布流程",
+      "priorityPurchase": "预抢购",
+      "purchase": "抢购",
+      "issuePrice": "發行價格",
+      "currentPrice": "當前價格",
+      "totalSupply": "總供應量",
+      "remaining": "剩餘",
+      "launchTime": "上線時間",
+      "introduction": "介紹"
+    },
+    "record": {
+      "pay": "支付尾款",
+      "presale": "票券定金",
+      "direct": "直推分红",
+      "indirect": "间推分红"
+    },
+    "buyDialog": {
+      "title": "購買票券",
+      "waitingForPayment": "等待付款中...",
+      "paymentProcessing": "付款正在處理中...",
+      "paymentSuccessful": "付款成功！",
+      "paymentFailed": "付款失敗，請重試。",
+      "close": "關閉",
+      "currentPrice": "當前價格",
+      "issuePrice": "發行價格",
+      "maxPurchasable": "最多可購買份數：",
+      "buy": "購買",
+      "viewMine": "查看我的"
+    },
+    "buyConsignmentDialog": {
+      "title": "購買票券",
+      "currentBuyPrice": "當前購買價格",
+      "usdt": "USDT",
+      "buy": "購買",
+      "purchaseSuccess": "購買成功"
+    },
+    "sellTicketDialog": {
+      "title": "寄售",
+      "currentSellingPrice": "當前出售價格",
+      "commissionTips": "將從利润中扣除{d}手續費",
+      "usdt": "USDT",
+      "sell": "出售",
+      "consignmentSuccess": "寄售成功",
+      "sellCount": "出售{count}張",
+      "purchasePrice": "購買價格",
+      "currentPrice": "目前價格",
+      "purchaseTime": "購買時間",
+      "back": "返回"
+    },
+    "presaleDialog": {
+      "title": "參與預售",
+      "registered": "已報名",
+      "payPrompt": "支付 {amount} USDT參與预售",
+      "participate": "參與"
+    },
+    "alreadyReserved": "已預約",
+    "participatePresale": "參與預售"
+  },
+  "promotion": {
+    "bindSuperior": "綁定上級",
+    "bindSu": "綁定成功",
+    "subTitle": "推薦VIP享10-15%分佣",
+    "promotion": "社區",
+    "directCommission": "直接佣金 10%:",
+    "indirectCommission": "間接佣金 5%:",
+    "todaysCommission": "今日佣金",
+    "cumulativeCommission": "累計佣金",
+    "tipText": "領取百倍增值代幣，三人成團空投翻倍"
+  },
+  "vipAbout": {
+    "whitePaper": "白皮書",
+    "cardTitle": "EntertainFl 俱樂部 VIP 特權",
+    "newbieWhite": "新手白：",
+    "newbieWhiteDesc": "在線俱樂部、RWA 獎勵和活動",
+    "potentialPlayers": "潛力玩家：",
+    "potentialPlayersDesc": "搶先體驗產品和白名單",
+    "trendsetters": "潮流引領者：",
+    "trendsettersDesc": "線下 DAO，對關鍵決策進行投票",
+    "industryKOC": "行業 KOC：",
+    "industryKOCDesc": "根據礦机持有量分享利潤",
+    "topOGs": "頂級 OG：",
+    "topOGsDesc": "優先獲得 3 年期 RWA 投資",
+    "joinTitle": "加入俱樂部即獲礦机",
+    "payButton": "支付 1000 USDT 加入 VIP",
+    "giftedNodes": "贈送礦机",
+    "totalMiningCapacity": "總挖礦容量",
+    "currentLimit": "目前限制為 4000 個。",
+    "dailyOutputPerNode": "每個礦机每日產出：833 ENT",
+    "acceleratedRelease": "加速釋放：35%",
+    "oneVipGiftNode": "1 個 VP 贈送礦机：1",
+    "twentyVipGiftNodes": "20 個 VP 贈送礦机：20 +2",
+    "tableHeaders": {
+      "vips": "VIP",
+      "giftedNodes": "贈送礦机",
+      "additionalNodes": "額外礦机"
+    }
+  },
+  "vipMining": {
+    "validUsers": "有效用戶：",
+    "numberOfVips": "VIP 數量：",
+    "comingSoon": "敬請期待",
+    "maximumClaimable": "最多可領取："
+  },
+  "footer": {
+    "entertainFI": "娛樂",
+    "home": "俱樂部",
+    "kol": "推廣"
+  },
+  "home": {
+    "tokenCard": {
+      "vip": "EntertainFI 俱樂部",
+      "ticket": "票券"
+    }
+  },
+  "tokenItemCard": {
+    "person": "人數：",
+    "checkIn": "領空投",
+    "checkInSuccess": "簽到成功",
+    "airDrop": "空投",
+    "progress": "進度：",
+    "balance": "餘額"
+  },
+  "account": {
+    "balanceTotal": "总价值{d}",
+    "refresh": "刷新",
+    "ent": "ENT",
+    "rwa_token": "USDT 數量",
+    "rwa_ticket": "ART 數量",
+    "today": "今日收益",
+    "copy": "复制",
+    "copySu": "已经成功复制地址",
+    "address": "所连接的钱包",
+    "token": "持有的RWA代幣",
+    "bill": "我的账单",
+    "ticket": "持有的票券",
+    "mint": "鑄造",
+    "agentRole": "我的俱樂部",
+    "invites": "邀請",
+    "claim": "提現",
+    "ticketToken": "票券",
+    "metaToken": "IP代幣",
+    "login": "登錄",
+    "billing": "賬單",
+    "logout": "退出",
+    "withdrawDialog": {
+      "title": "充值",
+      "title1": "充值和提現",
+      "currentMax": "余额：{num}",
+      "confirm": "提現",
+      "selectCurrency": "請選擇幣種",
+      "recharge_currency": "充值币种",
+      "withdraw_currency": "提现币种",
+      "recharge_number": "充值数量",
+      "withdraw_number": "提现数量",
+      "recharge_btn": "提交充值",
+      "withdraw_btn": "提交提现",
+      "claimInterval": "充值秒到賬，提領白天 1 小時內到賬，每十分鐘可申領一次，提現手續費 10%",
+      "claimInterval2": "充值秒到賬，提領 1 小時內到賬，提現手續費 0",
+      "rechargeAddress": "充值地址:{d}",
+      "success": "提現成功！",
+      "currentHash": "當前交易hash:",
+      "complete": "完成",
+      "placeholder": "請輸入數量(10%手續費)",
+      "copySuccess": "複製成功",
+      "deposit": "充值",
+      "depositSuccess": "充值成功！"
+    }
+  },
+  "ticketStatus": {
+    "waitingForDraw": "參與中",
+    "sell": "寄售中",
+    "drawFailed": "未中簽",
+    "purchased": "已中签"
+  },
+  "layout": {
+    "myClub": "我的俱樂部"
+  },
+  "miningAbout": {
+    "pageTitle": "EntertainFI 俱樂部",
+    "joinClub": "加入 EntertainFI 俱樂部",
+    "privilegesIntroduction": "ENTERTAINFICLUB 特權介紹",
+    "giftAgentNodes": "加入文娛礦池俱樂部 — 贈送共建礦机",
+    "vip1": "VIP1：在線俱樂部、RWA 獎勵和活動",
+    "vip2": "VIP2：搶先體驗產品和白名單",
+    "vip3": "VIP3：線下 DAO，對關鍵決策進行投票",
+    "vip4": "VIP4：按礦机持有量分享利潤",
+    "vip5": "VIP5：3年RWA投資優先權",
+    "inviteFriends": "邀請好友加入 EntertainFI Club VIP",
+    "dataDetails": "贈送共建礦机數據詳情",
+    "totalMineable": "總可挖礦量",
+    "nodesLimit": "目前限制為 2000 個礦机",
+    "totalHashrate": "總哈希率",
+    "fixedHashrate": "固定哈希率(1500A)",
+    "variableHashrate": "可變哈希率(1500A)",
+    "notAvailable": "不可用",
+    "overallyDaily": "每日總体",
+    "miningPrice": "挖礦價格",
+    "accelerateRelease": "加速釋放",
+    "invitation": "邀請折扣",
+    "invitation_discount": "以3-5折購買礦机",
+    "entInitialPrice": "ENT 初始價格",
+    "agentNode": "共建礦机",
+    "acceleratedComputingPowerNote": "（200個礦机後，將激活加速算力）",
+    "getEntOff": "以三到五折獲得 ENT",
+    "variableHashrateTable": "可變哈希率表",
+    "workLevelInfo": "工作級別根據“貢獻因子”的歷史排名確定",
+    "contributionCoefficient": "貢獻係數",
+    "rank": "排名",
+    "factor": "因子",
+    "worksMiningIndex": "作品挖礦指數：",
+    "experienceValueInfo": "體驗價值計算為獨家合作期限乘以挖礦作品的基數，獨家作品計為1，如果非獨家作品在一個月內變為獨家，則計為0.66，每增加一個月減少0.03，12個月後，創作獨家作品的價值為0.3",
+    "channelNftLevel": "頻道 NFT 等級",
+    "level": "等級",
+    "experienceValueIncrease": "經驗值增加",
+    "multipliers": "乘數"
+  },
+  "miningIndex": {
+    "pageTitle": "EntertainFI 俱樂部",
+    "clubName": "ENTERTAINFI 俱樂部：",
+    "currentPromotion": "當前推廣：每個VIP會員資格贈送一個ENT生態系統礦机！",
+    "priceIncreaseNote": "每售出100個VIP，單價將自動上漲10USDT",
+    "currentVipPrice": "當前VIP價格：{price} USDT",
+    "complimentaryNode": "每個VIP會員資格均包含一個免費的ENT生態系統礦机！",
+    "selectVipQuantity": "選擇VIP數量",
+    "totalPayment": "您的總付款將是 {price}U，贈送 {quantity} 個ENT生態系統礦机",
+    "extraGiftNodes": "再額外贈送 {count} 個礦机",
+    "dataDetails": "贈送礦机數據詳情",
+    "totalMineable": "總可開採量：",
+    "fixedHashrate": "固定算力：",
+    "variableHashrate": "可變算力：",
+    "notAvailable": "不可用",
+    "overallDailyOutput": "每日總產出：",
+    "nodeQuantity": "礦机數量：",
+    "accelerateRelease": "加速釋放：",
+    "acceleratedComputingPowerNote": "（200個礦机後，將激活加速算力）",
+    "entInitialPrice": "ENT初始價格：",
+    "agentNode": "礦机：",
+    "getEntOff": "以三到五折獲得ENT",
+    "connectSolanaWallet": "連接Solana錢包",
+    "processing": "處理中...",
+    "buy": "{price} USDT 購買",
+    "comingSoon": "敬請期待",
+    "waitingForPayment": "等待付款...",
+    "queryTxResult": "查詢交易結果...",
+    "paymentError": "出錯了，但這並不意味著付款失敗，您可以到“我的記錄”頁面查看付款是否成功",
+    "myRecords": "我的記錄",
+    "pleaseConnectSolana": "請先連接Solana錢包！",
+    "orderCreateSuccess": "訂單創建成功！",
+    "orderCreateFailed": "訂單創建失敗！",
+    "walletTxFailed": "錢包交易失敗！",
+    "waitingForResult": "等待結果...",
+    "orderPaidSuccess": "訂單支付成功！",
+    "waitForChainConfirmation": "請耐心等待鏈上確認，勿做其他操作"
+  },
+  "agntDialog": {
+    "title": "EntertainFI 俱樂部",
+    "joinVip": "加入文娛礦池俱樂部",
+    "joinVipDesc": "作為VIP加入EntertainFI俱樂部 - 購買VIP會員資格即可免費獲得一個ENT礦机！享受專屬代幣挖礦權！",
+    "giftNodeDesc": "贈送礦机<br />第一年釋放20%，每年遞減20%",
+    "v1": "v1:<br />加入在線俱樂部，參加定期的娛樂RWA空投和福利活動",
+    "v2": "v2:<br />優先體驗新產品測試、優質娛樂內容以及合作夥伴項目的白名單",
+    "v3": "v3:<br />加入線下俱樂部，參與俱樂部重大決策，享受DAO治理權",
+    "v4": "v4:<br />享受專屬娛樂活動，並通過基於礦机的股息分配分享活動收入",
+    "v5": "v5:<br />獲得生態系統RWA產品的早期投資和優先退出權，有效期3年，3年後，需經批准方可繼續使用"
+  },
+  "paySuccDialog": {
+    "title": "成功",
+    "paymentSuccess": "支付成功，點擊{myRecords}跳轉",
+    "myRecords": "我的會員"
+  },
+  "miningMy": {
+    "pageTitle": "我的俱樂部",
+    "introduction": "介紹",
+    "clubVip": "文娛礦池俱樂部",
+    "buyVip": "購買VIP",
+    "inviteAndEarn": "邀請朋友並賺取佣金！",
+    "sharedUsers": "有效直推用戶：",
+    "dataDetails": "禮物共建者礦机",
+    "purchasedNode": "已購買礦机：",
+    "currentHashrate": "當前算力：",
+    "fixedHashrate": "固定算力：",
+    "notAvailable": "（不可用）",
+    "accelerateRelease": "加速釋放：",
+    "acceleratedComputingPowerNote": "（每日額外贈送291枚ENT）",
+    "miningPrice": "初始價格：",
+    "comingSoon": "敬請期待",
+    "speedUp": "加速",
+    "totalMined": "今日總收益",
+    "totalWithdrawn": "總共提取的ENT",
+    "extractable": "認領挖礦 ENT：10%手續費",
+    "claim": "領取",
+    "releaseInfo": "礦机共60億ENT，第一年釋放20%，之後每年減少20%",
+    "todaysMiningData": "今日挖礦收益",
+    "todaysTip": "每 20 分鐘進行一次區塊挖礦更新",
+    "directEarnings": "今日社區收益",
+    "dividendEarnings": "今日贡献",
+    "destructionEarnings": "今日销毁收益"
+  },
+  "miningInvites": {
+    "pageTitle": "我的邀請",
+    "invites": "社區團隊",
+    "level1": "直推：",
+    "level2": "間推：",
+    "leader": "領導者",
+    "gold": "黃金"
+  },
+  "miningRecords": {
+    "pageTitle": "帳單記錄",
+    "income": "收入",
+    "expenditure": "支出",
+    "type": "类型",
+    "date": "日期",
+    "id": "ID",
+    "quantity": "數量",
+    "amount": "金額",
+    "status": "狀態",
+    "pending": "待處理",
+    "success": "成功",
+    "cancelled": "已取消",
+    "payVip": "支付 {amount} USDT 購買 {num} VIP",
+    "payTicket": "支付 {amount} USDT 購買 {ticketName}",
+    "transactionStatus": "交易狀態：{status}"
+  },
+  "miningTabs": {
+    "myClub": "我的俱樂部",
+    "myInvites": "加速釋放",
+    "myRecords": "我的記錄"
+  },
+  "projectTabs": {
+    "vip": "俱樂部",
+    "node": "社區",
+    "myMining": "会员"
+  },
+  "recordTabs": {
+    "vip": "礦机",
+    "ticketToken": "票券"
+  },
+  "totalRevenue": {
+    "entTotalRevenue": "累計產币收益",
+    "dailyRevenue": "累計社區收益",
+    "teamRevenue": "累计贡献",
+    "destructionRevenue": "累计銷毀收益",
+    "directSalesRevenue": "累计推廣收益",
+    "notOpen": "未開放",
+    "claim": "領取"
+  },
+  "vipRulesDialog": {
+    "title": "VIP規則介紹",
+    "rule": "規則 >",
+    "v1": "V1：EntertainFI ViP+1",
+    "v2": "V2：直接推廣：5個V1",
+    "v3_1": "V3：直接推廣：2個V2",
+    "v3_2": "30個有效用戶",
+    "v4_1": "V4：直接推廣：2個V3",
+    "v4_2": "100個有效用戶",
+    "v5_1": "V5：直接推廣：2個V4",
+    "v5_2": "300個有效用戶"
+  },
+  "miningShare": {
+    "pageTitle": "邀請",
+    "rewardTitle": "直推10%，間推5%獎勵",
+    "idLabel": "ID :",
+    "level1Invites": "有效直推：",
+    "level2Invites": "有效間推：",
+    "shareLink": "分享連結",
+    "savePoster": "保存海報",
+    "sharingNotAvailable": "尚不支援分享",
+    "copiedSuccess": "複製成功！",
+    "xShareTitle": "購買 EntertainFI VIP — 免費獲得一個礦机！",
+    "generating": "正在生成…",
+    "downloading": "正在下載…",
+    "permissionDenied": "權限被拒絕",
+    "permissionContent": "請在設定中授予保存圖片的權限。",
+    "saveFailed": "儲存失敗"
+  },
+  "newsData": [
+    {
+      "username": "Mirror",
+      "pic": "/static/images/discover/d1_cn.png",
+      "content": "购买 EntertainFI VIP —— 即送节点！VIP 会员只需 1000 USDT，冲！",
+      "time": "2025.06.30"
+    },
+    {
+      "username": "Mirror",
+      "pic": "/static/images/discover/d2_cn.png",
+      "content": "获得香港数码港 260 万港币资金支持。",
+      "time": "2025.03.26"
+    },
+    {
+      "username": "Mirror",
+      "pic": "/static/images/discover/d3_cn.png",
+      "content": "mirror.fan：Web3 娱乐 RWA 平台。将电影、漫画、音乐、小说转化为区块链 RWA 通证，帮助 IP 构建链上生态，通过限量内容门票和周边实现粉丝经济，把主流娱乐带入 Web3。",
+      "time": "2024.06.23"
+    }
+  ],
+  "hold_token": {
+    "title": "持有代币"
+  },
+  "hold_ticket": {
+    "title": "持有票券"
+  },
+  "assets": {
+    "title": "資產",
+    "typeAll": "所有",
+    "typeTicket": "票券",
+    "typeVip": "VIP",
+    "typeMining": "挖矿",
+    "typeAirdrop": "空投",
+    "typeRecharge": "充值",
+    "typeWithdraw": "提現"
+  },
+  "notice": {
+    "title": "公告",
+    "defaultMessage": "好運加持，手到票來！祝你好運！"
+  }
+}
