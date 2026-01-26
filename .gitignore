@@ -29,3 +29,6 @@ web-build
 *.sw?
 
 old-version
+
+.env
+.env.*
