@@ -76,6 +76,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
   ) => {
     const shouldShowHeader = showWalletBar || showPageNav
     const shouldShowFooter = showFooter && footerItems.length > 0
+    const footerBackground = footerBgSrc ?? images.nav.footBarBg
     const contentPaddingTop = shouldShowHeader ? HEADER_HEIGHT : 0
     const contentPaddingBottom = shouldShowFooter ? FOOTER_HEIGHT : 0
     const [headerOffset, setHeaderOffset] = useState(0)
@@ -251,9 +252,12 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
         {shouldShowFooter ? (
           <footer
             className="footer-nav"
-            style={
-              footerBgSrc ? { backgroundImage: `url(${footerBgSrc})` } : {}
-            }
+            style={{
+              backgroundImage: `url(${footerBackground})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundSize: "100% 100%",
+            }}
           >
             {footerItems.map((item, index) => {
               const isActive = index === activeFooterIndex
@@ -460,9 +464,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
             align-items: center;
             width: 265px;
             height: ${FOOTER_HEIGHT}px;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 100% 100%;
             position: fixed;
             z-index: 90;
             bottom: 0;
