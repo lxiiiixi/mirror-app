@@ -112,47 +112,47 @@ function WorkDetail() {
     artsApiClient.work
       .getChapter({ work_id: workId, chapter_id: activePage })
       .then((response) => {
-        const content = (response.data as { chapter_content?: string })?.chapter_content ?? ''
+        const payload = response.data as { Content?: string; chapter_content?: string }
+        const content = payload?.Content ?? payload?.chapter_content ?? ''
         const trimmed = content.trim()
+
+        const parts = trimmed
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean)
+
+        const media: MediaItem[] = []
+        parts.forEach((item) => {
+          if (imageExtRegex.test(item)) {
+            media.push({ kind: 'image', url: resolveImageUrl(item) })
+            return
+          }
+          if (videoExtRegex.test(item)) {
+            media.push({ kind: 'video', url: resolveImageUrl(item) })
+            return
+          }
+          if (audioExtRegex.test(item)) {
+            media.push({ kind: 'audio', url: resolveImageUrl(item) })
+            return
+          }
+          if (embedRegex.test(item)) {
+            media.push({ kind: 'embed', url: item })
+          }
+        })
+
+        if (media.length > 0) {
+          setMediaItems(media)
+          setChapterContent(null)
+          return
+        }
+
         if (resolvedType === 4) {
-          const images = trimmed
-            .split(',')
-            .map((item) => item.trim())
-            .filter(Boolean)
-            .map((item) => resolveImageUrl(item))
+          const images = parts.map((item) => resolveImageUrl(item))
           setChapterContent(images)
           setMediaItems([])
           return
         }
-        if (resolvedType === 3) {
-          setChapterContent(trimmed)
-          setMediaItems([])
-          return
-        }
-        if (isMediaWork) {
-          const list = trimmed
-            .split(',')
-            .map((item) => item.trim())
-            .filter(Boolean)
-          const items: MediaItem[] = list.map((item) => {
-            if (imageExtRegex.test(item)) {
-              return { kind: 'image', url: resolveImageUrl(item) }
-            }
-            if (embedRegex.test(item)) {
-              return { kind: 'embed', url: item }
-            }
-            if (audioExtRegex.test(item) && resolvedType === 2) {
-              return { kind: 'audio', url: resolveImageUrl(item) }
-            }
-            if (videoExtRegex.test(item)) {
-              return { kind: 'video', url: resolveImageUrl(item) }
-            }
-            return { kind: 'video', url: resolveImageUrl(item) }
-          })
-          setMediaItems(items)
-          setChapterContent(null)
-          return
-        }
+
         setChapterContent(trimmed)
         setMediaItems([])
       })
@@ -163,7 +163,7 @@ function WorkDetail() {
       .finally(() => {
         setChapterLoading(false)
       })
-  }, [activePage, isMediaWork, resolvedType, workId])
+  }, [activePage, resolvedType, workId])
 
   const showDirectory = useMemo(
     () => Number(data?.work_total_chapter ?? 0) > 1,

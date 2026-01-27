@@ -38,6 +38,7 @@ export const icons = {
 
 // 图片资源 - 基础
 import logoImg from './images/logo.png'
+import loginImg from './images/login-img.png'
 import emptyImg from './images/empty.png'
 
 // 账户相关
@@ -197,6 +198,7 @@ import idoWhitelistedUser from './images/ido/whitelisted-user.png'
 
 export const images = {
   logo: logoImg,
+  loginImg: loginImg,
   empty: emptyImg,
 
   // 账户相关

@@ -327,12 +327,14 @@ export interface WorkChapterParams {
 }
 
 export interface WorkChapterResponseData {
-  chapter_id: number;
-  chapter_title: string;
-  chapter_content: string;
-  unlocked: boolean;
+  ID: number;
+  ChapterId: number;
+  ComicId: number;
+  Title: string;
+  Content: string;
+  CreateTime: string;
+  UpdateTime: string;
 }
-
 export interface WorkActionRequest {
   work_id: number;
   action_type: 'like' | 'favorite' | 'share' | string;

@@ -1,0 +1,75 @@
+@layer components {
+  .input,
+  .form-input {
+    --input-height: 37px;
+    --input-padding-x: 16px;
+    --input-radius: 10px;
+    --input-border-width: 2px;
+    --input-border-color: rgba(255, 255, 255, 0.3);
+    --input-bg: linear-gradient(
+      151.34deg,
+      rgba(255, 255, 255, 0.06) 38.01%,
+      rgba(255, 255, 255, 0.1) 125.13%
+    );
+    --input-text: #fff;
+    --input-placeholder: rgba(255, 255, 255, 0.4);
+    --input-font-size: 14px;
+    --input-backdrop-blur: 50px;
+
+    width: 100%;
+    height: var(--input-height);
+    padding: 0 var(--input-padding-x);
+    background: var(--input-bg);
+    border: var(--input-border-width) solid var(--input-border-color);
+    backdrop-filter: blur(var(--input-backdrop-blur));
+    border-radius: var(--input-radius);
+    font-size: var(--input-font-size);
+    color: var(--input-text);
+    box-sizing: border-box;
+  }
+
+  .input-sm,
+  .form-input.input-sm {
+    --input-height: 32px;
+    --input-padding-x: 12px;
+    --input-radius: 8px;
+    --input-border-width: 1px;
+    --input-font-size: 12px;
+  }
+
+  .input-md,
+  .form-input.input-md {
+    --input-height: 37px;
+    --input-padding-x: 16px;
+    --input-radius: 10px;
+    --input-border-width: 2px;
+    --input-font-size: 14px;
+  }
+
+  .input-lg,
+  .form-input.input-lg {
+    --input-height: 44px;
+    --input-padding-x: 18px;
+    --input-radius: 12px;
+    --input-border-width: 2px;
+    --input-font-size: 16px;
+  }
+
+  .input::placeholder,
+  .form-input::placeholder {
+    color: var(--input-placeholder);
+  }
+
+  .input:focus,
+  .form-input:focus {
+    outline: none;
+    border-color: rgba(235, 20, 132, 0.6);
+    box-shadow: 0 0 0 2px rgba(235, 20, 132, 0.25);
+  }
+
+  .input:disabled,
+  .form-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

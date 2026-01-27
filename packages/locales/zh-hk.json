@@ -33,6 +33,26 @@
     "wallet": "錢包登錄",
     "email": "郵箱登錄"
   },
+  "emailLogin": {
+    "title": "郵箱登錄",
+    "subtitle": "登入以繼續",
+    "email": "郵箱",
+    "emailPlaceholder": "請輸入郵箱地址",
+    "code": "驗證碼",
+    "codePlaceholder": "請輸入6位驗證碼",
+    "sendCode": "發送驗證碼",
+    "resendCode": "{time}s 後重發",
+    "inviteCode": "邀請碼（選填）",
+    "inviteCodePlaceholder": "請輸入邀請碼",
+    "login": "登錄",
+    "loggingIn": "登錄中...",
+    "emailInvalid": "請輸入有效的郵箱地址",
+    "codeRequired": "請輸入6位驗證碼",
+    "codeSent": "驗證碼已發送",
+    "sendFailed": "發送驗證碼失敗",
+    "loginSuccess": "登錄成功",
+    "loginFailed": "登錄失敗，請重試"
+  },
   "works": {
     "filterTagDialog": {
       "title": "所有頻道",

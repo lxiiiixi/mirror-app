@@ -1,114 +1,118 @@
 @import "tailwindcss";
 @import "@mirror/assets/fonts.css";
+@import "./ui/Button/Button.css";
+@import "./ui/Input/Input.css";
 
 :root {
-  /* 自定义主题色配置 - Mirror UI */
-  --color-primary: #EB1484;
-  --color-primary-hover: #D01276;
-  --color-primary-active: #B81068;
-  
-  --color-secondary-bg: rgba(126, 126, 126, 0.3);
-  --color-secondary-hover: rgba(126, 126, 126, 0.4);
-  --color-secondary-active: rgba(126, 126, 126, 0.5);
-  
-  --color-border-secondary: rgba(255, 255, 255, 0.3);
-  --color-border-secondary-focus: rgba(255, 255, 255, 0.5);
+    /* 自定义主题色配置 - Mirror UI */
+    --color-primary: #eb1484;
+    --color-primary-hover: #d01276;
+    --color-primary-active: #b81068;
 
-  --gradient-primary: linear-gradient(90deg, #F063CD 0%, #424AFB 100%);
-  --gradient-card: linear-gradient(
-    151.34deg,
-    rgba(255, 255, 255, 0.05) 38.01%,
-    rgba(255, 255, 255, 0.2) 125.13%
-  );
-  --gradient-page: linear-gradient(165deg, #1f1a48 5%, #0d233f 20%, #030620 40%);
+    --color-secondary-bg: rgba(126, 126, 126, 0.3);
+    --color-secondary-hover: rgba(126, 126, 126, 0.4);
+    --color-secondary-active: rgba(126, 126, 126, 0.5);
 
-  --color-bg: #030620;
-  --color-surface: rgba(10, 16, 40, 0.88);
-  --color-surface-border: rgba(255, 255, 255, 0.12);
-  --color-input-bg: #F6F6F6;
-  --color-input-text: #1f2937;
-  --color-input-placeholder: rgba(31, 41, 55, 0.5);
-  --color-text: rgba(255, 255, 255, 0.92);
-  --color-text-muted: rgba(226, 232, 240, 0.68);
-  --color-accent: #70e3fa;
-  --color-danger: #FA6544;
-  --color-spinner: rgba(255, 255, 255, 0.9);
-  --color-spinner-track: rgba(255, 255, 255, 0.2);
+    --color-border-secondary: rgba(255, 255, 255, 0.3);
+    --color-border-secondary-focus: rgba(255, 255, 255, 0.5);
 
-  --font-primary: "Oxanium", "font_Oxanium", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    --gradient-primary: linear-gradient(90deg, #f063cd 0%, #424afb 100%);
+    --gradient-card: linear-gradient(
+        151.34deg,
+        rgba(255, 255, 255, 0.05) 38.01%,
+        rgba(255, 255, 255, 0.2) 125.13%
+    );
+    --gradient-page: linear-gradient(165deg, #1f1a48 5%, #0d233f 20%, #030620 40%);
 
-  /* 基础样式 */
-  font-family: var(--font-primary);
-  line-height: 1.5;
-  font-weight: 400;
+    --color-bg: #030620;
+    --color-surface: rgba(10, 16, 40, 0.88);
+    --color-surface-border: rgba(255, 255, 255, 0.12);
+    --color-input-bg: #f6f6f6;
+    --color-input-text: #1f2937;
+    --color-input-placeholder: rgba(31, 41, 55, 0.5);
+    --color-text: rgba(255, 255, 255, 0.92);
+    --color-text-muted: rgba(226, 232, 240, 0.68);
+    --color-accent: #70e3fa;
+    --color-danger: #fa6544;
+    --color-spinner: rgba(255, 255, 255, 0.9);
+    --color-spinner-track: rgba(255, 255, 255, 0.2);
 
-  color-scheme: dark;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+    --font-primary:
+        "Oxanium", "font_Oxanium", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial,
+        sans-serif;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* 基础样式 */
+    font-family: var(--font-primary);
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: dark;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  font-weight: 500;
-  color: var(--color-primary);
-  text-decoration: inherit;
+    font-weight: 500;
+    color: var(--color-primary);
+    text-decoration: inherit;
 }
 a:hover {
-  color: #F063CD;
+    color: #f063cd;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background: var(--gradient-page);
-  color: var(--color-text);
-  
-  /* H5 移动端优化 */
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  overscroll-behavior-y: contain;
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--gradient-page);
+    color: var(--color-text);
+
+    /* H5 移动端优化 */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior-y: contain;
 }
 
 body.work-detail-page {
-  align-items: flex-start;
-  justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 body.work-detail-page #root {
-  width: 100%;
+    width: 100%;
 }
 
 .iconfont {
-  font-family: "iconfont", serif;
-  font-style: normal;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: "iconfont", serif;
+    font-style: normal;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* H5 移动端全局样式优化 */
 * {
-  -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* 禁止长按选择文本（可选，根据需求调整） */
 img {
-  -webkit-user-select: none;
-  user-select: none;
-  pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 /* 移动端安全区域适配 */
 @supports (padding: max(0px)) {
-  body {
-    padding-left: max(0px, env(safe-area-inset-left));
-    padding-right: max(0px, env(safe-area-inset-right));
-  }
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
 }

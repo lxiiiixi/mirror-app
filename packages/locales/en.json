@@ -33,6 +33,26 @@
     "wallet": "Wallet Login",
     "email": "Email Login"
   },
+  "emailLogin": {
+    "title": "Email Login",
+    "subtitle": "Sign in to continue",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "code": "Verification Code",
+    "codePlaceholder": "Enter the 6-digit code",
+    "sendCode": "Send Code",
+    "resendCode": "Resend in {time}s",
+    "inviteCode": "Invite Code (Optional)",
+    "inviteCodePlaceholder": "Enter invite code",
+    "login": "Login",
+    "loggingIn": "Logging in...",
+    "emailInvalid": "Please enter a valid email address",
+    "codeRequired": "Please enter the 6-digit code",
+    "codeSent": "Verification code sent",
+    "sendFailed": "Failed to send code",
+    "loginSuccess": "Login successful",
+    "loginFailed": "Login failed, please try again"
+  },
   "works": {
     "filterTagDialog": {
       "title": "All Channels",

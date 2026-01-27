@@ -6,12 +6,14 @@ import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import UIShowcase from './pages/UIShowcase'
 import WorkDetail from './pages/WorkDetail'
+import EmailLogin from './pages/EmailLogin'
 import { AppLayout } from './ui'
 import { images } from '@mirror/assets'
-import { LoginModal } from './components'
+import { AlertHost, LoginModal } from './components'
 import { useLoginModalStore } from './store/useLoginModalStore'
 import { artsApiClient } from './api/artsClient'
 import { useRegionLanguage } from '@mirror/hooks'
+import { useAuth } from './hooks/useAuth'
 
 function App() {
   const { t, i18n } = useTranslation()
@@ -20,6 +22,7 @@ function App() {
   const location = useLocation()
   const openLoginModal = useLoginModalStore((state) => state.openModal)
   const isWorkDetail = location.pathname.startsWith('/works/detail')
+  const { isLoggedIn } = useAuth()
 
   // 桌面端自动重定向到白皮书网站
   useEffect(() => {
@@ -54,6 +57,7 @@ function App() {
     void i18n.changeLanguage(nextLanguage)
   }
   const activeFooterIndex = location.pathname.startsWith('/ui') ? 1 : 0
+  const handleEmailLogin = () => navigate('/account/email')
   const footerItems = [
     {
       label: t('footer.entertainFI'),
@@ -82,6 +86,18 @@ function App() {
     return null
   }
 
+  if (location.pathname.startsWith('/account/email')) {
+    return (
+      <>
+        <Routes>
+          <Route element={<EmailLogin />} path="/account/email" />
+          <Route element={<NotFound />} path="*" />
+        </Routes>
+        <AlertHost />
+      </>
+    )
+  }
+
   if (isWorkDetail) {
     return (
       <>
@@ -89,7 +105,8 @@ function App() {
           <Route element={<WorkDetail />} path="/works/detail" />
           <Route element={<NotFound />} path="*" />
         </Routes>
-        <LoginModal />
+        <LoginModal onEmailLogin={handleEmailLogin} />
+        <AlertHost />
       </>
     )
   }
@@ -101,20 +118,23 @@ function App() {
       languageLabel={t('header.language')}
       assetsLabel={t('header.assets')}
       loginLabel={t('header.login')}
-      isLoggedIn={false}
+      isLoggedIn={isLoggedIn}
       onLanguageClick={handleLanguageToggle}
       onLogoClick={() => navigate('/')}
       onWalletClick={openLoginModal}
       footerItems={footerItems}
       activeFooterIndex={activeFooterIndex}
+      showFooter={true}
     >
       <Routes>
         <Route element={<Home />} path="/" />
         <Route element={<UIShowcase />} path="/ui" />
         <Route element={<WorkDetail />} path="/works/detail" />
+        <Route element={<EmailLogin />} path="/account/email" />
         <Route element={<NotFound />} path="*" />
       </Routes>
-      <LoginModal />
+      <LoginModal onEmailLogin={handleEmailLogin} />
+      <AlertHost />
     </AppLayout>
   )
 }
