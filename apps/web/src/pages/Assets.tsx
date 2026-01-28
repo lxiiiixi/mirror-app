@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { artsApiClient } from '../api/artsClient'
 import { images } from '@mirror/assets'
 import { useAuth } from '../hooks/useAuth'
@@ -31,6 +32,7 @@ const formatAddress = (address?: string) => {
 
 function Assets() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { isLoggedIn } = useAuth()
   const openLoginModal = useLoginModalStore((state) => state.openModal)
   const showAlert = useAlertStore((state) => state.show)
@@ -224,7 +226,7 @@ function Assets() {
         </div>
 
         <div className="item-row">
-          <div className="item">
+          <div className="item clickable" onClick={() => navigate('/account/token')}>
             <span>{t('account.token')}</span>
             <img src={images.account.right} alt="" />
           </div>
@@ -393,6 +395,10 @@ function Assets() {
           border-radius: 14px;
           background: rgba(255, 255, 255, 0.06);
           border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .item.clickable {
+          cursor: pointer;
         }
 
         .item img {

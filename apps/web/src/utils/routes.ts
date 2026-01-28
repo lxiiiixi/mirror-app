@@ -8,6 +8,7 @@ import WorkDetail from "../pages/WorkDetail";
 import EmailLogin from "../pages/EmailLogin";
 import Assets from "../pages/Assets";
 import Vip from "../pages/Vip";
+import HoldToken from "../pages/HoldToken";
 import { type AppLayoutFooterItem } from "../ui/AppLayout";
 
 export type RouteLayoutType = "walletBar" | "pageNav" | "none";
@@ -81,6 +82,18 @@ export const routeConfigs: RouteConfig[] = [
             type: "pageNav",
             showFooter: false,
             pageTitle: (t) => t("assets.title"),
+            backIconSrc: images.works.backBtn,
+        },
+        showLoginModal: true,
+        showAlertHost: true,
+    },
+    {
+        path: "/account/token",
+        component: HoldToken,
+        layout: {
+            type: "pageNav",
+            showFooter: false,
+            pageTitle: (t) => t("hold_token.title"),
             backIconSrc: images.works.backBtn,
         },
         showLoginModal: true,
