@@ -4,7 +4,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { AppLayout } from "./ui";
 import { images } from "@mirror/assets";
-import { AlertHost, LoginModal } from "./components";
+import { AlertHost, LegalRestrictionHost, LoginModal } from "./components";
 import { useLoginModalStore } from "./store/useLoginModalStore";
 import { artsApiClient } from "./api/artsClient";
 import { useRegionLanguage } from "@mirror/hooks";
@@ -141,6 +141,7 @@ function App() {
                     <LoginModal onEmailLogin={handleEmailLogin} />
                 )}
                 {shouldShowAlertHost && <AlertHost />}
+                <LegalRestrictionHost />
             </>
         );
     }
@@ -180,6 +181,7 @@ function App() {
                 <LoginModal onEmailLogin={handleEmailLogin} />
             )}
             {shouldShowAlertHost && <AlertHost />}
+            <LegalRestrictionHost />
         </AppLayout>
     );
 }

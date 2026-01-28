@@ -118,7 +118,7 @@ function EmailLogin() {
 
                 const token = response.data?.token;
                 if (token) {
-                    saveToken(token);
+                    saveToken(token, "email");
                     showAlert({ message: t("emailLogin.loginSuccess"), variant: "success" });
                     redirectRef.current = window.setTimeout(() => {
                         navigate("/");

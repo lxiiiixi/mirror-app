@@ -33,6 +33,11 @@
     "wallet": "錢包登錄",
     "email": "郵箱登錄"
   },
+  "legalRestrictionDialog": {
+    "title": "提示",
+    "content": "根据相关法律法规和政策要求，本网站目前暂不向中国大陆地区用户提供服务。给您带来不便，敬请谅解。",
+    "confirm": "确定"
+  },
   "emailLogin": {
     "title": "郵箱登錄",
     "subtitle": "登入以繼續",

@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/useAuthStore'
 
 const TOKEN_STORAGE_KEY = 'userToken'
 const TOKEN_EXPIRY_KEY = 'timestamp'
+const METHOD_STORAGE_KEY = 'loginMethod'
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
 const canUseStorage = () =>
@@ -13,6 +14,7 @@ const clearStoredToken = () => {
   if (!canUseStorage()) return
   window.localStorage.removeItem(TOKEN_STORAGE_KEY)
   window.localStorage.removeItem(TOKEN_EXPIRY_KEY)
+  window.localStorage.removeItem(METHOD_STORAGE_KEY)
 }
 
 const readStoredToken = (): string | null => {
@@ -30,10 +32,19 @@ const readStoredToken = (): string | null => {
   return token
 }
 
+const readStoredLoginMethod = (): 'email' | 'wallet' | null => {
+  if (!canUseStorage()) return null
+  const raw = window.localStorage.getItem(METHOD_STORAGE_KEY)
+  if (raw === 'email' || raw === 'wallet') return raw
+  return null
+}
+
 export const useAuth = () => {
   const token = useAuthStore((state) => state.token)
+  const loginMethod = useAuthStore((state) => state.loginMethod)
   const hydrated = useAuthStore((state) => state.hydrated)
   const setToken = useAuthStore((state) => state.setToken)
+  const setLoginMethod = useAuthStore((state) => state.setLoginMethod)
   const clearTokenState = useAuthStore((state) => state.clearToken)
   const setHydrated = useAuthStore((state) => state.setHydrated)
 
@@ -43,9 +54,11 @@ export const useAuth = () => {
     const storedToken = readStoredToken()
     if (storedToken) {
       setToken(storedToken)
+      setLoginMethod(readStoredLoginMethod())
     } else {
       clearStoredToken()
       clearTokenState()
+      setLoginMethod(null)
     }
 
     setHydrated(true)
@@ -56,28 +69,38 @@ export const useAuth = () => {
   }, [token])
 
   const saveToken = useCallback(
-    (nextToken: string) => {
+    (nextToken: string, method?: 'email' | 'wallet') => {
       if (canUseStorage()) {
         window.localStorage.setItem(TOKEN_STORAGE_KEY, nextToken)
         window.localStorage.setItem(
           TOKEN_EXPIRY_KEY,
           String(Date.now() + TOKEN_TTL_MS),
         )
+        if (method) {
+          window.localStorage.setItem(METHOD_STORAGE_KEY, method)
+        }
       }
       setToken(nextToken)
+      if (method) {
+        setLoginMethod(method)
+      }
     },
-    [setToken],
+    [setLoginMethod, setToken],
   )
 
   const clearToken = useCallback(() => {
     clearStoredToken()
     clearTokenState()
-  }, [clearTokenState])
+    setLoginMethod(null)
+  }, [clearTokenState, setLoginMethod])
 
   return {
     token,
+    loginMethod,
     hydrated,
     isLoggedIn: Boolean(token),
+    isEmailLogin: loginMethod === 'email',
+    setLoginMethod,
     saveToken,
     clearToken,
   }

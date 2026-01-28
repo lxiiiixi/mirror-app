@@ -23,6 +23,8 @@ export { Input } from "./Input/Input";
 export type { InputProps, InputSize } from "./Input/Input";
 export { Alert } from "./Alert/Alert";
 export type { AlertProps, AlertVariant } from "./Alert/Alert";
+export { LegalRestrictionModal } from "./LegalRestrictionModal/LegalRestrictionModal";
+export type { LegalRestrictionModalProps } from "./LegalRestrictionModal/LegalRestrictionModal";
 export { TicketItemCard } from "./TicketItemCard";
 export type {
     TicketItemCardProps,

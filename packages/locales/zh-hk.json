@@ -33,6 +33,11 @@
     "wallet": "錢包登錄",
     "email": "郵箱登錄"
   },
+  "legalRestrictionDialog": {
+    "title": "提示",
+    "content": "根據相關法律法規和政策要求，本網站目前暫不向中國內地地區用戶提供服務。給您帶來不便，敬請見諒。",
+    "confirm": "確定"
+  },
   "emailLogin": {
     "title": "郵箱登錄",
     "subtitle": "登入以繼續",

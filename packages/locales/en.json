@@ -33,6 +33,11 @@
     "wallet": "Wallet Login",
     "email": "Email Login"
   },
+  "legalRestrictionDialog": {
+    "title": "Prompt",
+    "content": "Pursuant to applicable laws, regulations and policy requirements, this website is temporarily not available to users in the Chinese mainland at this time. We apologize for any inconvenience caused.",
+    "confirm": "OK"
+  },
   "emailLogin": {
     "title": "Email Login",
     "subtitle": "Sign in to continue",
