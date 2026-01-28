@@ -289,6 +289,7 @@
     "today": "今日收益",
     "copy": "复制",
     "copySu": "已经成功复制地址",
+    "copyFailed": "复制失败",
     "address": "所连接的钱包",
     "token": "持有的RWA代幣",
     "bill": "我的账单",
@@ -561,6 +562,7 @@
   },
   "assets": {
     "title": "資產",
+    "loadFailed": "资产加载失败",
     "typeAll": "所有",
     "typeTicket": "票券",
     "typeVip": "VIP",

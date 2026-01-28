@@ -1,5 +1,4 @@
-@layer components {
-  .alert {
+.alert {
     position: fixed;
     top: 16px;
     left: 50%;
@@ -15,36 +14,37 @@
     z-index: 9999;
     opacity: 0;
     pointer-events: none;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-  }
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
 
-  .alert--open {
+.alert--open {
     transform: translate(-50%, 0);
     opacity: 1;
     pointer-events: auto;
-  }
+}
 
-  .alert__title {
+.alert__title {
     font-size: 14px;
     font-weight: 700;
     margin: 0 0 4px;
-  }
+}
 
-  .alert__message {
+.alert__message {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.85);
     margin: 0;
-  }
+}
 
-  .alert--success {
+.alert--success {
     border: 1px solid rgba(56, 189, 248, 0.35);
-  }
+}
 
-  .alert--error {
-    border: 1px solid rgba(248, 113, 113, 0.4);
-  }
+.alert--error {
+    border: 1px solid rgba(249, 57, 57, 0.484);
+}
 
-  .alert--info {
+.alert--info {
     border: 1px solid rgba(255, 255, 255, 0.25);
-  }
 }

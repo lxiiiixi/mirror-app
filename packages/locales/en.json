@@ -290,6 +290,7 @@
     "today": "Today's earnings",
     "copy": "Copy",
     "copySu": "The address has been successfully copied",
+    "copyFailed": "Copy failed",
     "address": "Linked wallet",
     "token": "Hold RWA Token",
     "bill": "My bill",
@@ -562,6 +563,7 @@
   },
   "assets": {
     "title": "Assets",
+    "loadFailed": "Failed to load assets",
     "typeAll": "All",
     "typeTicket": "Ticket",
     "typeVip": "VIP",
