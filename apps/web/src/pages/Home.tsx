@@ -13,21 +13,9 @@ import {
     TokenItemCard,
     type ProductData,
     type ProjectTabItem,
-    type WorkType,
 } from "../ui";
 import { HomeBanner } from "../components";
-
-const workTypeMap: Record<number, WorkType> = {
-    1: "animate",
-    2: "music",
-    3: "novel",
-    4: "comic",
-    5: "animate",
-    6: "tv",
-    7: "playlet",
-    8: "vlog",
-    9: "regular",
-};
+import { workTypeMap } from "../utils/work";
 
 const splitCreators = (author: string) =>
     author
@@ -180,6 +168,12 @@ function Home() {
             };
         });
     }, [items]);
+
+    return (
+        <div className="flex justify-center py-[30px]">
+            <Spinner size="large" />
+        </div>
+    );
 
     return (
         <div className="">

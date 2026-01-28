@@ -15,6 +15,18 @@ export type WorkType =
     | "playlet"
     | "regular";
 
+export const workTypeMap: Record<number, WorkType> = {
+    1: "animate",
+    2: "music",
+    3: "novel",
+    4: "comic",
+    5: "animate",
+    6: "tv",
+    7: "playlet",
+    8: "vlog",
+    9: "regular",
+};
+
 /**
  * 获取作品类型信息
  */

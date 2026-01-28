@@ -12,7 +12,7 @@ export type { ModalProps } from "./Modal";
 export { Spinner } from "./Spinner";
 export type { SpinnerProps, SpinnerSize } from "./Spinner";
 export { ProductCard } from "./ProductCard";
-export type { ProductCardProps, ProductData, WorkType } from "./ProductCard";
+export type { ProductCardProps, ProductData } from "./ProductCard";
 export { ProductCardCarousel } from "./ProductCardCarousel";
 export type { ProductCardCarouselProps } from "./ProductCardCarousel";
 export { Banner } from "./Banner";

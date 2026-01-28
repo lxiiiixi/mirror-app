@@ -31,8 +31,6 @@ export interface AppLayoutProps extends HTMLAttributes<HTMLDivElement> {
     isLoggedIn?: boolean;
     langIconSrc?: string;
     logoSrc?: string;
-    backIconSrc?: string;
-    footerBgSrc?: string;
     onLanguageClick?: () => void;
     onLogoClick?: () => void;
     onWalletClick?: () => void;
@@ -59,9 +57,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
             loginLabel = "Login",
             isLoggedIn = false,
             langIconSrc,
-            logoSrc = images.logo,
-            backIconSrc,
-            footerBgSrc,
             onLanguageClick,
             onLogoClick,
             onWalletClick,
@@ -76,7 +71,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
     ) => {
         const shouldShowHeader = showWalletBar || showPageNav;
         const shouldShowFooter = showFooter && footerItems.length > 0;
-        const footerBackground = footerBgSrc ?? images.nav.footBarBg;
+        const footerBackground = images.nav.footBarBg;
         const contentPaddingTop = shouldShowHeader ? HEADER_HEIGHT : 0;
         const contentPaddingBottom = shouldShowFooter ? FOOTER_HEIGHT : 0;
         const [headerOffset, setHeaderOffset] = useState(0);
@@ -198,9 +193,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                             onClick={onLogoClick}
                                             aria-label="Home"
                                         >
-                                            {logoSrc ? (
-                                                <img src={logoSrc} alt="logo" aria-hidden="true" />
-                                            ) : null}
+                                            <img src={images.logo} alt="logo" aria-hidden="true" />
                                         </button>
                                     </div>
 
@@ -228,13 +221,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                         onClick={onBack}
                                         aria-label="Back"
                                     >
-                                        {backIconSrc ? (
-                                            <img
-                                                src={backIconSrc || "/placeholder.svg"}
-                                                alt=""
-                                                aria-hidden="true"
-                                            />
-                                        ) : null}
+                                        <img src={images.works.backBtn} alt="" aria-hidden="true" />
                                     </button>
                                     <div className="page-title">{pageTitle}</div>
                                     <div className="header-right">{headerRight}</div>
