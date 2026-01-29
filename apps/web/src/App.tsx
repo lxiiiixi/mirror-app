@@ -9,6 +9,7 @@ import { useLoginModalStore } from "./store/useLoginModalStore";
 import { artsApiClient } from "./api/artsClient";
 import { useRegionLanguage } from "@mirror/hooks";
 import { useAuth } from "./hooks/useAuth";
+import { useWallet } from "./hooks/useWallet";
 import { matchRoute, getLayoutConfig, routeConfigs, type RouteContext } from "./utils/routes";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
     const location = useLocation();
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const { isLoggedIn } = useAuth();
+    const { openWallet } = useWallet();
 
     // 匹配当前路由配置
     const currentRoute = useMemo(() => matchRoute(location.pathname), [location.pathname]);
@@ -101,6 +103,9 @@ function App() {
         void i18n.changeLanguage(nextLanguage);
     };
     const handleEmailLogin = () => navigate("/account/email");
+    const handleWalletLogin = () => {
+        openWallet();
+    };
     const handleWalletClick = () => {
         if (isLoggedIn) {
             navigate("/assets");
@@ -135,7 +140,9 @@ function App() {
                         />
                     ))}
                 </Routes>
-                {shouldShowLoginModal && <LoginModal onEmailLogin={handleEmailLogin} />}
+                {shouldShowLoginModal && (
+                    <LoginModal onEmailLogin={handleEmailLogin} onWalletLogin={handleWalletLogin} />
+                )}
                 {shouldShowAlertHost && <AlertHost />}
                 <LegalRestrictionHost />
             </>
@@ -169,7 +176,9 @@ function App() {
                     <Route key={config.path} element={<config.component />} path={config.path} />
                 ))}
             </Routes>
-            {shouldShowLoginModal && <LoginModal onEmailLogin={handleEmailLogin} />}
+            {shouldShowLoginModal && (
+                <LoginModal onEmailLogin={handleEmailLogin} onWalletLogin={handleWalletLogin} />
+            )}
             {shouldShowAlertHost && <AlertHost />}
             <LegalRestrictionHost />
         </AppLayout>

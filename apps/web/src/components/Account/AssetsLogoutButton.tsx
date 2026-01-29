@@ -1,14 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../hooks/useAuth'
+import { useWallet } from '../../hooks/useWallet'
 
 export function AssetsLogoutButton() {
   const { t } = useTranslation()
   const { isLoggedIn, clearToken } = useAuth()
+  const { disconnectWallet } = useWallet()
 
   if (!isLoggedIn) return null
 
+  const handleLogout = async () => {
+    await disconnectWallet()
+    clearToken()
+  }
+
   return (
-    <button type="button" className="assets-logout-btn" onClick={clearToken}>
+    <button type="button" className="assets-logout-btn" onClick={handleLogout}>
       {t('account.logout')}
       <style jsx>{`
         .assets-logout-btn {

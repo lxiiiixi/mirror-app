@@ -1,9 +1,7 @@
+import { envConfigs } from './envConfigs'
+
 const resolveEnvBaseUrl = () => {
-  const viteEnv =
-    typeof import.meta !== 'undefined'
-      ? (import.meta as { env?: Record<string, string | undefined> }).env
-      : undefined
-  return viteEnv?.VITE_ARTS_API_BASE ?? ''
+  return envConfigs.ARTS_API_BASE ?? ''
 }
 
 const normalizeBaseUrl = (baseUrl: string) => baseUrl.replace(/\/+$/, '')

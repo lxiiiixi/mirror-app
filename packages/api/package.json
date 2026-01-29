@@ -8,6 +8,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "dependencies": {
+    "@mirror/utils": "workspace:*"
+  },
   "files": [
     "src"
   ]

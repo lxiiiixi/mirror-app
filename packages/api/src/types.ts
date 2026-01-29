@@ -81,6 +81,7 @@ export interface UserSolanaWalletLoginRequest {
     chain_id: number;
     message: string;
     sign: string;
+    login_type: "wallet";
     work_invite_code?: string;
     invite_uid_code?: string;
 }

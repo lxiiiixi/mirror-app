@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { artsApiClient } from '../api/artsClient'
 import { useAuthStore } from '../store/useAuthStore'
+import { useWalletStore } from '../store/useWalletStore'
 
 const TOKEN_STORAGE_KEY = 'userToken'
 const TOKEN_EXPIRY_KEY = 'timestamp'
@@ -47,6 +48,7 @@ export const useAuth = () => {
   const setLoginMethod = useAuthStore((state) => state.setLoginMethod)
   const clearTokenState = useAuthStore((state) => state.clearToken)
   const setHydrated = useAuthStore((state) => state.setHydrated)
+  const resetWallet = useWalletStore((state) => state.reset)
 
   useEffect(() => {
     if (hydrated) return
@@ -92,7 +94,8 @@ export const useAuth = () => {
     clearStoredToken()
     clearTokenState()
     setLoginMethod(null)
-  }, [clearTokenState, setLoginMethod])
+    resetWallet()
+  }, [clearTokenState, resetWallet, setLoginMethod])
 
   return {
     token,
