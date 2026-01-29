@@ -233,64 +233,6 @@ function Promotion() {
         void loadTokenList();
     }, [getUserCheck, loadTokenList]);
 
-    if (!isLoggedIn) {
-        return (
-            <div className="promotion-page">
-                <div className="login-content">
-                    <div className="login-title">{t("account.login")}</div>
-                    <button type="button" className="login-button" onClick={openLoginModal}>
-                        <img className="wallet-icon" src={images.account.phantomIcon} alt="" />
-                        <span className="wallet-name">Wallet / Email</span>
-                    </button>
-                </div>
-                <style jsx>{`
-                    .promotion-page {
-                        min-height: 100vh;
-                        padding: 20px;
-                    }
-
-                    .login-content {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        padding-top: 60px;
-                        gap: 28px;
-                    }
-
-                    .login-title {
-                        font-size: 28px;
-                        font-weight: 700;
-                        background: linear-gradient(90deg, #00f2ff 0%, #5773ff 100%);
-                        -webkit-background-clip: text;
-                        -webkit-text-fill-color: transparent;
-                    }
-
-                    .login-button {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 12px;
-                        width: min(320px, 100%);
-                        height: 64px;
-                        border-radius: 999px;
-                        background: rgba(153, 153, 153, 0.06);
-                        border: 1px solid rgba(255, 255, 255, 0.12);
-                        color: #fff;
-                        font-size: 16px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        backdrop-filter: blur(20px);
-                    }
-
-                    .wallet-icon {
-                        width: 26px;
-                        height: 26px;
-                    }
-                `}</style>
-            </div>
-        );
-    }
-
     return (
         <div className="promotion-page">
             {isCanBind && inviteCode ? (

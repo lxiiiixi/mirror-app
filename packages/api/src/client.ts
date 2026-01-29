@@ -139,8 +139,6 @@ export class ArtsApiClient<E = ArtsApiError> {
     ): Promise<Types.ApiResponse<T>> {
         const response = await this.performFetch(method, path, options);
 
-        console.log(`🛜 [ArtsApiClient] API Response(${method}): ${response.url}`, response.status);
-
         if (!response.ok) {
             const error = await this.buildHttpError(method, path, response);
             throw error;
