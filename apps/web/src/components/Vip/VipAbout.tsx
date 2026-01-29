@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { images } from "@mirror/assets";
 import { CoefficientTable } from "../../ui";
 import { externalLinks } from "../../utils/externalLinks";
@@ -18,6 +19,7 @@ const vipRulesData = [
 
 export function VipAbout() {
     const { t, i18n } = useTranslation();
+    const navigate = useNavigate();
     const isChinese = useMemo(() => {
         const lang = (i18n.resolvedLanguage ?? i18n.language ?? "en").toLowerCase();
         return lang.startsWith("zh");
@@ -93,7 +95,7 @@ export function VipAbout() {
 
                 <div className="join">
                     <div className="join-title">{t("vipAbout.joinTitle")}</div>
-                    <button type="button" className="join-button">
+                    <button type="button" className="join-button" onClick={() => navigate("/vip/purchase")}>
                         {t("vipAbout.payButton")}
                     </button>
                 </div>

@@ -11,6 +11,7 @@ import Vip from "../pages/Vip";
 import HoldToken from "../pages/HoldToken";
 import BillingHistory from "../pages/BillingHistory";
 import Promotion from "../pages/Promotion";
+import VipPurchase from "../pages/VipPurchase";
 import { type AppLayoutFooterItem } from "../ui/AppLayout";
 
 export type RouteLayoutType = "walletBar" | "pageNav" | "none";
@@ -73,6 +74,18 @@ export const routeConfigs: RouteConfig[] = [
             type: "walletBar",
             showFooter: true,
             activeFooterIndex: 1,
+        },
+        showLoginModal: true,
+        showAlertHost: true,
+    },
+    {
+        path: "/vip/purchase",
+        component: VipPurchase,
+        layout: {
+            type: "pageNav",
+            showFooter: false,
+            pageTitle: (t) => t("miningIndex.pageTitle"),
+            backIconSrc: images.works.backBtn,
         },
         showLoginModal: true,
         showAlertHost: true,
