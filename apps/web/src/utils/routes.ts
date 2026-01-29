@@ -12,6 +12,7 @@ import HoldToken from "../pages/HoldToken";
 import BillingHistory from "../pages/BillingHistory";
 import Promotion from "../pages/Promotion";
 import VipPurchase from "../pages/VipPurchase";
+import { AssetsLogoutButton } from "../components/Account/AssetsLogoutButton";
 import { type AppLayoutFooterItem } from "../ui/AppLayout";
 
 export type RouteLayoutType = "walletBar" | "pageNav" | "none";
@@ -22,7 +23,7 @@ export interface RouteLayoutConfig {
     activeFooterIndex?: number;
     pageTitle?: string | ((t: TFunction) => string);
     backIconSrc?: string;
-    headerRight?: ReactNode;
+    headerRight?: ComponentType;
     showWalletBar?: boolean;
     showPageNav?: boolean;
 }
@@ -84,7 +85,7 @@ export const routeConfigs: RouteConfig[] = [
         layout: {
             type: "pageNav",
             showFooter: false,
-            pageTitle: (t) => t("miningIndex.pageTitle"),
+            pageTitle: t => t("miningIndex.pageTitle"),
             backIconSrc: images.works.backBtn,
         },
         showLoginModal: true,
@@ -107,8 +108,9 @@ export const routeConfigs: RouteConfig[] = [
         layout: {
             type: "pageNav",
             showFooter: false,
-            pageTitle: (t) => t("assets.title"),
+            pageTitle: t => t("assets.title"),
             backIconSrc: images.works.backBtn,
+            headerRight: AssetsLogoutButton,
         },
         showLoginModal: true,
         showAlertHost: true,
@@ -119,7 +121,7 @@ export const routeConfigs: RouteConfig[] = [
         layout: {
             type: "pageNav",
             showFooter: false,
-            pageTitle: (t) => t("hold_token.title"),
+            pageTitle: t => t("hold_token.title"),
             backIconSrc: images.works.backBtn,
         },
         showLoginModal: true,
@@ -131,7 +133,7 @@ export const routeConfigs: RouteConfig[] = [
         layout: {
             type: "pageNav",
             showFooter: false,
-            pageTitle: (t) => t("miningRecords.pageTitle"),
+            pageTitle: t => t("miningRecords.pageTitle"),
             backIconSrc: images.works.backBtn,
         },
         showLoginModal: true,
@@ -175,7 +177,7 @@ export const routeConfigs: RouteConfig[] = [
 export function matchRoute(pathname: string): RouteConfig | null {
     // 先尝试精确匹配
     const exactMatch = routeConfigs.find(
-        (config) => config.path === pathname && config.exact !== false,
+        config => config.path === pathname && config.exact !== false,
     );
     if (exactMatch) {
         return exactMatch;
@@ -183,17 +185,14 @@ export function matchRoute(pathname: string): RouteConfig | null {
 
     // 尝试前缀匹配（排除 exact 为 true 的）
     const prefixMatch = routeConfigs.find(
-        (config) =>
-            pathname.startsWith(config.path) &&
-            config.exact !== true &&
-            config.path !== "*",
+        config => pathname.startsWith(config.path) && config.exact !== true && config.path !== "*",
     );
     if (prefixMatch) {
         return prefixMatch;
     }
 
     // 最后匹配通配符
-    const wildcardMatch = routeConfigs.find((config) => config.path === "*");
+    const wildcardMatch = routeConfigs.find(config => config.path === "*");
     return wildcardMatch ?? null;
 }
 
@@ -206,7 +205,7 @@ export interface ResolvedLayoutConfig {
     activeFooterIndex?: number;
     pageTitle?: ReactNode;
     backIconSrc?: string;
-    headerRight?: ReactNode;
+    headerRight?: ComponentType;
     showWalletBar?: boolean;
     showPageNav?: boolean;
 }
@@ -223,7 +222,7 @@ export function getLayoutConfig(
     }
 
     const layout = routeConfig.layout;
-    
+
     // 解析 pageTitle（如果是函数）
     let resolvedPageTitle: ReactNode | undefined;
     if (layout.pageTitle === undefined) {

@@ -20,16 +20,13 @@ function App() {
     const { isLoggedIn } = useAuth();
 
     // 匹配当前路由配置
-    const currentRoute = useMemo(
-        () => matchRoute(location.pathname),
-        [location.pathname],
-    );
+    const currentRoute = useMemo(() => matchRoute(location.pathname), [location.pathname]);
 
     // 创建路由上下文
     const routeContext: RouteContext = useMemo(
         () => ({
             t,
-            navigate: (path) => {
+            navigate: path => {
                 if (typeof path === "number") {
                     navigate(path);
                 } else {
@@ -130,7 +127,7 @@ function App() {
         return (
             <>
                 <Routes>
-                    {routeConfigs.map((config) => (
+                    {routeConfigs.map(config => (
                         <Route
                             key={config.path}
                             element={<config.component />}
@@ -138,9 +135,7 @@ function App() {
                         />
                     ))}
                 </Routes>
-                {shouldShowLoginModal && (
-                    <LoginModal onEmailLogin={handleEmailLogin} />
-                )}
+                {shouldShowLoginModal && <LoginModal onEmailLogin={handleEmailLogin} />}
                 {shouldShowAlertHost && <AlertHost />}
                 <LegalRestrictionHost />
             </>
@@ -160,7 +155,7 @@ function App() {
             loginLabel={t("header.login")}
             isLoggedIn={isLoggedIn}
             pageTitle={layoutConfig?.pageTitle}
-            headerRight={layoutConfig?.headerRight}
+            headerRight={layoutConfig?.headerRight ? <layoutConfig.headerRight /> : undefined}
             onBack={showPageNav ? () => navigate(-1) : undefined}
             onLanguageClick={handleLanguageToggle}
             onLogoClick={() => navigate("/")}
@@ -170,17 +165,11 @@ function App() {
             showFooter={layoutConfig?.showFooter ?? false}
         >
             <Routes>
-                {routeConfigs.map((config) => (
-                    <Route
-                        key={config.path}
-                        element={<config.component />}
-                        path={config.path}
-                    />
+                {routeConfigs.map(config => (
+                    <Route key={config.path} element={<config.component />} path={config.path} />
                 ))}
             </Routes>
-            {shouldShowLoginModal && (
-                <LoginModal onEmailLogin={handleEmailLogin} />
-            )}
+            {shouldShowLoginModal && <LoginModal onEmailLogin={handleEmailLogin} />}
             {shouldShowAlertHost && <AlertHost />}
             <LegalRestrictionHost />
         </AppLayout>
