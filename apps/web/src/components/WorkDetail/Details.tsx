@@ -1,5 +1,7 @@
 import { resolveImageUrl } from "@mirror/utils";
 import { useTranslation } from "react-i18next";
+import { getWorkTypeByValue } from "../../utils/work";
+import { useState } from "react";
 
 const headingClass = "mb-5 text-[18px] font-semibold text-white";
 
@@ -53,11 +55,11 @@ export function WorkDetailProductionTeam({
 
 function Tab({
     labels,
-    active,
+    activeIndex,
     onClick,
 }: {
     labels: string[];
-    active: boolean;
+    activeIndex: number;
     onClick: () => void;
 }) {
     return (
@@ -65,7 +67,7 @@ function Tab({
             {labels.map((label, index) => (
                 <h3
                     key={index}
-                    className={`${headingClass} ${active ? "text-primary" : ""}`}
+                    className={`${headingClass} ${activeIndex === index ? "text-primary" : ""}`}
                     onClick={onClick}
                 >
                     {label}
@@ -83,13 +85,40 @@ function Chapters() {
     );
 }
 
+function TrailersAndStills() {
+    return (
+        <div>
+            <h3>Trailers&Stills</h3>
+        </div>
+    );
+}
+
 /** 预告与剧照：视频占位或列表 */
-export function WorkDetailContent({ content }: { content?: string }) {
+export function WorkDetailContent({
+    work_type,
+    work_total_chapter,
+}: {
+    work_type: number;
+    work_total_chapter: number;
+}) {
+    const [active, setActive] = useState(0);
+    const workInfo = getWorkTypeByValue(work_type);
+    if (!workInfo) return null;
+    const isShowChapter = workInfo.isShowChapter;
+    const isShowTrailersStills = workInfo.isShowTrailersStills;
+
+    const lableList = [
+        isShowChapter ? "Chapters" : "",
+        isShowTrailersStills ? "Trailers&Stills" : "",
+    ].filter(Boolean);
+
     return (
         <section id="work-detail-content">
             {/* 这里首先显示的是一个可以切换的 Tab，用于切换内容类型，目前支持：Chapters、Trailers&Stills */}
             {/* 如果这个作品只有章节的内容就展示章节，如果只有剧照就展示剧照 */}
-            <Tab labels={["Chapters", "Trailers&Stills"]} active={true} onClick={() => {}} />
+            <Tab labels={lableList} activeIndex={active} onClick={() => {}} />
+            {lableList[active] === "Chapters" && <Chapters />}
+            {lableList[active] === "Trailers&Stills" && <TrailersAndStills />}
         </section>
     );
 }
