@@ -131,6 +131,8 @@ export function WorkDetailAirdrop({
         void navigator.clipboard.writeText(invitationLink);
     };
 
+    // invite code 和 invite link 的显示内容通过接口 /work/generateInviteCode
+
     return (
         <section className="px-6 pb-6">
             <div className="mb-5 flex justify-between items-center gap-4">

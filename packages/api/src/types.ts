@@ -305,7 +305,8 @@ export interface WorkDetailParams {
     work_id: number;
 }
 
-export interface WorkDetailResponseData {
+/** 作品详情接口公共字段（未签到 / 已签到都会返回） */
+export interface WorkDetailBase {
     can_start_tge: number;
     creator_id: number;
     number_of_participants: number;
@@ -332,10 +333,66 @@ export interface WorkDetailResponseData {
     invitation_code?: string;
     invitation_link?: string;
     invited_count?: number;
-    /** 制作团队（可选） */
+    /** 制作团队（可选，已签到场景下也可用 creative_team_members） */
     production_team?: Array<{ name: string; role: string; avatar_url?: string }>;
     /** 预告/剧照视频 URL（可选） */
     trailer_video_url?: string;
+}
+
+/** 未完成签到时的返回：仅包含基础字段，无 signed_in 或 signed_in 为 false */
+export interface WorkDetailBeforeSignIn extends WorkDetailBase {
+    signed_in?: false;
+}
+
+/** 制作团队成员 */
+export interface WorkDetailCreativeTeamMember {
+    name: string;
+    role: string;
+    avatar_url?: string;
+}
+
+/** 完成签到后的返回：在基础字段上增加签到/邀请/团队等字段，signed_in 为 true */
+export interface WorkDetailAfterSignIn extends WorkDetailBase {
+    signed_in: true;
+    can_show_team_btn: boolean;
+    creative_team_block: unknown;
+    creative_team_members: WorkDetailCreativeTeamMember[];
+    ever_signed_in: boolean;
+    invite_count: number;
+    is_shared: boolean;
+    is_tread: number;
+    joined_community: boolean;
+    like_count: number;
+    my_invite_code: string;
+    my_invite_count: number;
+    my_invite_url: string;
+    points_mall_url: string;
+    team_sign_in_progress: string;
+    team_sign_in_reward_claimed: boolean;
+    token_balance: number;
+    tread_count: number;
+}
+
+/**
+ * 作品详情接口返回：根据是否完成签到返回不同结构。
+ * 使用可辨识联合，通过 signed_in 区分：
+ * - 未签到：WorkDetailBeforeSignIn（signed_in 缺失或 false）
+ * - 已签到：WorkDetailAfterSignIn（signed_in === true）
+ *
+ * 使用示例：
+ *   if (data.signed_in) {
+ *     // data 被收窄为 WorkDetailAfterSignIn，可访问 my_invite_code、token_balance 等
+ *   } else {
+ *     // data 为 WorkDetailBeforeSignIn
+ *   }
+ */
+export type WorkDetailResponseData = WorkDetailBeforeSignIn | WorkDetailAfterSignIn;
+
+/** 类型守卫：判断是否为已签到状态的作品详情 */
+export function isWorkDetailAfterSignIn(
+    data: WorkDetailResponseData,
+): data is WorkDetailAfterSignIn {
+    return data.signed_in === true;
 }
 
 export interface WorkUploadRequest {
@@ -637,6 +694,23 @@ export interface WorkInviteCodeWorkInfo {
     cover: string;
 }
 
+/**
+ * @example
+ * {
+ *     "create_time": "2026-01-29T08:27:01+08:00",
+ *     "invite_code": "000010",
+ *     "invite_count": 0,
+ *     "invite_url": "https://arts.mirror.fan/work/439?invite_code=000010",
+ *     "status": 1,
+ *     "uid": 1969194076459264,
+ *     "work_id": 439,
+ *     "work_info": {
+ *         "cover": "https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg",
+ *         "title": "理工男 / SHOOT THE MOOM / 理工男",
+ *         "work_id": 439
+ *     }
+ * }
+ */
 export interface WorkGenerateInviteCodeResponseData {
     uid: Int64String;
     work_id: number;
@@ -796,12 +870,21 @@ export interface WorkFriendsListParams extends PaginationParams {
     work_id: number;
 }
 
+/**
+ * @example
+ * {
+ *     "invite": "friend@example.com",
+ *     "invitation_time": "01/26/2026",
+ *     "wallet_display": "FTj***bm63",
+ *     "signed_in": true
+ * }
+ */
 export interface WorkFriendItem {
-    uid: Int64String;
-    username: string;
-    invite_time: ISODateTimeString;
+    invite: string;
+    invitation_time: string;
+    wallet_display: string;
+    signed_in: boolean;
 }
-
 export interface WorkFriendsListResponseData {
     list: WorkFriendItem[];
     total: number;

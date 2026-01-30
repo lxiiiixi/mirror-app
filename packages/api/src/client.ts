@@ -577,6 +577,9 @@ function createWorkModule<E>(client: ArtsApiClient<E>) {
                 "/arts/work/finishedList",
                 { auth: "required", query: params },
             ),
+        /**
+         * 作品签到（每日任务）
+         */
         signIn: (payload: Types.WorkSignInRequest) =>
             client.requestJson<Types.WorkSignInResponseData>("POST", "/arts/work/signIn", {
                 auth: "required",
@@ -654,6 +657,9 @@ function createWorkModule<E>(client: ArtsApiClient<E>) {
                 "/arts/work/uploadExternalLink",
                 { auth: "required", body: payload },
             ),
+        /**
+         * 获取作品的外部链接
+         */
         getExternalLinks: (params: Types.WorkExternalLinkParams) =>
             client.requestJson<Types.WorkExternalLinkResponseData>(
                 "GET",

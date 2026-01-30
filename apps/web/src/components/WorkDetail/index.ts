@@ -4,3 +4,4 @@ export * from "./Directory";
 export * from "./ExternalLink";
 
 export * from "./Layouts";
+export * from "./Modals";
