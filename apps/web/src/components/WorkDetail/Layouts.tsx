@@ -152,7 +152,9 @@ export function WorkDetailHero({
                     size={130}
                     imageSize={110}
                 />
-                <h2 className="text-2xl font-bold leading-none text-white">{title || "—"}</h2>
+                <h2 className="text-2xl font-bold leading-none text-white text-center">
+                    {title || "—"}
+                </h2>
                 <WorkDetailCheckInButton
                     onClick={handleCheckIn}
                     text={checkInText}

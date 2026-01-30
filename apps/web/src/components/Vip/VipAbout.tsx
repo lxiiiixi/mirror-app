@@ -95,7 +95,11 @@ export function VipAbout() {
 
                 <div className="join">
                     <div className="join-title">{t("vipAbout.joinTitle")}</div>
-                    <button type="button" className="join-button" onClick={() => navigate("/vip/purchase")}>
+                    <button
+                        type="button"
+                        className="join-button"
+                        onClick={() => navigate("/vip/purchase")}
+                    >
                         {t("vipAbout.payButton")}
                     </button>
                 </div>
@@ -107,7 +111,7 @@ export function VipAbout() {
                 <div className="ent-amount">6,000,000,000 ENT</div>
                 <div className="centered">{t("vipAbout.currentLimit")}</div>
                 <div className="logo">
-                    <img src={images.vip.shareLogo} alt="" />
+                    <img src={images.logo} alt="" />
                 </div>
                 <div className="release">
                     <span>{t("vipAbout.dailyOutputPerNode")}</span>
