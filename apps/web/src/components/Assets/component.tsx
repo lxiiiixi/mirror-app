@@ -39,8 +39,14 @@ export function LinearDivideHorizontal() {
     return <div className="my-3 h-px w-full bg-linear-to-r from-[#f063cd] to-[#424afb]" />;
 }
 
+/** 竖线分隔（渐变），放在 flex/grid 中可 self-stretch 填满高度 */
 export function LinearDivideVertical() {
-    return <div className="my-3 h-px w-full bg-linear-to-b from-[#f063cd] to-[#424afb]" />;
+    return (
+        <div
+            className="w-px self-stretch shrink-0 bg-linear-to-b from-[#f063cd] to-[#424afb]"
+            aria-hidden
+        />
+    );
 }
 
 export function UserInfo({
