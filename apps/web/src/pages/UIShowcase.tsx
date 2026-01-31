@@ -722,7 +722,7 @@ function UIShowcase() {
                         </h4>
                         <Banner
                             banners={sampleBanners}
-                            autoplay={true}
+                            autoplay={false}
                             interval={6000}
                             onCardClick={handleBannerClick}
                         />
