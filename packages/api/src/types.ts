@@ -453,7 +453,6 @@ export interface WorkPaymentBalancesResponseData {
     usdt_available: DecimalString;
     chapter_price_token: number;
     chapter_price_ent: number;
-    String;
 }
 
 export interface WorkChapterParams {
