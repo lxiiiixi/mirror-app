@@ -13,7 +13,7 @@ if (!projectId) {
 const metadata = {
     name: "Mirror",
     description: "Mirror Wallet Login",
-    url: envConfigs.APP_URL || (typeof window !== "undefined" ? window.location.origin : ""),
+    url: typeof window !== "undefined" ? window.location.origin : "",
     icons: ["https://avatars.githubusercontent.com/u/179229932"],
 };
 

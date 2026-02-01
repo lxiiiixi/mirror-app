@@ -1,4 +1,4 @@
-import { SupportedNetwork } from "./network";
+import { SUPPORTED_NETWORK_VALUES, SupportedNetwork } from "./network";
 
 type EnvSource = Record<string, string | undefined>;
 
@@ -34,25 +34,28 @@ export type SolanaNetworkEnv = "devnet" | "mainnet";
 
 const SOLANA_NETWORK_VALUES: SolanaNetworkEnv[] = ["devnet", "mainnet"];
 
-function parseSolanaNetwork(value: string, fallback: SolanaNetworkEnv): SolanaNetworkEnv {
+function parseSolanaNetwork(value: string): SolanaNetworkEnv {
     const normalized = value.toLowerCase().trim();
     if (SOLANA_NETWORK_VALUES.includes(normalized as SolanaNetworkEnv)) {
         return normalized as SolanaNetworkEnv;
     }
-    return fallback;
+    throw new Error(`Invalid solana network: ${value}`);
 }
 
-function parseSolanaChainId(value: string | undefined, fallback: number): number {
-    const n = parseNumber(value, fallback);
-    return n !== undefined ? n : fallback;
+function parseSolanaChainId(value: string | undefined): number {
+    const n = parseNumber(value);
+    if (n !== undefined) return n;
+    throw new Error(`Invalid solana chain id: ${value}`);
 }
 
-function parseNetwork(value: string, fallback: SupportedNetwork): SupportedNetwork {
+function parseNetwork(value: string): SupportedNetwork {
     const normalized = value.toLowerCase().trim();
-    if (Object.values(SupportedNetwork).includes(normalized as SupportedNetwork)) {
-        return SupportedNetwork[normalized as keyof typeof SupportedNetwork];
+    if (SUPPORTED_NETWORK_VALUES.includes(normalized as SupportedNetwork)) {
+        return normalized as SupportedNetwork;
     }
-    return fallback;
+    throw new Error(
+        `Invalid network: ${value}. Expected one of: ${SUPPORTED_NETWORK_VALUES.join(", ")}`,
+    );
 }
 
 export type EnvConfigs = {
@@ -62,7 +65,6 @@ export type EnvConfigs = {
     SOLANA_CHAIN_ID: number;
     SOLANA_NETWORK: SolanaNetworkEnv; // devnet or mainnet
     NETWORK: SupportedNetwork; // SupportedNetwork
-    APP_URL: string;
 };
 
 export const envConfigs: EnvConfigs = {
@@ -72,8 +74,7 @@ export const envConfigs: EnvConfigs = {
         readEnv("EXPO_PUBLIC_ARTS_API_BASE"),
     REOWN_PROJECT_ID: readEnv("VITE_REOWN_PROJECT_ID"),
     SOLANA_RPC_URL: readEnv("VITE_SOLANA_RPC_URL"),
-    SOLANA_CHAIN_ID: parseSolanaChainId(readEnv("VITE_SOLANA_CHAIN_ID"), 0),
-    SOLANA_NETWORK: parseSolanaNetwork(readEnv("VITE_SOLANA_NETWORK", "devnet"), "devnet"),
-    NETWORK: parseNetwork(readEnv("VITE_NETWORK", "devnet"), SupportedNetwork.SOLANA_MAINNET),
-    APP_URL: readEnv("VITE_APP_URL"),
+    SOLANA_CHAIN_ID: parseSolanaChainId(readEnv("VITE_SOLANA_CHAIN_ID")),
+    SOLANA_NETWORK: parseSolanaNetwork(readEnv("VITE_SOLANA_NETWORK")),
+    NETWORK: parseNetwork(readEnv("VITE_NETWORK")),
 };

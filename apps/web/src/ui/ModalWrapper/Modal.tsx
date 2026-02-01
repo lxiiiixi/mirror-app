@@ -100,8 +100,8 @@ export function Modal({
                 role="presentation"
             >
                 <div
-                    className="w-full max-w-lg overflow-hidden rounded-xl border border-[#727272] bg-[image:var(--gradient-card)] text-[--color-text] shadow-[0_30px_80px_rgba(3,6,32,0.6)] backdrop-blur-3xl"
-                    onClick={(e) => e.stopPropagation()}
+                    className="w-full max-w-lg overflow-hidden rounded-xl border border-[#727272] bg-image:var(--gradient-card) text-[--color-text] shadow-[0_30px_80px_rgba(3,6,32,0.6)] backdrop-blur-3xl"
+                    onClick={e => e.stopPropagation()}
                     role="dialog"
                     aria-modal="true"
                 >

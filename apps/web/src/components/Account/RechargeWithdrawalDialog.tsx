@@ -1,9 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
+import { useAppKitConnection, type Provider } from "@reown/appkit-adapter-solana/react";
 import { artsApiClient } from "../../api/artsClient";
+import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
+import { useLegalRestrictionStore } from "../../store/useLegalRestrictionStore";
 import { Input, Modal, Select } from "../../ui";
 import { images } from "@mirror/assets";
+import { VersionedTransaction } from "@solana/web3.js";
+import { buildSignedSplTokenTransfer } from "@mirror/solana";
+import { envConfigs, getTokenInfo, SupportedToken } from "@mirror/utils";
 
 interface AssetItem {
     name: string;
@@ -74,6 +81,11 @@ export function RechargeWithdrawalDialog({
 }: RechargeWithdrawalDialogProps) {
     const { t } = useTranslation();
     const showAlert = useAlertStore(state => state.show);
+    const showLegalRestriction = useLegalRestrictionStore(state => state.show);
+    const { loginMethod } = useAuth();
+    const { address: userWalletAddress, isConnected } = useAppKitAccount();
+    const { walletProvider } = useAppKitProvider<Provider>("solana");
+    const { connection } = useAppKitConnection();
 
     const [activeTab, setActiveTab] = useState(initialTab === "withdraw" ? 1 : 0);
     const [amount, setAmount] = useState("");
@@ -141,6 +153,10 @@ export function RechargeWithdrawalDialog({
     }, [assets, currency]);
 
     const handleSubmit = useCallback(async () => {
+        if (loginMethod !== "wallet") {
+            showLegalRestriction();
+            return;
+        }
         if (!currency) {
             showAlert({ message: t("account.withdrawDialog.selectCurrency"), variant: "error" });
             return;
@@ -153,11 +169,65 @@ export function RechargeWithdrawalDialog({
 
         setLoading(true);
 
+        let walletTxInProgress = false;
+
         try {
             if (activeTab === 0) {
                 // 充值
-                // 目前的充值暂时只支持用户自己钱包登陆的情况
-                const payload = { signed_tx: formatAmount(amount) };
+                // 目前的充值暂时只支持用户自己钱包登陆的情况(用户钱包 => 平台钱包)
+                if (
+                    !isConnected ||
+                    !userWalletAddress ||
+                    !walletProvider?.signTransaction ||
+                    !connection
+                ) {
+                    showAlert({
+                        message: t("miningIndex.pleaseConnectSolana"),
+                        variant: "error",
+                    });
+                    return;
+                }
+
+                const token =
+                    currency === "USDT"
+                        ? SupportedToken.USDT
+                        : currency === "ENT"
+                          ? SupportedToken.ENT
+                          : null;
+                if (!token) {
+                    showAlert({
+                        message: t("account.withdrawDialog.selectCurrency"),
+                        variant: "error",
+                    });
+                    return;
+                }
+
+                const addressResponse = await artsApiClient.deposit.getAddress();
+                const depositTargetAddress = addressResponse.data?.address;
+                if (!depositTargetAddress) {
+                    showAlert({ message: t("assets.loadFailed"), variant: "error" });
+                    return;
+                }
+
+                const tokenInfo = getTokenInfo(token, envConfigs.NETWORK);
+                if (!tokenInfo?.address) {
+                    showAlert({ message: t("assets.loadFailed"), variant: "error" });
+                    return;
+                }
+                walletTxInProgress = true;
+                const { signature } = await buildSignedSplTokenTransfer({
+                    connection,
+                    owner: userWalletAddress,
+                    destination: depositTargetAddress,
+                    mint: tokenInfo.address,
+                    amount: amount.trim(),
+                    decimals: tokenInfo.decimals,
+                    sendTransaction: (tx: VersionedTransaction) =>
+                        walletProvider.sendTransaction(tx, connection),
+                });
+                walletTxInProgress = false;
+
+                const payload = { signed_tx: signature };
                 if (currency === "USDT") {
                     await artsApiClient.deposit.depositUsdt(payload);
                 } else if (currency === "ENT") {
@@ -171,7 +241,7 @@ export function RechargeWithdrawalDialog({
                 });
             } else {
                 // 提现
-                const target = walletAddress?.trim();
+                const target = walletAddress?.trim() || userWalletAddress?.trim();
                 if (!target) {
                     showAlert({
                         message: t("account.withdrawDialog.selectCurrency"),
@@ -203,11 +273,29 @@ export function RechargeWithdrawalDialog({
             onClose();
         } catch (error) {
             console.error("[RechargeWithdrawalDialog] submit failed", error);
-            showAlert({ message: t("assets.loadFailed"), variant: "error" });
+            const message = walletTxInProgress
+                ? t("miningIndex.walletTxFailed")
+                : t("assets.loadFailed");
+            showAlert({ message, variant: "error" });
         } finally {
             setLoading(false);
         }
-    }, [activeTab, amount, currency, onClose, onSuccess, showAlert, t, walletAddress]);
+    }, [
+        activeTab,
+        userWalletAddress,
+        amount,
+        currency,
+        isConnected,
+        loginMethod,
+        onClose,
+        onSuccess,
+        showAlert,
+        showLegalRestriction,
+        t,
+        walletAddress,
+        walletProvider,
+        connection,
+    ]);
 
     return (
         <div>

@@ -6,7 +6,6 @@ import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
 import { Spinner } from "../ui";
 import { RechargeWithdrawalDialog } from "../components/Account/RechargeWithdrawalDialog";
-import { useLegalRestrictionStore } from "../store/useLegalRestrictionStore";
 import { GlassButton, OverlapInfoCard, WithdrawButton } from "../components/Assets";
 import { displayNumber } from "@mirror/utils";
 
@@ -20,10 +19,8 @@ interface AssetState {
 function Assets() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { isLoggedIn, isEmailLogin, hydrated } = useAuth();
+    const { isLoggedIn, hydrated } = useAuth();
     const showAlert = useAlertStore(state => state.show);
-    const showLegalRestriction = useLegalRestrictionStore(state => state.show);
-
     const [assets, setAssets] = useState<AssetState>({});
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [email, setEmail] = useState<string>("");
@@ -79,11 +76,6 @@ function Assets() {
     };
 
     const handleOpenWithdrawDialog = (tab: "recharge" | "withdraw") => {
-        const allowByEmail = isEmailLogin || Boolean(email);
-        if (!allowByEmail) {
-            showLegalRestriction();
-            return;
-        }
         setWithdrawDialogTab(tab);
         setWithdrawDialogOpen(true);
     };
