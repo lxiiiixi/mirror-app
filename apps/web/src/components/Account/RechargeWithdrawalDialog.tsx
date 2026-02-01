@@ -233,23 +233,43 @@ export function RechargeWithdrawalDialog({
                         "[RechargeWithdrawalDialog] build signed spl token transfer failed",
                         error,
                     );
-                    showAlert({ message: t("assets.loadFailed"), variant: "error" });
+                    let message: string;
+                    if (isSolanaTxError(error)) {
+                        switch (error.code) {
+                            case SolanaTxErrorCode.INVALID_AMOUNT:
+                                message = t("account.withdrawDialog.invalidAmount");
+                                break;
+                            case SolanaTxErrorCode.SOURCE_TOKEN_ACCOUNT_NOT_FOUND:
+                                message = t("account.withdrawDialog.missingTokenAccount");
+                                break;
+                            case SolanaTxErrorCode.INSUFFICIENT_BALANCE:
+                                message = t("account.withdrawDialog.insufficientBalance");
+                                break;
+                            case SolanaTxErrorCode.SIGN_TRANSACTION_FAILED:
+                                message = t("miningIndex.walletTxFailed");
+                                break;
+                            default:
+                                message = t("miningIndex.walletTxFailed");
+                        }
+                    } else {
+                        message = t("assets.loadFailed");
+                    }
+                    showAlert({ message, variant: "error" });
                     return;
                 }
-                walletTxInProgress = false;
-
                 const payload = { signed_tx: signature };
-                if (currency === "USDT") {
-                    await artsApiClient.deposit.depositUsdt(payload);
-                } else if (currency === "ENT") {
-                    await artsApiClient.deposit.depositEnt(payload);
-                } else {
-                    await artsApiClient.deposit.deposit(payload);
+                const response = await artsApiClient.deposit.deposit(payload);
+                if (response.data?.tx_signature) {
+                    showAlert({
+                        message: t("account.withdrawDialog.depositSuccess"),
+                        variant: "success",
+                    });
+                    onSuccess?.();
+                    onClose();
+                    return;
                 }
-                showAlert({
-                    message: t("account.withdrawDialog.depositSuccess"),
-                    variant: "success",
-                });
+                showAlert({ message: t("assets.loadFailed"), variant: "error" });
+                return;
             } else {
                 // 提现
                 const target = walletAddress?.trim() || userWalletAddress?.trim();
