@@ -155,6 +155,8 @@ export function RechargeWithdrawalDialog({
 
         try {
             if (activeTab === 0) {
+                // 充值
+                // 目前的充值暂时只支持用户自己钱包登陆的情况
                 const payload = { signed_tx: formatAmount(amount) };
                 if (currency === "USDT") {
                     await artsApiClient.deposit.depositUsdt(payload);
@@ -168,6 +170,7 @@ export function RechargeWithdrawalDialog({
                     variant: "success",
                 });
             } else {
+                // 提现
                 const target = walletAddress?.trim();
                 if (!target) {
                     showAlert({

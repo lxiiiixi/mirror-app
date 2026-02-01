@@ -914,10 +914,18 @@ function createNodeModule<E>(client: ArtsApiClient<E>) {
 
 function createDepositModule<E>(client: ArtsApiClient<E>) {
     return {
+        /**
+         * 获取充值地址
+         * @returns 充值地址
+         */
         getAddress: () =>
             client.requestJson<Types.DepositAddressResponseData>("GET", "/arts/deposit/address", {
                 auth: "none",
             }),
+        /**
+         * 充值 USDT
+         * @param "signed_tx": "base64编码的已签名 Solana 交易"
+         */
         depositUsdt: (payload: Types.DepositSubmitRequest) =>
             client.requestJson<Types.DepositSubmitResponseData>("POST", "/arts/deposit/usdt", {
                 auth: "required",

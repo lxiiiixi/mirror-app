@@ -11,6 +11,7 @@ import { useRegionLanguage } from "@mirror/hooks";
 import { useAuth } from "./hooks/useAuth";
 import { useWallet } from "./hooks/useWallet";
 import { matchRoute, getLayoutConfig, routeConfigs, type RouteContext } from "./utils/routes";
+import { envConfigs } from "@mirror/utils";
 
 function App() {
     const { t, i18n } = useTranslation();
@@ -18,8 +19,17 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
     const openLoginModal = useLoginModalStore(state => state.openModal);
-    const { isLoggedIn } = useAuth();
-    const { openWallet } = useWallet();
+    const { isLoggedIn, loginMethod, isEmailLogin } = useAuth();
+    const { openWallet, address: reownWalletAddress } = useWallet();
+
+    console.log("[App] Login States", {
+        isLoggedIn,
+        isEmailLogin,
+        loginMethod,
+        reownWalletAddress,
+    });
+
+    console.log("[App] Env Configs", envConfigs);
 
     // 匹配当前路由配置
     const currentRoute = useMemo(() => matchRoute(location.pathname), [location.pathname]);
