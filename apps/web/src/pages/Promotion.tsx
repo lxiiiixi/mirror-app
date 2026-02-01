@@ -1,21 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import QRCode from "qrcode";
 import { artsApiClient } from "../api/artsClient";
 import { images } from "@mirror/assets";
 import { useAlertStore } from "../store/useAlertStore";
 import { useAuth } from "../hooks/useAuth";
-import { useLoginModalStore } from "../store/useLoginModalStore";
 import { QrcodeCanvas } from "../components/Promotion/QrcodeCanvas";
-import { isTokenWork } from "../utils/work";
-import { WorkSummary } from "@mirror/api";
-
-interface InviteInfo {
-    invite_code: string;
-    invite_num: number;
-    second_level_invites: number;
-}
+import { Discover } from "../components/Promotion/Discover";
 
 const formatNumber = (value: string | number) => {
     const numeric = Number(value ?? 0);
@@ -265,6 +257,8 @@ function Promotion() {
             </div>
 
             <div className="tip-text">{t("promotion.tipText")}</div>
+
+            <Discover />
 
             <style jsx>{`
                 .promotion-page {

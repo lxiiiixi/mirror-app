@@ -548,22 +548,13 @@
   },
   "newsData": [
     {
-      "username": "Mirror",
-      "pic": "/static/images/discover/d1.png",
-      "content": "Buy EntertainFI VIP — Get an Agent Mining Machine for GIFT! VIP Membership 1000 USDT, let‘s GO!",
-      "time": "2025.06.30"
+      "content": "Buy EntertainFI VIP — Get an Agent Mining Machine for GIFT! VIP Membership 1000 USDT, let‘s GO!"
     },
     {
-      "username": "Mirror",
-      "pic": "/static/images/discover/d2.png",
-      "content": "Received a funding support of HKD 2.6 million from the Hong Kong government's Cyberport.",
-      "time": "2025.03.26"
+      "content": "Received a funding support of HKD 2.6 million from the Hong Kong government's Cyberport."
     },
     {
-      "username": "Mirror",
-      "pic": "/static/images/discover/d3.png",
-      "content": "mirror.fan: Web3 RWA Platform for Entertainment. It turns films, comics, music, and novels into RWA tokens on the blockchain. It helps IPs build on-chain ecosystems and monetize fan engagement through limited content tickets and merchandise. Bringing mainstream entertainment into Web3.",
-      "time": "2024.06.23"
+      "content": "mirror.fan: Web3 RWA Platform for Entertainment. It turns films, comics, music, and novels into RWA tokens on the blockchain. It helps IPs build on-chain ecosystems and monetize fan engagement through limited content tickets and merchandise. Bringing mainstream entertainment into Web3."
     }
   ],
   "hold_token": {

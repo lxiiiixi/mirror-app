@@ -187,6 +187,16 @@ import worksProductRegular from './images/works/product/regular.svg'
 import worksProductTv from './images/works/product/tv.svg'
 import worksProductVlog from './images/works/product/vlog.svg'
 
+// discover 相关
+import discoverUserHead from './images/discover/user-head.png'
+import discoverAuth from './images/discover/auth.png'
+import discoverD1 from './images/discover/d1.png'
+import discoverD2 from './images/discover/d2.png'
+import discoverD3 from './images/discover/d3.png'
+import discoverD1Cn from './images/discover/d1_cn.png'
+import discoverD2Cn from './images/discover/d2_cn.png'
+import discoverD3Cn from './images/discover/d3_cn.png'
+
 // Ticket related
 import ticketCountdownIcon from './images/ticket/countdown-icon.png'
 import ticketUpDayIcon from './images/ticket/up-day-icon.png'
@@ -381,5 +391,17 @@ export const images = {
     regularUser: idoRegularUser,
     vipUser: idoVipUser,
     whitelistedUser: idoWhitelistedUser,
+  },
+
+  // discover 相关
+  discover: {
+    userHead: discoverUserHead,
+    auth: discoverAuth,
+    d1: discoverD1,
+    d2: discoverD2,
+    d3: discoverD3,
+    d1Cn: discoverD1Cn,
+    d2Cn: discoverD2Cn,
+    d3Cn: discoverD3Cn,
   },
 }

@@ -544,22 +544,13 @@
   },
   "newsData": [
     {
-      "username": "Mirror",
-      "pic": "/static/images/discover/d1_cn.png",
-      "content": "购买 EntertainFI VIP —— 即送节点！VIP 会员只需 1000 USDT，冲！",
-      "time": "2025.06.30"
+      "content": "购买 EntertainFI VIP —— 即送节点！VIP 会员只需 1000 USDT，冲！"
     },
     {
-      "username": "Mirror",
-      "pic": "/static/images/discover/d2_cn.png",
-      "content": "获得香港数码港 260 万港币资金支持。",
-      "time": "2025.03.26"
+      "content": "获得香港数码港 260 万港币资金支持。"
     },
     {
-      "username": "Mirror",
-      "pic": "/static/images/discover/d3_cn.png",
-      "content": "mirror.fan：Web3 娱乐 RWA 平台。将电影、漫画、音乐、小说转化为区块链 RWA 通证，帮助 IP 构建链上生态，通过限量内容门票和周边实现粉丝经济，把主流娱乐带入 Web3。",
-      "time": "2024.06.23"
+      "content": "mirror.fan：Web3 娱乐 RWA 平台。将电影、漫画、音乐、小说转化为区块链 RWA 通证，帮助 IP 构建链上生态，通过限量内容门票和周边实现粉丝经济，把主流娱乐带入 Web3。"
     }
   ],
   "hold_token": {
