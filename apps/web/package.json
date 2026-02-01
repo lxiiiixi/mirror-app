@@ -8,6 +8,9 @@
     "build": "tsc -b && vite build",
     "build:prod": "tsc -b && vite build --mode prod",
     "build:test": "tsc -b && vite build --mode test",
+    "build:vercel": "pnpm build && cp ./vercel.json ./dist/vercel.json",
+    "build:vercel:prebuilt": "pnpm build:vercel && rm -rf .vercel/output && mkdir -p .vercel/output/static && cp -R dist/. .vercel/output/static/ && node -e \"require('fs').writeFileSync('.vercel/output/config.json', JSON.stringify({version:3,routes:[{handle:'filesystem'},{src:'/(.*)',dest:'/index.html'}]}, null, 2))\"",
+    "deploy:vercel:prebuilt": "pnpm build:vercel:prebuilt && vercel deploy --prod --prebuilt",
     "lint": "eslint .",
     "preview": "vite preview"
   },
