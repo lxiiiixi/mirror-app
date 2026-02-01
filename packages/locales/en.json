@@ -330,6 +330,9 @@
       "currentHash": "Current transaction hash:",
       "complete": "Complete",
       "placeholder": "Please enter the quantity(10% handling fee)",
+      "invalidAmount": "Invalid amount.",
+      "missingTokenAccount": "No token account found. Please create one in your wallet first.",
+      "insufficientBalance": "Insufficient balance.",
       "copySuccess": "Copy success",
       "deposit": "Recharge",
       "depositSuccess": "Recharge successful!"

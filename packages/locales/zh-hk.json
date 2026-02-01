@@ -327,6 +327,9 @@
       "currentHash": "當前交易hash:",
       "complete": "完成",
       "placeholder": "請輸入數量(10%手續費)",
+      "invalidAmount": "金額格式不正確",
+      "missingTokenAccount": "未找到代幣帳戶，請先在錢包中建立",
+      "insufficientBalance": "餘額不足",
       "copySuccess": "複製成功",
       "deposit": "充值",
       "depositSuccess": "充值成功！"

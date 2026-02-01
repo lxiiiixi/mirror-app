@@ -9,7 +9,7 @@ import { useLegalRestrictionStore } from "../../store/useLegalRestrictionStore";
 import { Input, Modal, Select } from "../../ui";
 import { images } from "@mirror/assets";
 import { VersionedTransaction } from "@solana/web3.js";
-import { buildSignedSplTokenTransfer } from "@mirror/solana";
+import { buildSignedSplTokenTransfer, isSolanaTxError, SolanaTxErrorCode } from "@mirror/solana";
 import { envConfigs, getTokenInfo, SupportedToken } from "@mirror/utils";
 
 interface AssetItem {
@@ -215,16 +215,27 @@ export function RechargeWithdrawalDialog({
                     return;
                 }
                 walletTxInProgress = true;
-                const { signature } = await buildSignedSplTokenTransfer({
-                    connection,
-                    owner: userWalletAddress,
-                    destination: depositTargetAddress,
-                    mint: tokenInfo.address,
-                    amount: amount.trim(),
-                    decimals: tokenInfo.decimals,
-                    sendTransaction: (tx: VersionedTransaction) =>
-                        walletProvider.sendTransaction(tx, connection),
-                });
+                let signature: string;
+                try {
+                    const result = await buildSignedSplTokenTransfer({
+                        connection,
+                        owner: userWalletAddress,
+                        destination: depositTargetAddress,
+                        mint: tokenInfo.address,
+                        amount: amount.trim(),
+                        decimals: tokenInfo.decimals,
+                        sendTransaction: async (tx: VersionedTransaction) =>
+                            walletProvider.sendTransaction(tx, connection),
+                    });
+                    signature = result.signature;
+                } catch (error) {
+                    console.error(
+                        "[RechargeWithdrawalDialog] build signed spl token transfer failed",
+                        error,
+                    );
+                    showAlert({ message: t("assets.loadFailed"), variant: "error" });
+                    return;
+                }
                 walletTxInProgress = false;
 
                 const payload = { signed_tx: signature };
@@ -273,9 +284,29 @@ export function RechargeWithdrawalDialog({
             onClose();
         } catch (error) {
             console.error("[RechargeWithdrawalDialog] submit failed", error);
-            const message = walletTxInProgress
-                ? t("miningIndex.walletTxFailed")
-                : t("assets.loadFailed");
+            let message: string;
+            if (isSolanaTxError(error)) {
+                switch (error.code) {
+                    case SolanaTxErrorCode.INVALID_AMOUNT:
+                        message = t("account.withdrawDialog.invalidAmount");
+                        break;
+                    case SolanaTxErrorCode.SOURCE_TOKEN_ACCOUNT_NOT_FOUND:
+                        message = t("account.withdrawDialog.missingTokenAccount");
+                        break;
+                    case SolanaTxErrorCode.INSUFFICIENT_BALANCE:
+                        message = t("account.withdrawDialog.insufficientBalance");
+                        break;
+                    case SolanaTxErrorCode.SIGN_TRANSACTION_FAILED:
+                        message = t("miningIndex.walletTxFailed");
+                        break;
+                    default:
+                        message = t("assets.loadFailed");
+                }
+            } else {
+                message = walletTxInProgress
+                    ? t("miningIndex.walletTxFailed")
+                    : t("assets.loadFailed");
+            }
             showAlert({ message, variant: "error" });
         } finally {
             setLoading(false);

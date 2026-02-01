@@ -5,6 +5,8 @@
   "scripts": {
     "dev:web": "pnpm --filter ./apps/web dev",
     "build:web": "pnpm --filter ./apps/web build",
+    "build:prod": "pnpm --filter ./apps/web run build:prod",
+    "build:test": "pnpm --filter ./apps/web run build:test",
     "dev:mobile": "pnpm --filter ./apps/mobile start",
     "android": "pnpm --filter ./apps/mobile android",
     "ios": "pnpm --filter ./apps/mobile ios"
