@@ -10,7 +10,7 @@
     height: 14px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.15);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .progress-fill {
@@ -26,10 +26,11 @@
 /* 数值固定在填充条末端（尾部）：用 left 定位到 percent 处，再 translateX(-100%) 让文字右边缘对齐 */
 .progress-value--tail {
     position: absolute;
-    left: var(--progress-percent, 0);
     top: 50%;
-    transform: translate(-100%, -50%);
-    margin-left: -8px;
+    right: 0;
+    left: auto;
+    transform: translateY(-50%);
+    margin-left: 0;
     padding: 0 4px;
     pointer-events: none;
 }
