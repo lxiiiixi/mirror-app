@@ -55,6 +55,13 @@
     background: var(--color-secondary-active);
 }
 
+.btn-xs {
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 14px;
+    border-radius: 4px;
+}
+
 .btn-sm {
     padding: 6px 15px;
     font-size: 14px;

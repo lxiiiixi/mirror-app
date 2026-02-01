@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, forwardRef } from "react";
 import "./button.css";
 
 export type ButtonVariant = "primary" | "secondary";
-export type ButtonSize = "small" | "medium" | "large";
+export type ButtonSize = "x-small" | "small" | "medium" | "large";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /**
@@ -53,6 +53,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref,
     ) => {
         const sizeClassMap: Record<ButtonSize, string> = {
+            "x-small": "btn-xs",
             small: "btn-sm",
             medium: "btn-md",
             large: "btn-lg",

@@ -1,0 +1,59 @@
+.progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.progress-track {
+    position: relative;
+    height: 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+.progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 999px;
+    background: var(--color-primary);
+    transition: width 0.25s ease;
+}
+
+/* 数值固定在填充条末端（尾部）：用 left 定位到 percent 处，再 translateX(-100%) 让文字右边缘对齐 */
+.progress-value--tail {
+    position: absolute;
+    left: var(--progress-percent, 0);
+    top: 50%;
+    transform: translate(-100%, -50%);
+    margin-left: -8px;
+    padding: 0 4px;
+    pointer-events: none;
+}
+
+.progress-value {
+    font-size: 11px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+}
+
+.progress-sm .progress-track {
+    height: 12px;
+}
+
+.progress-sm .progress-value {
+    font-size: 10px;
+}
+
+.progress-lg .progress-track {
+    height: 18px;
+}
+
+.progress-lg .progress-value {
+    font-size: 12px;
+}

@@ -118,14 +118,35 @@ function VipPurchase() {
         try {
             const response = await artsApiClient.node.getNodeInfo({ id: 1 });
             const data = response.data;
-            // TODO 整合数据
+            const toRecord = (value: unknown) =>
+                value && typeof value === "object" && !Array.isArray(value)
+                    ? (value as Record<string, unknown>)
+                    : {};
+            const toNumber = (value: unknown) => {
+                const numeric = Number(value);
+                return Number.isFinite(numeric) ? numeric : 0;
+            };
+            const base = Array.isArray(data) ? toRecord(data[0]) : toRecord(data);
+            const merged = {
+                ...toRecord(base.node_info),
+                ...toRecord(base.nodeInfo),
+                ...toRecord(base.node_stats),
+                ...toRecord(base.nodeStats),
+                ...base,
+            };
             setNodeInfo({
-                price: 0,
-                node_total_num: 0,
-                power: 0,
-                node_remain_num: 0,
-                ent_issue_num: 0,
-                ent_release_num: 0,
+                price: toNumber(merged.price ?? merged.node_price),
+                node_total_num: toNumber(
+                    merged.node_total_num ?? merged.total_num ?? merged.total_quantity,
+                ),
+                power: toNumber(merged.power ?? merged.fixed_hashrate ?? merged.fixedHashrate),
+                node_remain_num: toNumber(
+                    merged.node_remain_num ?? merged.remaining_num ?? merged.remaining_quantity,
+                ),
+                ent_issue_num: toNumber(merged.ent_issue_num ?? merged.ent_total ?? merged.total_ent),
+                ent_release_num: toNumber(
+                    merged.ent_release_num ?? merged.ent_release ?? merged.released_ent,
+                ),
             });
         } catch (error) {
             console.error("[VipPurchase] node info failed", error);

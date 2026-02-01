@@ -5,6 +5,7 @@ import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
 import { useNavigate } from "react-router-dom";
+import { Button, Progress } from "../../ui";
 
 type RewardsState = {
     pending_rewards: number;
@@ -22,6 +23,16 @@ const formatReward = (reward?: string | number) => {
     const raw = Number(reward ?? 0);
     const value = Number.isFinite(raw) ? raw / 1000 : 0;
     return Math.round(value * 1000) / 1000;
+};
+
+/** 解析 "当前/总数" 格式字符串为 { current, max } */
+const parseInviteProgress = (str: string): { current: number; max: number } => {
+    const parts = String(str ?? "0/0")
+        .split("/")
+        .map(s => Number.parseInt(s, 10));
+    const current = Number.isFinite(parts[0]) ? parts[0] : 0;
+    const max = Number.isFinite(parts[1]) && parts[1] > 0 ? parts[1] : 1;
+    return { current, max };
 };
 
 export function VipMining() {
@@ -147,32 +158,33 @@ export function VipMining() {
                     </div>
                 </div>
                 <div className="hero-info">
-                    <div className="hero-row">
-                        <span className="hero-title">VIP {vipLevel}</span>
-                        <span className="hero-sub">({purchasedNodes}x)</span>
+                    <div>
+                        <span className="text-[16px] font-bold gradient-text">VIP {vipLevel}</span>{" "}
+                        <span className="text-[12px] gradient-text">({purchasedNodes}x)</span>
                     </div>
-                    <div className="hero-row">
-                        <span className="hero-label-text">
-                            {t("vipMining.validUsers")} {nextLevelInfo.teamCurrent}/
-                            {nextLevelInfo.teamRequired}
-                        </span>
-                        <span className="hero-label-text">
-                            {inviteNum.direct_invites} / {inviteNum.indirect_invites}
-                        </span>
-                    </div>
-                    <div className="hero-row">
-                        <span className="hero-label-text">{t("miningMy.clubVip")}</span>
-                        <button
-                            type="button"
-                            className="hero-button"
+                    <Progress
+                        label={t("vipMining.validUsers")}
+                        value={nextLevelInfo.teamCurrent}
+                        max={nextLevelInfo.teamRequired}
+                        size="small"
+                    />
+                    <Progress
+                        label={t("miningMy.sharedUsers")}
+                        valueLabel={`${inviteNum.direct_invites} / ${inviteNum.indirect_invites}`}
+                        value={parseInviteProgress(inviteNum.direct_invites).current}
+                        max={parseInviteProgress(inviteNum.direct_invites).max}
+                        size="small"
+                    />
+                    <div className="flex justify-between items-center gap-4 mt">
+                        <span className="text-[12px] text-white">{t("miningMy.clubVip")}</span>
+                        <Button
+                            variant="primary"
+                            size="x-small"
                             onClick={() => navigate("./purchase")}
+                            className=""
                         >
                             {t("miningMy.buyVip")}
-                        </button>
-                    </div>
-                    <div className="hero-row">
-                        <span className="hero-label-text">{t("vipMining.numberOfVips")}</span>
-                        <span className="hero-value">{vipLevel}</span>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -180,6 +192,10 @@ export function VipMining() {
             <div className="section">
                 <div className="section-title">{t("miningMy.dataDetails")}</div>
                 <div className="card gift" style={{ backgroundImage: `url(${images.vip.giftBg})` }}>
+                    <div className="gift-row">
+                        <span>{t("vipMining.numberOfVips")}</span>
+                        <strong>{vipLevel}</strong>
+                    </div>
                     <div className="gift-row">
                         <span>{t("miningMy.purchasedNode")}</span>
                         <strong>{purchasedNodes}</strong>
@@ -197,16 +213,17 @@ export function VipMining() {
 
             <div className="section">
                 <div className="section-title">{t("miningMy.todaysMiningData")}</div>
-                <div className="card stats">
+                <div className="card stat-summary">
                     <div className="stat-main">
                         <img src={images.account.ent2} alt="" />
                         <div>
                             <div className="stat-value">{rewards.today_base_mining_reward} ENT</div>
-                            <div className="stat-hint">
-                                {t("miningMy.acceleratedComputingPowerNote")}
-                            </div>
+                            <div className="stat-speedup">{purchasedNodes}X SPEEDUP</div>
+                            <div className="stat-hint">{t("miningMy.todaysTip")}</div>
                         </div>
                     </div>
+                </div>
+                <div className="card stat-grid-card">
                     <div className="stat-grid">
                         <div>
                             <div className="stat-value">{rewards.today_invite_reward} ENT</div>
@@ -226,6 +243,7 @@ export function VipMining() {
                         </div>
                     </div>
                 </div>
+                <div className="section-release">{t("miningMy.releaseInfo")}</div>
             </div>
 
             {loading ? <div className="loading">...</div> : null}
@@ -240,21 +258,27 @@ export function VipMining() {
 
                 .card {
                     background: rgba(153, 153, 153, 0.12);
-                    border-radius: 16px;
-                    padding: 16px;
+                    border-radius: 12px;
+                    padding: 10px;
                     border: 1px solid rgba(255, 255, 255, 0.1);
                 }
 
                 .hero {
+                    position: relative;
                     display: flex;
                     gap: 16px;
                     align-items: center;
+                    overflow: visible;
+                    padding-left: 106px;
+                    margin-top: 10px;
                 }
 
                 .hero-image {
-                    position: relative;
-                    width: 120px;
-                    height: 150px;
+                    position: absolute;
+                    left: 0px;
+                    bottom: 0px;
+                    width: 90px;
+                    height: 124px;
                     border-radius: 12px;
                     overflow: hidden;
                     flex-shrink: 0;
@@ -302,24 +326,10 @@ export function VipMining() {
                     gap: 8px;
                 }
 
-                .hero-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 8px;
-                }
-
-                .hero-title {
-                    font-size: 20px;
-                    font-weight: 700;
+                .gradient-text {
                     background: linear-gradient(0deg, #b546ff 0.96%, #ea82ff 100%);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
-                }
-
-                .hero-sub {
-                    font-size: 12px;
-                    color: rgba(255, 255, 255, 0.8);
                 }
 
                 .hero-label-text {
@@ -353,31 +363,25 @@ export function VipMining() {
                 }
 
                 .gift {
-                    background-size: cover;
+                    background-size: contain;
                     background-position: right bottom;
                     background-repeat: no-repeat;
                 }
 
                 .gift-row {
                     display: flex;
-                    justify-content: space-between;
+                    gap: 6px;
                     margin-bottom: 8px;
                     font-size: 13px;
                 }
 
-                .stats {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
-                }
-
-                .stat-main {
+                .stat-summary .stat-main {
                     display: flex;
                     align-items: center;
                     gap: 12px;
                 }
 
-                .stat-main img {
+                .stat-summary .stat-main img {
                     width: 48px;
                     height: 48px;
                 }
@@ -387,20 +391,55 @@ export function VipMining() {
                     font-weight: 700;
                 }
 
+                .stat-speedup {
+                    font-size: 12px;
+                    font-weight: 600;
+                    background: linear-gradient(0deg, #b546ff 0.96%, #ea82ff 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
                 .stat-hint {
                     font-size: 12px;
                     color: rgba(255, 255, 255, 0.65);
                 }
 
-                .stat-grid {
+                .stat-grid-card .stat-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 12px;
+                    grid-template-rows: repeat(2, 1fr);
+                }
+
+                .stat-grid-card .stat-grid > div {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    min-height: 72px;
+                    padding: 12px;
+                    border-right: 1px solid rgba(255, 255, 255, 0.18);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+                }
+
+                .stat-grid-card .stat-grid > div:nth-child(2n) {
+                    border-right: none;
+                }
+
+                .stat-grid-card .stat-grid > div:nth-child(n + 3) {
+                    border-bottom: none;
                 }
 
                 .stat-label {
                     font-size: 12px;
                     color: rgba(255, 255, 255, 0.65);
+                }
+
+                .section-release {
+                    font-size: 12px;
+                    color: rgba(255, 255, 255, 0.65);
+                    line-height: 1.5;
                 }
 
                 .loading {

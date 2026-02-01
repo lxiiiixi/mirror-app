@@ -41,5 +41,7 @@ export { ProjectTabs } from "./ProjectTabs";
 export type { ProjectTabsProps, ProjectTabItem } from "./ProjectTabs";
 export { CoefficientTable } from "./CoefficientTable";
 export type { CoefficientTableProps, CoefficientTableRow } from "./CoefficientTable";
+export { Progress } from "./Progress/Progress";
+export type { ProgressProps, ProgressSize } from "./Progress/Progress";
 export { AppLayout } from "./AppLayout";
 export type { AppLayoutProps, AppLayoutFooterItem } from "./AppLayout";

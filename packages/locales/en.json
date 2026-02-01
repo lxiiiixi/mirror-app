@@ -462,6 +462,7 @@
     "extractable": "Claim mining ENT: 10% handling fee",
     "claim": "Claim",
     "releaseInfo": "A total of 6 billion ENT Mining Machines were built, 20% is released in the first year, with a 20% annual decrease thereafter",
+    "todaysTip": "Block mining is updated every 20 minutes",
     "todaysMiningData": "Daily earnings",
     "dailyEarnings": "Accumulated daily fixed income",
     "directEarnings": "Today  Cumulative community income",
