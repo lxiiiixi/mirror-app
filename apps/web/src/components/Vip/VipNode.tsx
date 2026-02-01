@@ -62,49 +62,160 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
     const time = item.time ?? item.create_time ?? "";
 
     return (
-        <div className="invite-item">
-            <div className="invite-row" onClick={() => hasChildren && setOpen(prev => !prev)}>
-                <div className="left">
-                    {hasChildren ? (
-                        <img
-                            className="arrow"
-                            src={
-                                open
-                                    ? images.mining.inviteArrowDown
-                                    : images.mining.inviteArrowRight
-                            }
-                            alt=""
-                        />
-                    ) : (
-                        <span className="arrow placeholder" />
-                    )}
-                    <div className="info">
-                        <div className="info-row1">
-                            <div className="avatar">VIP{level}</div>
-                        </div>
-                        <div className="info-row2">
-                            <img className="wallet-icon" src={images.network.sol} alt="SOL" />
-                            <div className="address">{formatAddress(address)}</div>
+        <>
+            <div className="invite-item">
+                <div className="invite-row" onClick={() => hasChildren && setOpen(prev => !prev)}>
+                    <div className="left">
+                        {hasChildren ? (
+                            <img
+                                className="arrow"
+                                src={
+                                    open
+                                        ? images.mining.inviteArrowDown
+                                        : images.mining.inviteArrowRight
+                                }
+                                alt=""
+                            />
+                        ) : (
+                            <span className="arrow placeholder" />
+                        )}
+                        <div className="info">
+                            <div className="info-row1">
+                                <div className="avatar">VIP{level}</div>
+                            </div>
+                            <div className="info-row2">
+                                <img className="wallet-icon" src={images.network.sol} alt="SOL" />
+                                <div className="address">{formatAddress(address)}</div>
+                            </div>
                         </div>
                     </div>
+                    <div className="right">
+                        <div className="amount">+ {formatAmount(reward)} U</div>
+                        <div className="time">{formatDate(time)}</div>
+                    </div>
                 </div>
-                <div className="right">
-                    <div className="amount">+ {formatAmount(reward)} U</div>
-                    <div className="time">{formatDate(time)}</div>
-                </div>
+                {open && hasChildren ? (
+                    <div className="children">
+                        {item.sub_invites?.map((child, index) => (
+                            <InviteTreeItem
+                                key={`${item.invite_id ?? "child"}-${index}`}
+                                item={child}
+                                depth={depth + 1}
+                            />
+                        ))}
+                    </div>
+                ) : null}
             </div>
-            {open && hasChildren ? (
-                <div className="children">
-                    {item.sub_invites?.map((child, index) => (
-                        <InviteTreeItem
-                            key={`${item.invite_id ?? "child"}-${index}`}
-                            item={child}
-                            depth={depth + 1}
-                        />
-                    ))}
-                </div>
-            ) : null}
-        </div>
+            <style jsx>{`
+                .invite-item {
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 12px;
+                    padding: 8px 12px;
+                }
+
+                .invite-row {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    background: transparent;
+                    border: none;
+                    color: inherit;
+                    padding: 0;
+                    cursor: pointer;
+                    gap: 12px;
+                    text-align: left;
+                }
+
+                .left {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .arrow {
+                    width: 16px;
+                    height: 16px;
+                    flex-shrink: 0;
+                }
+
+                .arrow.placeholder {
+                    width: 16px;
+                    height: 16px;
+                    display: inline-block;
+                    flex-shrink: 0;
+                }
+
+                .info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    min-width: 0;
+                }
+
+                .info-row1 {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .info-row2 {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    min-width: 0;
+                }
+
+                .wallet-icon {
+                    width: 14px;
+                    height: 14px;
+                    flex-shrink: 0;
+                }
+
+                .avatar {
+                    font-size: 11px;
+                    font-weight: 700;
+                    padding: 2px 6px;
+                    border-radius: 999px;
+                    background: rgba(255, 255, 255, 0.2);
+                }
+
+                .address {
+                    font-size: 12px;
+                    color: rgba(255, 255, 255, 0.9);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .right {
+                    text-align: right;
+                    flex-shrink: 0;
+                }
+
+                .amount {
+                    font-size: 12px;
+                    font-weight: 700;
+                }
+
+                .time {
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.55);
+                }
+
+                .children {
+                    margin-top: 8px;
+                    padding-top: 8px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                    padding-left: 16px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+            `}</style>
+        </>
     );
 };
 
@@ -281,114 +392,6 @@ export function VipNode() {
                     display: flex;
                     flex-direction: column;
                     gap: 12px;
-                }
-
-                .invite-item {
-                    background: rgba(255, 255, 255, 0.05);
-                    border-radius: 12px;
-                    padding: 8px 12px;
-                }
-
-                .invite-row {
-                    width: 100%;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    background: transparent;
-                    border: none;
-                    color: inherit;
-                    padding: 0;
-                    cursor: pointer;
-                    gap: 12px;
-                    text-align: left;
-                }
-
-                .left {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    flex: 1;
-                    min-width: 0;
-                }
-
-                .arrow {
-                    width: 16px;
-                    height: 16px;
-                    flex-shrink: 0;
-                }
-
-                .arrow.placeholder {
-                    width: 16px;
-                    height: 16px;
-                    display: inline-block;
-                    flex-shrink: 0;
-                }
-
-                .info {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 4px;
-                    min-width: 0;
-                }
-
-                .info-row1 {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-
-                .info-row2 {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    min-width: 0;
-                }
-
-                .wallet-icon {
-                    width: 14px;
-                    height: 14px;
-                    flex-shrink: 0;
-                }
-
-                .avatar {
-                    font-size: 11px;
-                    font-weight: 700;
-                    padding: 2px 6px;
-                    border-radius: 999px;
-                    background: rgba(255, 255, 255, 0.2);
-                }
-
-                .address {
-                    font-size: 12px;
-                    color: rgba(255, 255, 255, 0.9);
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-
-                .right {
-                    text-align: right;
-                    flex-shrink: 0;
-                }
-
-                .amount {
-                    font-size: 12px;
-                    font-weight: 700;
-                }
-
-                .time {
-                    font-size: 11px;
-                    color: rgba(255, 255, 255, 0.55);
-                }
-
-                .children {
-                    margin-top: 8px;
-                    padding-top: 8px;
-                    border-top: 1px solid rgba(255, 255, 255, 0.1);
-                    padding-left: 16px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
                 }
             `}</style>
         </div>
