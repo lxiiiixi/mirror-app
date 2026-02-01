@@ -52,8 +52,6 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
         const [expandedDesc, setExpandedDesc] = useState(false);
         const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-        console.log("[ProductCardCarousel] expandedDesc", expandedDesc);
-
         // 限制最多6个产品
         const displayProducts = products.slice(0, 6);
         const currentProduct = displayProducts[currentIndex] || displayProducts[0];

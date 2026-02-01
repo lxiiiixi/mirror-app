@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { images } from "@mirror/assets";
 import { CoefficientTable } from "../../ui";
-import { externalLinks } from "../../utils/externalLinks";
+import { MIRROR_EXTERNAL_LINKS } from "@mirror/utils";
 
 const vipRulesData = [
     { vip: "1", gift: "1", add: "0" },
@@ -18,15 +18,8 @@ const vipRulesData = [
 ];
 
 export function VipAbout() {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const navigate = useNavigate();
-    const isChinese = useMemo(() => {
-        const lang = (i18n.resolvedLanguage ?? i18n.language ?? "en").toLowerCase();
-        return lang.startsWith("zh");
-    }, [i18n.language, i18n.resolvedLanguage]);
-
-    const whitePaperUrl = isChinese ? externalLinks.whitePaper.zh : externalLinks.whitePaper.en;
-
     const openLink = (url: string) => {
         window.open(url, "_blank", "noopener,noreferrer");
     };
@@ -37,7 +30,7 @@ export function VipAbout() {
                 <button
                     type="button"
                     className="white-paper"
-                    onClick={() => openLink(whitePaperUrl)}
+                    onClick={() => openLink(MIRROR_EXTERNAL_LINKS.whitePaper)}
                 >
                     <img src={images.vip.whitePaperIcon} alt="" />
                     <span>{t("vipAbout.whitePaper")}</span>
@@ -46,7 +39,7 @@ export function VipAbout() {
                     <button
                         type="button"
                         className="social-btn flex items-center gap-2"
-                        onClick={() => openLink(externalLinks.discord)}
+                        onClick={() => openLink(MIRROR_EXTERNAL_LINKS.discord)}
                     >
                         <img className="w-[14px]" src={images.vip.discord} alt="Discord" />
                         <span>Discord</span>
@@ -54,7 +47,7 @@ export function VipAbout() {
                     <button
                         type="button"
                         className="social-btn"
-                        onClick={() => openLink(externalLinks.twitter)}
+                        onClick={() => openLink(MIRROR_EXTERNAL_LINKS.twitter)}
                     >
                         <img className="w-[12px]" src={images.vip.x} alt="X" />
                     </button>

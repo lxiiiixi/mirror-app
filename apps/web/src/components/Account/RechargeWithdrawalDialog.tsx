@@ -297,7 +297,7 @@ export function RechargeWithdrawalDialog({
                         chain: "solana",
                     });
                 } else {
-                    // TODO: 提现 ENT
+                    // TODO: 提现 ENT 目前后端还没有支持
                 }
 
                 showAlert({ message: t("account.withdrawDialog.success"), variant: "success" });
