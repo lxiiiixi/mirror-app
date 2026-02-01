@@ -62,12 +62,8 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
     const time = item.time ?? item.create_time ?? "";
 
     return (
-        <div className="invite-item" style={{ paddingLeft: `${depth * 16}px` }}>
-            <button
-                type="button"
-                className="invite-row"
-                onClick={() => hasChildren && setOpen(prev => !prev)}
-            >
+        <div className="invite-item">
+            <div className="invite-row" onClick={() => hasChildren && setOpen(prev => !prev)}>
                 <div className="left">
                     {hasChildren ? (
                         <img
@@ -82,14 +78,21 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
                     ) : (
                         <span className="arrow placeholder" />
                     )}
-                    <div className="avatar">VIP{level}</div>
-                    <div className="address">{formatAddress(address)}</div>
+                    <div className="info">
+                        <div className="info-row1">
+                            <div className="avatar">VIP{level}</div>
+                        </div>
+                        <div className="info-row2">
+                            <img className="wallet-icon" src={images.network.sol} alt="SOL" />
+                            <div className="address">{formatAddress(address)}</div>
+                        </div>
+                    </div>
                 </div>
                 <div className="right">
                     <div className="amount">+ {formatAmount(reward)} U</div>
                     <div className="time">{formatDate(time)}</div>
                 </div>
-            </button>
+            </div>
             {open && hasChildren ? (
                 <div className="children">
                     {item.sub_invites?.map((child, index) => (
@@ -296,23 +299,55 @@ export function VipNode() {
                     color: inherit;
                     padding: 0;
                     cursor: pointer;
+                    gap: 12px;
+                    text-align: left;
                 }
 
                 .left {
                     display: flex;
                     align-items: center;
                     gap: 8px;
+                    flex: 1;
+                    min-width: 0;
                 }
 
                 .arrow {
                     width: 16px;
                     height: 16px;
+                    flex-shrink: 0;
                 }
 
                 .arrow.placeholder {
                     width: 16px;
                     height: 16px;
                     display: inline-block;
+                    flex-shrink: 0;
+                }
+
+                .info {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    min-width: 0;
+                }
+
+                .info-row1 {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .info-row2 {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    min-width: 0;
+                }
+
+                .wallet-icon {
+                    width: 14px;
+                    height: 14px;
+                    flex-shrink: 0;
                 }
 
                 .avatar {
@@ -326,10 +361,14 @@ export function VipNode() {
                 .address {
                     font-size: 12px;
                     color: rgba(255, 255, 255, 0.9);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
 
                 .right {
                     text-align: right;
+                    flex-shrink: 0;
                 }
 
                 .amount {
@@ -344,6 +383,9 @@ export function VipNode() {
 
                 .children {
                     margin-top: 8px;
+                    padding-top: 8px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                    padding-left: 16px;
                     display: flex;
                     flex-direction: column;
                     gap: 8px;
