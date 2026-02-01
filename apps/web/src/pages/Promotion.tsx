@@ -2,18 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import QRCode from "qrcode";
-import { artsApiClient } from "../api/artsClient";
 import { images } from "@mirror/assets";
+import { formatNumber } from "@mirror/utils";
+import { artsApiClient } from "../api/artsClient";
 import { useAlertStore } from "../store/useAlertStore";
 import { useAuth } from "../hooks/useAuth";
 import { QrcodeCanvas } from "../components/Promotion/QrcodeCanvas";
 import { Discover } from "../components/Promotion/Discover";
-
-const formatNumber = (value: string | number) => {
-    const numeric = Number(value ?? 0);
-    if (!Number.isFinite(numeric)) return String(value ?? 0);
-    return numeric.toLocaleString();
-};
 
 const loadImage = (src: string) =>
     new Promise<HTMLImageElement>((resolve, reject) => {

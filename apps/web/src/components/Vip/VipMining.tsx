@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { images } from "@mirror/assets";
+import { formatReward } from "@mirror/utils";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
-import { useNavigate } from "react-router-dom";
 import { Button, Progress } from "../../ui";
 
 type RewardsState = {
@@ -17,12 +18,6 @@ type RewardsState = {
     today_invite_reward: number;
     today_level_bonus_reward: number;
     today_total_reward: number;
-};
-
-const formatReward = (reward?: string | number) => {
-    const raw = Number(reward ?? 0);
-    const value = Number.isFinite(raw) ? raw / 1000 : 0;
-    return Math.round(value * 1000) / 1000;
 };
 
 /** 解析 "当前/总数" 格式字符串为 { current, max } */

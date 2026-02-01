@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
+import {
+    formatAmount,
+    formatDate,
+    formatReward,
+    formatShortAddress,
+} from "@mirror/utils";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
@@ -24,34 +30,9 @@ type InviteRecord = {
     sub_invites?: InviteRecord[];
 };
 
-const formatReward = (reward?: string | number) => {
-    const raw = Number(reward ?? 0);
-    const value = Number.isFinite(raw) ? raw / 1000 : 0;
-    return Math.round(value * 1000) / 1000;
-};
-
-const formatAddress = (address?: string | number) => {
-    if (!address) return "";
-    const text = String(address);
-    if (text.length <= 10) return text;
-    return `${text.slice(0, 3)}***${text.slice(-4)}`;
-};
-
-const formatAmount = (value?: string | number) => {
-    const raw = Number(value ?? 0);
-    if (!Number.isFinite(raw)) return String(value ?? "");
-    return raw.toLocaleString(undefined, { maximumFractionDigits: 4 });
-};
-
-const formatDate = (value?: string) => {
-    if (!value) return "";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, "0");
-    const day = `${date.getDate()}`.padStart(2, "0");
-    return `${year}.${month}.${day}`;
-};
+/** 邀请列表内地址展示：前3位 + *** + 后4位 */
+const formatAddress = (address?: string | number) =>
+    formatShortAddress(address, 3, 4, "***");
 
 const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: number }) => {
     const [open, setOpen] = useState(false);

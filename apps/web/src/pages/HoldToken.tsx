@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { artsApiClient } from '../api/artsClient'
 import { images } from '@mirror/assets'
-import { resolveImageUrl } from '@mirror/utils'
+import { formatCurrency, formatDisplayNumber, resolveImageUrl } from '@mirror/utils'
+import { artsApiClient } from '../api/artsClient'
 import { useAuth } from '../hooks/useAuth'
 import { useLoginModalStore } from '../store/useLoginModalStore'
 import { useAlertStore } from '../store/useAlertStore'
@@ -21,18 +21,6 @@ type WorkTokenItem = {
   tokenName: string
   coverUrl: string
   tokenBalance: string
-}
-
-const formatDisplayNumber = (value?: number | string, digits = 6) => {
-  if (value === undefined || value === null || value === '') return '-'
-  const numberValue = Number(value)
-  if (!Number.isFinite(numberValue) || numberValue === 0) return '-'
-  return numberValue.toLocaleString(undefined, { maximumFractionDigits: digits })
-}
-
-const formatCurrency = (value?: number | string) => {
-  const text = formatDisplayNumber(value)
-  return text === '-' ? '-' : `$${text}`
 }
 
 const normalizeAssetItems = (payload: unknown): AssetItem[] => {

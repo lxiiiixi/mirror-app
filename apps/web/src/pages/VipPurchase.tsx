@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { artsApiClient } from "../api/artsClient";
 import { images } from "@mirror/assets";
+import { formatNumber } from "@mirror/utils";
+import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
@@ -34,13 +35,6 @@ const fullGiftRules = [
     { min: 50, gift: 7 },
     { min: 100, gift: 15 },
 ];
-
-const formatNumber = (value?: number | string) => {
-    if (value === undefined || value === null) return "0";
-    const numeric = Number(value);
-    if (!Number.isFinite(numeric)) return String(value);
-    return numeric.toLocaleString();
-};
 
 function VipPurchase() {
     const { t } = useTranslation();

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
+import { formatDateTime } from "@mirror/utils";
 import { artsApiClient } from "../api/artsClient";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
@@ -18,11 +19,7 @@ type RecordItem = {
 
 const PAGE_SIZE = 20;
 
-const formatDateTime = (dateTimeStr?: string) => {
-    if (!dateTimeStr) return "";
-    return dateTimeStr.replace("T", " ").substring(0, 19);
-};
-
+/** 账单列表金额：空值返回 "-"，否则原样数字字符串（不做千分位） */
 const formatAmount = (value?: string | number) => {
     if (value === undefined || value === null || value === "") return "-";
     const numberValue = Number(value);
