@@ -5,19 +5,27 @@
     width: 100%;
 }
 
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .progress-track {
     position: relative;
     height: 14px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.15);
-    overflow: visible;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: stretch;
 }
 
 .progress-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    position: relative;
+    height: 100%;
     border-radius: 999px;
     background: var(--color-primary);
     transition: width 0.25s ease;
@@ -25,12 +33,7 @@
 
 /* 数值固定在填充条末端（尾部）：用 left 定位到 percent 处，再 translateX(-100%) 让文字右边缘对齐 */
 .progress-value--tail {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    left: auto;
-    transform: translateY(-50%);
-    margin-left: 0;
+    flex-shrink: 0;
     padding: 0 4px;
     pointer-events: none;
 }

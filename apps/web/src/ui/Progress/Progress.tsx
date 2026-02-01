@@ -61,15 +61,17 @@ export function Progress({
 
     return (
         <div className={`progress ${sizeClass} ${className}`.trim()}>
-            <div
-                className="progress-track"
-                role="progressbar"
-                aria-valuenow={value}
-                aria-valuemin={0}
-                aria-valuemax={safeMax}
-                style={{ ["--progress-percent" as string]: `${percent}%` }}
-            >
-                <div className="progress-fill" style={{ width: `${percent}%` }} />
+            <div className="progress-row">
+                <div
+                    className="progress-track"
+                    role="progressbar"
+                    aria-valuenow={value}
+                    aria-valuemin={0}
+                    aria-valuemax={safeMax}
+                    style={{ ["--progress-percent" as string]: `${percent}%` }}
+                >
+                    <div className="progress-fill" style={{ width: `${percent}%` }} />
+                </div>
                 {displayValue != null && (
                     <span className="progress-value progress-value--tail">{displayValue}</span>
                 )}
