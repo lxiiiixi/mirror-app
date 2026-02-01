@@ -183,7 +183,6 @@ export interface UserVipLevelResponseData {
     };
     user_level: number;
 }
-
 export interface UserLevelProgressResponseData {
     current_level: number;
     direct_invites: string;
@@ -1020,17 +1019,28 @@ export interface NodeInviteInfoResponseData {
 export interface NodeInviteRecordsParams extends PaginationParams {}
 
 export interface NodeInviteRecordItem {
-    invite_id: number;
-    invited_uid: Int64String;
-    reward: DecimalString;
-    create_time: ISODateTimeString;
+    address: string;
+    time: ISODateTimeString;
+    node_create_time: ISODateTimeString;
+    is_valid: boolean;
+    level: number;
+    level_name: string;
+    node_count: number;
+    total_amount: DecimalString;
+    sub_invites: NodeInviteRecordItem[];
+    sub_count: number;
 }
 
 export interface NodeInviteRecordsResponseData {
-    list: NodeInviteRecordItem[];
-    total: number;
+    level_list: NodeInviteRecordItem[];
+    first_level_count: number;
+    second_level_total: number;
+    total_invites: number;
+    first_level_valid: number;
+    second_level_valid: number;
+    third_level_valid: number;
+    total_valid_invites: number;
 }
-
 export interface NodeMiningRewardsParams {
     batch_id?: number;
 }
@@ -1043,6 +1053,20 @@ export interface NodeMiningRewardItem {
     claim_time: ISODateTimeString;
 }
 
+export interface CycleRewards {
+    global_cycle_number: number;
+    total_batches: number;
+    total_settlements: number;
+    base_mining_reward: number;
+    level_bonus_reward: number;
+    invite_reward: number;
+    direct_invite_reward: number;
+    indirect_invite_reward: number;
+    total_reward: number;
+    avg_reward_per_batch: number;
+    avg_reward_per_node: number;
+    settlement_time: ISODateTimeString;
+}
 export interface NodeMiningRewardsResponseData {
     data_source: string;
     processing_duration: number;
@@ -1054,48 +1078,9 @@ export interface NodeMiningRewardsResponseData {
         current_global_cycle: number;
         cycle_start_time: ISODateTimeString;
         cycle_end_time: ISODateTimeString;
-        latest_cycle_rewards: {
-            global_cycle_number: number;
-            total_batches: number;
-            total_settlements: number;
-            base_mining_reward: number;
-            level_bonus_reward: number;
-            invite_reward: number;
-            direct_invite_reward: number;
-            indirect_invite_reward: number;
-            total_reward: number;
-            avg_reward_per_batch: number;
-            avg_reward_per_node: number;
-            settlement_time: ISODateTimeString;
-        };
-        today_cycle_rewards: {
-            global_cycle_number: number;
-            total_batches: number;
-            total_settlements: number;
-            base_mining_reward: number;
-            level_bonus_reward: number;
-            invite_reward: number;
-            direct_invite_reward: number;
-            indirect_invite_reward: number;
-            total_reward: number;
-            avg_reward_per_batch: number;
-            avg_reward_per_node: number;
-            settlement_time: ISODateTimeString;
-        };
-        total_cycle_rewards: {
-            global_cycle_number: number;
-            total_batches: number;
-            total_settlements: number;
-            base_mining_reward: number;
-            level_bonus_reward: number;
-            invite_reward: number;
-            direct_invite_reward: number;
-            indirect_invite_reward: number;
-            total_reward: number;
-            avg_reward_per_batch: number;
-            avg_reward_per_node: number;
-            settlement_time: ISODateTimeString;
-        };
+        latest_cycle_rewards: CycleRewards;
+        today_cycle_rewards: CycleRewards;
+        total_cycle_rewards: CycleRewards;
         pending_rewards: number;
         total_claimed: number;
         user_level: number;

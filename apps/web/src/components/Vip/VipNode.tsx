@@ -142,8 +142,8 @@ export function VipNode() {
             });
 
             const inviteData = inviteResponse.data;
-            const rawList = inviteData.list ?? [];
-            setInviteList(Array.isArray(rawList) ? rawList : []);
+            const rawList = inviteData.level_list;
+            setInviteList(rawList);
 
             const rewardData = rewardsResponse.data;
             const rewardsInfo = rewardData?.rewards_info ?? rewardData ?? {};
