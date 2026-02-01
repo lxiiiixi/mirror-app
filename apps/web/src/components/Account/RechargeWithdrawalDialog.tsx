@@ -6,7 +6,7 @@ import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
 import { useLegalRestrictionStore } from "../../store/useLegalRestrictionStore";
-import { Input, Modal, Select } from "../../ui";
+import { Input, Modal, Select, Spinner } from "../../ui";
 import { images } from "@mirror/assets";
 import { VersionedTransaction } from "@solana/web3.js";
 import { buildSignedSplTokenTransfer, isSolanaTxError, SolanaTxErrorCode } from "@mirror/solana";
@@ -68,6 +68,15 @@ const formatAmount = (value?: string) => {
     const numeric = Number(value ?? "");
     if (!Number.isFinite(numeric)) return "";
     return numeric % 1 === 0 ? `${numeric}.0` : `${numeric}`;
+};
+
+const normalizeAmountString = (value?: string) => {
+    const trimmed = value?.trim();
+    if (!trimmed) return "";
+    if (!/^\d+(\.\d+)?$/.test(trimmed)) return trimmed;
+    if (!trimmed.includes(".")) return trimmed;
+    const normalized = trimmed.replace(/\.?0+$/, "");
+    return normalized === "" ? "0" : normalized;
 };
 
 // 可充值和提现的资产是根据 /asset 接口中的 can_recharge 和 can_withdraw 字段决定的
@@ -283,18 +292,12 @@ export function RechargeWithdrawalDialog({
 
                 if (currency === "USDT") {
                     await artsApiClient.deposit.withdrawUsdt({
-                        amount: formatAmount(amount),
+                        amount: normalizeAmountString(amount),
                         to_address: target,
                         chain: "solana",
                     });
                 } else {
-                    await artsApiClient.requestJson("POST", "/arts/node/mining/claim", {
-                        auth: "required",
-                        body: {
-                            target_address: target,
-                            amount: formatAmount(amount),
-                        },
-                    });
+                    // TODO: 提现 ENT
                 }
 
                 showAlert({ message: t("account.withdrawDialog.success"), variant: "success" });
@@ -416,9 +419,16 @@ export function RechargeWithdrawalDialog({
                             onClick={handleSubmit}
                             disabled={loading}
                         >
-                            {activeTab === 0
-                                ? t("account.withdrawDialog.recharge_btn")
-                                : t("account.withdrawDialog.withdraw_btn")}
+                            {loading ? (
+                                <span className="bottom-btn-content">
+                                    <Spinner size="small" />
+                                    {t("miningIndex.processing")}
+                                </span>
+                            ) : activeTab === 0 ? (
+                                t("account.withdrawDialog.recharge_btn")
+                            ) : (
+                                t("account.withdrawDialog.withdraw_btn")
+                            )}
                         </button>
                     </div>
                 </div>
@@ -480,6 +490,13 @@ export function RechargeWithdrawalDialog({
                     background: #eb1484;
                     border: none;
                     cursor: pointer;
+                }
+
+                .bottom-btn-content {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
                 }
 
                 .bottom-btn:disabled {
