@@ -20,7 +20,7 @@ interface AssetState {
 function Assets() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { isLoggedIn, isEmailLogin } = useAuth();
+    const { isLoggedIn, isEmailLogin, hydrated } = useAuth();
     const showAlert = useAlertStore(state => state.show);
     const showLegalRestriction = useLegalRestrictionStore(state => state.show);
 
@@ -89,12 +89,12 @@ function Assets() {
     };
 
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (hydrated && !isLoggedIn) {
             navigate("/");
         }
-    }, [isLoggedIn, navigate]);
+    }, [hydrated, isLoggedIn, navigate]);
 
-    if (!isLoggedIn) {
+    if (!hydrated || !isLoggedIn) {
         return null;
     }
 

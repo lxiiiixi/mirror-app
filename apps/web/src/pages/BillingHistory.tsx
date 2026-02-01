@@ -137,7 +137,7 @@ function BillingHistory() {
                 pageRef.current = targetPage;
             } catch (error) {
                 console.error("[BillingHistory] fetch failed", error);
-                showAlert({ message: t("assets.loadFailed"), variant: "error" });
+                // showAlert({ message: t("assets.loadFailed"), variant: "error" });
                 setHasMore(false);
             } finally {
                 inFlightRef.current = false;
@@ -145,7 +145,7 @@ function BillingHistory() {
                 setLoadingMore(false);
             }
         },
-        [activeTab, isLoggedIn, selectType, showAlert, t],
+        [activeTab, isLoggedIn, selectType],
     );
 
     useEffect(() => {
@@ -359,6 +359,12 @@ function BillingHistory() {
                     </div>
                 ))}
 
+                {!loading && !loadingMore && records.length === 0 ? (
+                    <div className="empty-state">
+                        {t("billingHistory.noData", { defaultValue: "No data" })}
+                    </div>
+                ) : null}
+
                 {loading || loadingMore ? (
                     <div className="loading">
                         {" "}
@@ -493,6 +499,13 @@ function BillingHistory() {
                 .record-date {
                     font-size: 12px;
                     color: #c0c0c6;
+                }
+
+                .empty-state {
+                    text-align: center;
+                    color: rgba(255, 255, 255, 0.5);
+                    font-size: 14px;
+                    padding: 40px 16px;
                 }
 
                 .loading {
