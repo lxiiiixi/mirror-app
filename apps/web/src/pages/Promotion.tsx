@@ -7,10 +7,8 @@ import { images } from "@mirror/assets";
 import { useAlertStore } from "../store/useAlertStore";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
-import { TokenItemCard } from "../ui";
-import { resolveImageUrl } from "@mirror/utils";
 import { QrcodeCanvas } from "../components/Promotion/QrcodeCanvas";
-import { goToWorkDetail, isTokenWork } from "../utils/work";
+import { isTokenWork } from "../utils/work";
 import { WorkSummary } from "@mirror/api";
 
 interface InviteInfo {
@@ -38,23 +36,15 @@ function Promotion() {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const { isLoggedIn } = useAuth();
-    const openLoginModal = useLoginModalStore(state => state.openModal);
     const showAlert = useAlertStore(state => state.show);
-    const navigate = useNavigate();
 
     const [inviteUrl, setInviteUrl] = useState("");
     const [today, setToday] = useState("0");
     const [total, setTotal] = useState("0");
-    const [inviteInfo, setInviteInfo] = useState<InviteInfo>({
-        invite_code: "",
-        invite_num: 0,
-        second_level_invites: 0,
-    });
     const [inviteCode, setInviteCode] = useState("");
     const [userCanBuy, setUserCanBuy] = useState(false);
     const [isCanBind, setIsCanBind] = useState(false);
     const [inviteNum, setInviteNum] = useState({ direct_invites: "0/0", indirect_invites: "0/0" });
-    const [tokenList, setTokenList] = useState<WorkSummary[]>([]);
     const [savingPoster, setSavingPoster] = useState(false);
 
     const inviteBase = useMemo(() => {
@@ -75,11 +65,6 @@ function Promotion() {
             const response = await artsApiClient.node.getInviteInfo();
             const data = response.data;
             const inviteCodeValue = String(data?.invite_code ?? "");
-            setInviteInfo({
-                invite_code: inviteCodeValue,
-                invite_num: Number(data?.total_invites ?? 0),
-                second_level_invites: Number(data?.total_invites ?? 0),
-            });
             setToday(String(data?.total_invites ?? 0));
             setTotal(String(data?.total_rewards ?? 0));
             setInviteUrl(`${inviteBase}${inviteCodeValue}`);
@@ -213,25 +198,13 @@ function Promotion() {
         }
     }, [inviteUrl, savingPoster, showAlert, t]);
 
-    const loadTokenList = useCallback(async () => {
-        try {
-            const response = await artsApiClient.work.list({ page: 1, page_size: 10 });
-            const list = response.data?.list ?? [];
-            setTokenList(list.filter(isTokenWork));
-        } catch (error) {
-            console.error("[Promotion] token list failed", error);
-            setTokenList([]);
-        }
-    }, []);
-
     useEffect(() => {
         getInviteData();
     }, [getInviteData]);
 
     useEffect(() => {
         void getUserCheck();
-        void loadTokenList();
-    }, [getUserCheck, loadTokenList]);
+    }, [getUserCheck]);
 
     return (
         <div className="promotion-page">
@@ -292,41 +265,6 @@ function Promotion() {
             </div>
 
             <div className="tip-text">{t("promotion.tipText")}</div>
-
-            <div className="token-list">
-                {tokenList.map((item, index) => {
-                    const name = String(item.name ?? "");
-                    const coverUrl = resolveImageUrl(String(item.cover_url ?? ""));
-                    const shareCount = Number(item.share_count ?? 0) || 0;
-                    const progressPercent = Math.min(100, Math.max(0, (shareCount * 500) / 20000));
-                    const balanceLeft = Math.max(0, 20000 - shareCount * 5);
-                    return (
-                        <TokenItemCard
-                            key={`${name}-${index}`}
-                            className="token-item"
-                            data={{
-                                name,
-                                coverUrl,
-                                showTokenBorder: true,
-                                shareCount,
-                                progressPercent,
-                                progressText: `${t("tokenItemCard.progress")} ${progressPercent.toFixed(3)}%`,
-                                balanceText: `${t("tokenItemCard.balance")} ${balanceLeft}`,
-                            }}
-                            actionText={t("tokenItemCard.checkIn")}
-                            onCardClick={() =>
-                                goToWorkDetail(navigate, Number(item.id), Number(item.type))
-                            }
-                            onAction={() =>
-                                goToWorkDetail(navigate, Number(item.id), Number(item.type))
-                            }
-                        />
-                    );
-                })}
-                {tokenList.length === 0 ? (
-                    <div className="empty-tip">{t("ticket.empty")}</div>
-                ) : null}
-            </div>
 
             <style jsx>{`
                 .promotion-page {
@@ -466,16 +404,6 @@ function Promotion() {
                     text-align: center;
                     color: rgba(255, 255, 255, 1);
                     margin-bottom: 24px;
-                }
-
-                .token-list {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
-                }
-
-                .token-item {
-                    margin-bottom: 20px;
                 }
 
                 .empty-tip {
