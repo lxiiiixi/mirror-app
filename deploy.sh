@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 用法: ./deploy.sh [prod|test]
-# 默认部署到 prod；传 test 则构建 test 环境并部署到测试机
-# 构建时使用对应 env：prod → .env.prod，test → .env.test（Vite --mode）
+# 用法: ./deploy.sh <prod|test>
+# 必须显式传入环境；构建时使用对应 env 文件（.env.prod / .env.test），环境变量已打进打包产物，无需把 .env 部署到服务器
 
-ENV=${1:-prod}
+if [ $# -lt 1 ]; then
+  echo "用法: $0 <prod|test>"
+  echo "  必须显式指定环境，例如: $0 prod  或  $0 test"
+  echo "  prod  生产环境，使用 .env.prod 构建后同步到 REMOTE_HOST_PROD"
+  echo "  test  测试环境，使用 .env.test 构建后同步到 REMOTE_HOST_TEST"
+  exit 1
+fi
+
+ENV=$1
 if [[ "${ENV}" != "prod" && "${ENV}" != "test" ]]; then
-  echo "用法: $0 [prod|test]"
-  echo "  prod  生产环境（默认），使用 .env.prod 构建，部署到 REMOTE_HOST_PROD"
-  echo "  test  测试环境，使用 .env.test 构建，部署到 REMOTE_HOST_TEST"
+  echo "错误: ENV 只能是 prod 或 test，当前为: ${ENV}"
+  echo "用法: $0 <prod|test>"
   exit 1
 fi
 
@@ -47,9 +53,9 @@ if [ ! -f "${INDEX_FILE}" ]; then
   exit 1
 fi
 
-# echo "📦 Syncing static files to ${REMOTE_HOST}:${REMOTE_DIR}..."
-# ssh "${REMOTE_HOST}" "mkdir -p ${REMOTE_DIR}"
-# rsync -az --delete \
-#   "${BUILD_OUTPUT_DIR}/" "${REMOTE_HOST}:${REMOTE_DIR}/"
+echo "📦 Syncing static files to ${REMOTE_HOST}:${REMOTE_DIR}..."
+ssh "${REMOTE_HOST}" "mkdir -p ${REMOTE_DIR}"
+rsync -az --delete \
+  "${BUILD_OUTPUT_DIR}/" "${REMOTE_HOST}:${REMOTE_DIR}/"
 
 echo "✅ Deploy complete (${ENV})."
