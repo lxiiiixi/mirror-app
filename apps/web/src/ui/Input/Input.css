@@ -31,7 +31,7 @@
 .form-input.input-sm {
     --input-height: 32px;
     --input-padding-x: 12px;
-    --input-radius: 8px;
+    --input-radius: 6px;
     --input-border-width: 1px;
     --input-font-size: 12px;
 }
@@ -40,7 +40,7 @@
 .form-input.input-md {
     --input-height: 37px;
     --input-padding-x: 16px;
-    --input-radius: 10px;
+    --input-radius: 7px;
     --input-border-width: 2px;
     --input-font-size: 14px;
 }
@@ -49,7 +49,7 @@
 .form-input.input-lg {
     --input-height: 44px;
     --input-padding-x: 18px;
-    --input-radius: 12px;
+    --input-radius: 8px;
     --input-border-width: 2px;
     --input-font-size: 16px;
 }

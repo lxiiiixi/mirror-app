@@ -49,11 +49,11 @@ export function OverlapInfoCard({
                         </span>
                         <button
                             type="button"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/35 px-3 py-2 text-[13px] font-semibold text-white"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/35 px-2 py-1 text-[12px] font-semibold text-white"
                             onClick={onRefresh}
                         >
                             <span>{t("account.refresh")}</span>
-                            <img src={images.account.refresh} alt="" className="h-4 w-4" />
+                            <img src={images.account.refresh} alt="" className="h-3 w-3" />
                         </button>
                     </div>
                 </div>

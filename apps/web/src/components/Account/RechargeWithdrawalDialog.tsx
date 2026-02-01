@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { artsApiClient } from "../../api/artsClient";
 import { useAlertStore } from "../../store/useAlertStore";
-import { Modal, Select } from "../../ui";
+import { Input, Modal, Select } from "../../ui";
 import { images } from "@mirror/assets";
 
 interface AssetItem {
@@ -62,6 +62,8 @@ const formatAmount = (value?: string) => {
     if (!Number.isFinite(numeric)) return "";
     return numeric % 1 === 0 ? `${numeric}.0` : `${numeric}`;
 };
+
+// 可充值和提现的资产是根据 /asset 接口中的 can_recharge 和 can_withdraw 字段决定的
 
 export function RechargeWithdrawalDialog({
     open,
@@ -205,79 +207,81 @@ export function RechargeWithdrawalDialog({
     }, [activeTab, amount, currency, onClose, onSuccess, showAlert, t, walletAddress]);
 
     return (
-        <Modal open={open} title={t("account.withdrawDialog.title1")} onClose={onClose}>
-            <div className="dialog-content">
-                <div className="bottom">
-                    <div className="bottom-tab">
-                        <button
-                            type="button"
-                            className={activeTab === 0 ? "recharge-btn sel" : "recharge-btn"}
-                            onClick={() => setActiveTab(0)}
-                        >
-                            {t("account.withdrawDialog.title")}
-                        </button>
-                        <button
-                            type="button"
-                            className={
-                                activeTab === 1 ? "recharge-btn sel right" : "recharge-btn right"
-                            }
-                            onClick={() => setActiveTab(1)}
-                        >
-                            {t("account.withdrawDialog.confirm")}
-                        </button>
-                    </div>
-
-                    <div className="bottom-text">
-                        {activeTab === 0
-                            ? t("account.withdrawDialog.recharge_currency")
-                            : t("account.withdrawDialog.withdraw_currency")}
-                    </div>
-
-                    <Select
-                        value={currency}
-                        options={currencyOptions}
-                        placeholder={t("account.withdrawDialog.selectCurrency")}
-                        onChange={nextValue => setCurrency(nextValue)}
-                    />
-
-                    <div className="bottom-text">
-                        {activeTab === 0
-                            ? t("account.withdrawDialog.recharge_number")
-                            : t("account.withdrawDialog.withdraw_number")}
-                    </div>
-
-                    <input
-                        className="input-box"
-                        type="number"
-                        value={amount}
-                        onChange={event => setAmount(event.target.value)}
-                        placeholder={t("account.withdrawDialog.placeholder")}
-                    />
-
-                    {currency ? (
-                        <div className="bottom-text tips">
-                            {t("account.withdrawDialog.currentMax", { num: currentBalance || 0 })}
+        <div>
+            <Modal open={open} title={t("account.withdrawDialog.title1")} onClose={onClose}>
+                <div className="dialog-content">
+                    <div className="bottom">
+                        <div className="bottom-tab">
+                            <button
+                                type="button"
+                                className={activeTab === 0 ? "recharge-btn sel" : "recharge-btn"}
+                                onClick={() => setActiveTab(0)}
+                            >
+                                {t("account.withdrawDialog.title")}
+                            </button>
+                            <button
+                                type="button"
+                                className={
+                                    activeTab === 1
+                                        ? "recharge-btn sel right"
+                                        : "recharge-btn right"
+                                }
+                                onClick={() => setActiveTab(1)}
+                            >
+                                {t("account.withdrawDialog.confirm")}
+                            </button>
                         </div>
-                    ) : null}
 
-                    <button
-                        type="button"
-                        className="bottom-btn"
-                        onClick={handleSubmit}
-                        disabled={loading}
-                    >
-                        {activeTab === 0
-                            ? t("account.withdrawDialog.recharge_btn")
-                            : t("account.withdrawDialog.withdraw_btn")}
-                    </button>
+                        <div className="bottom-text">
+                            {activeTab === 0
+                                ? t("account.withdrawDialog.recharge_currency")
+                                : t("account.withdrawDialog.withdraw_currency")}
+                        </div>
+
+                        <Select
+                            value={currency}
+                            options={currencyOptions}
+                            placeholder={t("account.withdrawDialog.selectCurrency")}
+                            onValueChange={setCurrency}
+                        />
+
+                        <div className="bottom-text">
+                            {activeTab === 0
+                                ? t("account.withdrawDialog.recharge_number")
+                                : t("account.withdrawDialog.withdraw_number")}
+                        </div>
+
+                        <Input
+                            className="mt-2"
+                            type="number"
+                            inputSize="lg"
+                            value={amount}
+                            onChange={event => setAmount(event.target.value)}
+                            placeholder={t("account.withdrawDialog.placeholder")}
+                        />
+
+                        {currency ? (
+                            <div className="bottom-text tips">
+                                {t("account.withdrawDialog.currentMax", {
+                                    num: currentBalance || 0,
+                                })}
+                            </div>
+                        ) : null}
+
+                        <button
+                            type="button"
+                            className="bottom-btn"
+                            onClick={handleSubmit}
+                            disabled={loading}
+                        >
+                            {activeTab === 0
+                                ? t("account.withdrawDialog.recharge_btn")
+                                : t("account.withdrawDialog.withdraw_btn")}
+                        </button>
+                    </div>
                 </div>
-            </div>
-
+            </Modal>
             <style jsx>{`
-                .dialog-content {
-                    font-family: Rubik, sans-serif;
-                }
-
                 .bottom {
                     margin-left: auto;
                     margin-right: auto;
@@ -320,29 +324,6 @@ export function RechargeWithdrawalDialog({
                     margin-top: 10px;
                 }
 
-                .input-box {
-                    background: linear-gradient(
-                        102deg,
-                        rgba(255, 255, 255, 0.05) 22%,
-                        rgba(255, 255, 255, 0.05) 36%,
-                        rgba(255, 255, 255, 0.2) 96%
-                    );
-                    margin-top: 10px;
-                    height: 44px;
-                    padding: 0 12px;
-                    width: 100%;
-                    box-sizing: border-box;
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    border-radius: 8px;
-                    backdrop-filter: blur(50px);
-                    box-shadow: inset 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-                    color: #fff;
-                }
-
-                .input-box::placeholder {
-                    color: rgba(255, 255, 255, 0.4);
-                }
-
                 .tips {
                     color: #bfc0c6;
                 }
@@ -364,6 +345,6 @@ export function RechargeWithdrawalDialog({
                     cursor: not-allowed;
                 }
             `}</style>
-        </Modal>
+        </div>
     );
 }

@@ -46,7 +46,7 @@
     "code": "驗證碼",
     "codePlaceholder": "請輸入6位驗證碼",
     "sendCode": "發送驗證碼",
-    "resendCode": "{time}s 後重發",
+    "resendCode": "{{time}}s 後重發",
     "inviteCode": "邀請碼（選填）",
     "inviteCodePlaceholder": "請輸入邀請碼",
     "login": "登錄",
@@ -89,10 +89,10 @@
     },
     "unlockChapterDialog": {
       "title": "解鎖章節",
-      "purchasePrompt": "觀看後續章節前請先購買，每章 {price} {label}",
+      "purchasePrompt": "觀看後續章節前請先購買，每章 {{price}} {{label}}",
       "paymentMethod": "支付方式",
       "chapters": "章節",
-      "pay": "支付 {totalPrice} {label}",
+      "pay": "支付 {{totalPrice}} {{label}}",
       "inviteToEarn": "邀請賺取代幣",
       "rechargeUsdt": "充值 USDT",
       "comingSoon": "敬請期待",
@@ -104,17 +104,17 @@
     },
     "productShare": {
       "fundraisingTarget": "籌款目標",
-      "price": "價格：1 {tokenName} = {price} SOL",
-      "buy": "購買 {buyNum} SOL",
-      "pledgeInfo": "總元宇宙代幣的 {percentage}% 將被質押到 SWAP 並銷毀",
+      "price": "價格：1 {{tokenName}} = {{price}} SOL",
+      "buy": "購買 {{buyNum}} SOL",
+      "pledgeInfo": "總元宇宙代幣的 {{percentage}}% 將被質押到 SWAP 並銷毀",
       "checkRecord": "< 查看記錄",
-      "initiator": "發起人：{creatorId}",
+      "initiator": "發起人：{{creatorId}}",
       "checked": "已簽到",
       "checkIn": "簽到",
       "initiatingTge": "發起 TGE",
       "retweetReward": "轉發鏈接到 X，<br />每次成功邀請獎勵 <b class=\"red-text\">5 個代幣</b>",
       "xForward": "X 轉發",
-      "invitedPpl": "已邀請 {inviteNum} 人",
+      "invitedPpl": "已邀請 {{inviteNum}} 人",
       "copySuccess": "複製成功"
     },
     "invitedListDialog": {
@@ -154,13 +154,13 @@
       "sell": "上架",
       "sellDown": "下架",
       "back": "返回",
-      "sell_down": "自动下架时间 {time}",
-      "sell_up": "可上架时间 {time}",
-      "sell_time_tip1": "預搶購時間：{time}",
-      "sell_time_tip2": "搶購時間：{time1}-次日{time2}",
-      "sell_info1": "已上架{n}份",
-      "sell_info2": "上漲週期 {d}天",
-      "presale_user": "{n}人正在搶購"
+      "sell_down": "自动下架时间 {{time}}",
+      "sell_up": "可上架时间 {{time}}",
+      "sell_time_tip1": "預搶購時間：{{time}}",
+      "sell_time_tip2": "搶購時間：{{time1}}-次日{{time2}}",
+      "sell_info1": "已上架{{n}}份",
+      "sell_info2": "上漲週期 {{d}}天",
+      "presale_user": "{{n}}人正在搶購"
     },
     "detail": {
       "releaseProcess": "發布流程",
@@ -202,11 +202,11 @@
     "sellTicketDialog": {
       "title": "寄售",
       "currentSellingPrice": "當前出售價格",
-      "commissionTips": "將從利润中扣除{d}手續費",
+      "commissionTips": "將從利润中扣除{{d}}手續費",
       "usdt": "USDT",
       "sell": "出售",
       "consignmentSuccess": "寄售成功",
-      "sellCount": "出售{count}張",
+      "sellCount": "出售{{count}}張",
       "purchasePrice": "購買價格",
       "currentPrice": "目前價格",
       "purchaseTime": "購買時間",
@@ -215,7 +215,7 @@
     "presaleDialog": {
       "title": "參與預售",
       "registered": "已報名",
-      "payPrompt": "支付 {amount} USDT參與预售",
+      "payPrompt": "支付 {{amount}} USDT參與预售",
       "participate": "參與"
     },
     "alreadyReserved": "已預約",
@@ -286,7 +286,7 @@
     "balance": "餘額"
   },
   "account": {
-    "balanceTotal": "总价值{d}",
+    "balanceTotal": "总价值{{d}}",
     "refresh": "刷新",
     "ent": "ENT",
     "rwa_token": "USDT 數量",
@@ -311,7 +311,7 @@
     "withdrawDialog": {
       "title": "充值",
       "title1": "充值和提現",
-      "currentMax": "余额：{num}",
+      "currentMax": "余额：{{num}}",
       "confirm": "提現",
       "selectCurrency": "請選擇幣種",
       "recharge_currency": "充值币种",
@@ -322,7 +322,7 @@
       "withdraw_btn": "提交提现",
       "claimInterval": "充值秒到賬，提領白天 1 小時內到賬，每十分鐘可申領一次，提現手續費 10%",
       "claimInterval2": "充值秒到賬，提領 1 小時內到賬，提現手續費 0",
-      "rechargeAddress": "充值地址:{d}",
+      "rechargeAddress": "充值地址:{{d}}",
       "success": "提現成功！",
       "currentHash": "當前交易hash:",
       "complete": "完成",
@@ -385,11 +385,11 @@
     "clubName": "ENTERTAINFI 俱樂部：",
     "currentPromotion": "當前推廣：每個VIP會員資格贈送一個ENT生態系統礦机！",
     "priceIncreaseNote": "每售出100個VIP，單價將自動上漲10USDT",
-    "currentVipPrice": "當前VIP價格：{price} USDT",
+    "currentVipPrice": "當前VIP價格：{{price}} USDT",
     "complimentaryNode": "每個VIP會員資格均包含一個免費的ENT生態系統礦机！",
     "selectVipQuantity": "選擇VIP數量",
-    "totalPayment": "您的總付款將是 {price}U，贈送 {quantity} 個ENT生態系統礦机",
-    "extraGiftNodes": "再額外贈送 {count} 個礦机",
+    "totalPayment": "您的總付款將是 {{price}}U，贈送 {{quantity}} 個ENT生態系統礦机",
+    "extraGiftNodes": "再額外贈送 {{count}} 個礦机",
     "dataDetails": "贈送礦机數據詳情",
     "totalMineable": "總可開採量：",
     "fixedHashrate": "固定算力：",
@@ -404,7 +404,7 @@
     "getEntOff": "以三到五折獲得ENT",
     "connectSolanaWallet": "連接Solana錢包",
     "processing": "處理中...",
-    "buy": "{price} USDT 購買",
+    "buy": "{{price}} USDT 購買",
     "comingSoon": "敬請期待",
     "waitingForPayment": "等待付款...",
     "queryTxResult": "查詢交易結果...",
@@ -431,7 +431,7 @@
   },
   "paySuccDialog": {
     "title": "成功",
-    "paymentSuccess": "支付成功，點擊{myRecords}跳轉",
+    "paymentSuccess": "支付成功，點擊{{myRecords}}跳轉",
     "myRecords": "我的會員"
   },
   "miningMy": {
@@ -483,9 +483,9 @@
     "pending": "待處理",
     "success": "成功",
     "cancelled": "已取消",
-    "payVip": "支付 {amount} USDT 購買 {num} VIP",
-    "payTicket": "支付 {amount} USDT 購買 {ticketName}",
-    "transactionStatus": "交易狀態：{status}"
+    "payVip": "支付 {{amount}} USDT 購買 {{num}} VIP",
+    "payTicket": "支付 {{amount}} USDT 購買 {{ticketName}}",
+    "transactionStatus": "交易狀態：{{status}}"
   },
   "miningTabs": {
     "myClub": "我的俱樂部",
