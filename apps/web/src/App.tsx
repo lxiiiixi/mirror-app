@@ -31,6 +31,21 @@ function App() {
 
     console.log("[App] Env Configs", envConfigs);
 
+    const urlLanguage = useMemo(() => {
+        if (typeof window === "undefined") return null;
+        const params = new URLSearchParams(location.search);
+        const raw = params.get("lang");
+        if (!raw) return null;
+        const normalized = raw.trim().toLowerCase();
+        if (normalized === "en") return "en";
+        if (normalized === "zh" || normalized === "zh-cn") return "zh-CN";
+        if (normalized === "zh-hk" || normalized === "zh-tw") return "zh-HK";
+        return null;
+    }, [location.search]);
+
+    const storedLanguage =
+        typeof window !== "undefined" ? window.localStorage.getItem("user-lang") : null;
+
     // 匹配当前路由配置
     const currentRoute = useMemo(() => matchRoute(location.pathname), [location.pathname]);
 
@@ -90,9 +105,19 @@ function App() {
         document.documentElement.lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
     }, [i18n.resolvedLanguage, i18n.language]);
 
+    useEffect(() => {
+        if (!urlLanguage) return;
+        const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? "en";
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("user-lang", urlLanguage);
+        }
+        if (currentLanguage.toLowerCase() === urlLanguage.toLowerCase()) return;
+        void i18n.changeLanguage(urlLanguage);
+    }, [i18n, urlLanguage]);
+
     useRegionLanguage({
         api: artsApiClient.user,
-        isEnabled: !isDesktop,
+        isEnabled: !isDesktop && !urlLanguage && !storedLanguage,
         onResolve: language => {
             void i18n.changeLanguage(language);
         },

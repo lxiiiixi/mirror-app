@@ -25,9 +25,10 @@ void i18n
       escapeValue: false,
     },
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
+      order: ['querystring', 'localStorage', 'htmlTag'],
+      lookupQuerystring: 'lang',
       lookupLocalStorage: 'user-lang',
-      caches: ['localStorage'],
+      caches: [],
     },
   })
 
