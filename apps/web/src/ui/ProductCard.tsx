@@ -1,7 +1,7 @@
 import { HTMLAttributes, forwardRef } from "react";
 import { images } from "@mirror/assets";
 import { resolveImageUrl } from "@mirror/utils";
-import { WorkType } from "../utils/work";
+import { getWorkTypeInfo, WorkType } from "../utils/work";
 
 /**
  * 产品数据接口
@@ -42,31 +42,12 @@ export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 }
 
 /**
- * 获取作品类型信息
- */
-const getWorkTypeInfo = (type: WorkType) => {
-    const typeMap: Record<WorkType, { text: string; icon: string }> = {
-        comic: { text: "Comic", icon: images.works.product.comic },
-        novel: { text: "Novel", icon: images.works.product.novel },
-        movie: { text: "Movie", icon: images.works.product.movie },
-        tv: { text: "TV", icon: images.works.product.tv },
-        music: { text: "Music", icon: images.works.product.music },
-        vlog: { text: "Vlog", icon: images.works.product.vlog },
-        animate: { text: "Animate", icon: images.works.product.animate },
-        drama: { text: "Drama", icon: images.works.product.drama },
-        playlet: { text: "Playlet", icon: images.works.product.playlet },
-        regular: { text: "Regular", icon: images.works.product.regular },
-    };
-    return typeMap[type] || typeMap.comic;
-};
-
-/**
  * ProductCard 组件
  * 用于展示作品信息的卡片组件
  */
 export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     ({ product, onClick, onShareToX, onLike, className = "", ...props }, ref) => {
-        const workType = getWorkTypeInfo(product.type);
+        const workInfo = getWorkTypeInfo(product.type, true);
         const creators = product.creators || [];
         const creatorText = creators.slice(0, 3).join("/");
 
@@ -90,7 +71,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
         return (
             <div
                 ref={ref}
-                className={`relative z-5 w-full aspect-[110/160] cursor-pointer ${className}`}
+                className={`relative z-5 w-full aspect-110/160 cursor-pointer ${className}`}
                 onClick={handleCardClick}
                 {...props}
             >
@@ -135,11 +116,11 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 <div className="absolute z-8 top-[6.25%] right-[9.09%] flex justify-center items-center">
                     <img
                         className="mr-[5px] mt-[2.5px] w-[7.5px] h-[6.5px] invert brightness-100 filter-[drop-shadow(0_1px_1px_rgba(35,35,35,0.8))]"
-                        src={workType.icon}
-                        alt={workType.text}
+                        src={workInfo!.icon}
+                        alt={workInfo!.text}
                     />
                     <div className="text-[8px] font-normal leading-[19px] text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
-                        {workType.text}
+                        {workInfo!.text}
                     </div>
                 </div>
 

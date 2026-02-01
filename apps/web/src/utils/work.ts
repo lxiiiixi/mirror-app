@@ -118,7 +118,10 @@ export const getWorkTypeByValue = (value: number) => {
 /**
  * 获取作品类型信息
  */
-export const getWorkTypeInfo = (type: WorkType) => {
+export const getWorkTypeInfo = (type: WorkType, defaultValue?: boolean) => {
+    if (defaultValue) {
+        return WORK_TYPE.find(item => item.type === type) || WORK_TYPE[0];
+    }
     return WORK_TYPE.find(item => item.type === type);
 };
 

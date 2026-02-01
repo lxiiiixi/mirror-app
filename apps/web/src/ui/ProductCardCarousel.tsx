@@ -122,100 +122,105 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                             transform: `translateX(-${currentIndex * 100}%)`,
                         }}
                     >
-                        {displayProducts.map((product, index) => (
-                            <div
-                                key={product.id}
-                                className="relative shrink-0 cursor-pointer w-full"
-                                onClick={() => {
-                                    setExpandedDesc(false);
-                                    handleCardClick(product);
-                                }}
-                            >
-                                {/* 当前显示的图片 */}
-                                <img
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer"
-                                    className="w-full h-full rounded-[26px] object-cover bg-[#f5f5f5]"
-                                    src={resolveImageUrl(product.coverUrl)}
-                                    alt={product.name}
-                                />
-
-                                {/* 分享到X按钮 */}
+                        {displayProducts.map((product, index) => {
+                            const workInfo = getWorkTypeInfo(product.type, true);
+                            return (
                                 <div
-                                    className={`absolute z-8 top-[4.71%] left-[6.25%] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${
-                                        product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"
-                                    }`}
-                                    onClick={e => handleShareClick(e, product)}
+                                    key={product.id}
+                                    className="relative shrink-0 cursor-pointer w-full"
+                                    onClick={() => {
+                                        setExpandedDesc(false);
+                                        handleCardClick(product);
+                                    }}
                                 >
+                                    {/* 当前显示的图片 */}
                                     <img
-                                        src={images.works.toX}
-                                        alt="X icon"
-                                        className="w-[21.67%] h-[60%] mr-[8.33%]"
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer"
+                                        className="w-full h-full rounded-[26px] object-cover bg-[#f5f5f5]"
+                                        src={resolveImageUrl(product.coverUrl)}
+                                        alt={product.name}
                                     />
-                                    <img
-                                        src={images.works.toXWhite}
-                                        alt="X white icon"
-                                        className="w-[21.67%] h-[60%]"
-                                    />
-                                    {product.shareCount ? (
-                                        <div className="absolute z-8 w-full text-center top-full text-[60%] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
-                                            {product.shareCount}
-                                        </div>
-                                    ) : null}
-                                </div>
 
-                                {/* 作品类型 */}
-                                <div className="absolute z-8 top-[4.71%] right-[6.25%] flex justify-center items-center">
-                                    <img
-                                        className="mr-[5px] mt-px w-[14px] h-[12px] invert brightness-100 filter-[drop-shadow(0_1px_1px_rgba(35,35,35,0.8))]"
-                                        src={`${getWorkTypeInfo(product.type).icon}`}
-                                        alt={getWorkTypeInfo(product.type).text}
-                                    />
-                                    <div className="text-[16px] font-normal leading-[19px] text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
-                                        {getWorkTypeInfo(product.type).text}
+                                    {/* 分享到X按钮 */}
+                                    <div
+                                        className={`absolute z-8 top-[4.71%] left-[6.25%] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${
+                                            product.isShared
+                                                ? "bg-[#eb1484]"
+                                                : "bg-[rgba(0,0,0,0.4)]"
+                                        }`}
+                                        onClick={e => handleShareClick(e, product)}
+                                    >
+                                        <img
+                                            src={images.works.toX}
+                                            alt="X icon"
+                                            className="w-[21.67%] h-[60%] mr-[8.33%]"
+                                        />
+                                        <img
+                                            src={images.works.toXWhite}
+                                            alt="X white icon"
+                                            className="w-[21.67%] h-[60%]"
+                                        />
+                                        {product.shareCount ? (
+                                            <div className="absolute z-8 w-full text-center top-full text-[60%] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
+                                                {product.shareCount}
+                                            </div>
+                                        ) : null}
                                     </div>
-                                </div>
 
-                                {/* 底部内容区域 */}
-                                <div
-                                    className={`absolute z-9 w-[87.5%] min-h-[21.88%] rounded-[11px] -bottom-[2.35%] left-1/2 -translate-x-1/2 p-[1.18%_2.81%] text-white border border-[rgba(127,127,127,0.4)] bg-[linear-gradient(180deg,rgba(127,127,127,0.33)_100%,rgba(217,217,217,0.63)_20%)] backdrop-blur-[10px] [text-shadow:0_2px_4px_rgba(0,0,0,0.98)] text-[12px] font-normal text-center transition-all duration-300 ${
-                                        expandedDesc && index === currentIndex
-                                            ? "max-h-[94.12%] overflow-y-auto"
-                                            : "overflow-hidden"
-                                    }`}
-                                >
-                                    <div className="text-[15px] font-semibold mb-[5px] break-all overflow-hidden line-clamp-1">
-                                        《{product.name}》
-                                    </div>
-                                    <div className="break-all overflow-hidden line-clamp-1 mb-[5px]">
-                                        {product.creators?.slice(0, 3).join("/") || ""}
-                                    </div>
-                                    {product.description && (
-                                        <div
-                                            className={`relative z-10 pt-[12.5px] text-[10px] leading-[14px] break-all cursor-pointer ${
-                                                expandedDesc && index === currentIndex
-                                                    ? ""
-                                                    : "overflow-hidden line-clamp-2"
-                                            }`}
-                                            style={
-                                                expandedDesc && index === currentIndex
-                                                    ? {
-                                                          display: "block",
-                                                          WebkitLineClamp: "unset",
-                                                          WebkitBoxOrient: "unset",
-                                                          overflow: "visible",
-                                                          textOverflow: "clip",
-                                                      }
-                                                    : undefined
-                                            }
-                                            onClick={handleDescToggle}
-                                        >
-                                            {product.description}
+                                    {/* 作品类型 */}
+                                    <div className="absolute z-8 top-[4.71%] right-[6.25%] flex justify-center items-center">
+                                        <img
+                                            className="mr-[5px] mt-px w-[14px] h-[12px] invert brightness-100 filter-[drop-shadow(0_1px_1px_rgba(35,35,35,0.8))]"
+                                            src={`${workInfo!.icon}`}
+                                            alt={workInfo!.text}
+                                        />
+                                        <div className="text-[16px] font-normal leading-[19px] text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
+                                            {workInfo!.text}
                                         </div>
-                                    )}
+                                    </div>
+
+                                    {/* 底部内容区域 */}
+                                    <div
+                                        className={`absolute z-9 w-[87.5%] min-h-[21.88%] rounded-[11px] -bottom-[2.35%] left-1/2 -translate-x-1/2 p-[1.18%_2.81%] text-white border border-[rgba(127,127,127,0.4)] bg-[linear-gradient(180deg,rgba(127,127,127,0.33)_100%,rgba(217,217,217,0.63)_20%)] backdrop-blur-[10px] [text-shadow:0_2px_4px_rgba(0,0,0,0.98)] text-[12px] font-normal text-center transition-all duration-300 ${
+                                            expandedDesc && index === currentIndex
+                                                ? "max-h-[94.12%] overflow-y-auto"
+                                                : "overflow-hidden"
+                                        }`}
+                                    >
+                                        <div className="text-[15px] font-semibold mb-[5px] break-all overflow-hidden line-clamp-1">
+                                            《{product.name}》
+                                        </div>
+                                        <div className="break-all overflow-hidden line-clamp-1 mb-[5px]">
+                                            {product.creators?.slice(0, 3).join("/") || ""}
+                                        </div>
+                                        {product.description && (
+                                            <div
+                                                className={`relative z-10 pt-[12.5px] text-[10px] leading-[14px] break-all cursor-pointer ${
+                                                    expandedDesc && index === currentIndex
+                                                        ? ""
+                                                        : "overflow-hidden line-clamp-2"
+                                                }`}
+                                                style={
+                                                    expandedDesc && index === currentIndex
+                                                        ? {
+                                                              display: "block",
+                                                              WebkitLineClamp: "unset",
+                                                              WebkitBoxOrient: "unset",
+                                                              overflow: "visible",
+                                                              textOverflow: "clip",
+                                                          }
+                                                        : undefined
+                                                }
+                                                onClick={handleDescToggle}
+                                            >
+                                                {product.description}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 

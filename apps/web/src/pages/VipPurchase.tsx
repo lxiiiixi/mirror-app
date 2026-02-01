@@ -102,12 +102,12 @@ function VipPurchase() {
     const loadTierInfo = useCallback(async () => {
         try {
             const response = await artsApiClient.node.getCurrentTierInfo({ id: 1 });
-            const data = response.data as Record<string, unknown>;
+            const data = response.data;
             setTierInfo({
-                totalNum: Number(data?.total_num ?? data?.total_quantity ?? 0),
-                remainingInTier: Number(data?.remaining_in_tier ?? data?.remaining_quantity ?? 0),
-                totalInTier: Number(data?.total_in_tier ?? data?.total_quantity ?? 0),
-                nowPrice: Number(data?.price ?? data?.tier_price ?? 0),
+                totalNum: Number(data?.total_quantity ?? 0),
+                remainingInTier: Number(data?.remaining_quantity ?? 0),
+                totalInTier: Number(data?.total_quantity ?? 0),
+                nowPrice: Number(data?.tier_price ?? 0),
             });
         } catch (error) {
             console.error("[VipPurchase] tier info failed", error);
@@ -117,14 +117,15 @@ function VipPurchase() {
     const loadNodeInfo = useCallback(async () => {
         try {
             const response = await artsApiClient.node.getNodeInfo({ id: 1 });
-            const data = response.data as Record<string, unknown>;
+            const data = response.data;
+            // TODO 整合数据
             setNodeInfo({
-                price: Number(data?.price ?? 0),
-                node_total_num: Number(data?.node_total_num ?? data?.total_nodes ?? 0),
-                power: Number(data?.power ?? data?.hashrate ?? 0),
-                node_remain_num: Number(data?.node_remain_num ?? 0),
-                ent_issue_num: Number(data?.ent_issue_num ?? data?.ent_total ?? 0),
-                ent_release_num: Number(data?.ent_release_num ?? data?.ent_release ?? 0),
+                price: 0,
+                node_total_num: 0,
+                power: 0,
+                node_remain_num: 0,
+                ent_issue_num: 0,
+                ent_release_num: 0,
             });
         } catch (error) {
             console.error("[VipPurchase] node info failed", error);
@@ -196,34 +197,31 @@ function VipPurchase() {
         }
     };
 
-    const searchTxStatus = useCallback(
-        async (signature: string) => {
-            try {
-                const response = await artsApiClient.node.getTxInfo({ signature });
-                const status = response.data?.status ?? "pending";
-                if (status === "success") {
-                    setShowPaySuccDialog(true);
-                    setWaitPay(false);
-                    setShowLoadingText2(false);
-                    stopPolling();
-                    return;
-                }
-
-                if (status === "failed") {
-                    setShowLoadingText2(true);
-                    return;
-                }
-
-                pollTimerRef.current = window.setTimeout(() => {
-                    void searchTxStatus(signature);
-                }, 2000);
-            } catch (error) {
-                console.error("[VipPurchase] tx status failed", error);
-                setShowLoadingText2(true);
+    const searchTxStatus = useCallback(async (signature: string) => {
+        try {
+            const response = await artsApiClient.node.getTxInfo({ signature });
+            const status = response.data?.status ?? "pending";
+            if (status === "success") {
+                setShowPaySuccDialog(true);
+                setWaitPay(false);
+                setShowLoadingText2(false);
+                stopPolling();
+                return;
             }
-        },
-        [],
-    );
+
+            if (status === "failed") {
+                setShowLoadingText2(true);
+                return;
+            }
+
+            pollTimerRef.current = window.setTimeout(() => {
+                void searchTxStatus(signature);
+            }, 2000);
+        } catch (error) {
+            console.error("[VipPurchase] tx status failed", error);
+            setShowLoadingText2(true);
+        }
+    }, []);
 
     const buyNode = useCallback(async () => {
         if (isSubmitting) return;
@@ -347,7 +345,9 @@ function VipPurchase() {
                                 {tierInfo.nowPrice} USDT/VIP
                             </div>
                         </div>
-                        <div className="info-item info-desc">{t("miningIndex.currentPromotion")}</div>
+                        <div className="info-item info-desc">
+                            {t("miningIndex.currentPromotion")}
+                        </div>
                         <div className="info-item info-desc">&nbsp;</div>
                     </div>
                 </div>
@@ -360,7 +360,9 @@ function VipPurchase() {
                 <div className="vip-list">
                     {[1, 2, 3, 4, 5].map(item => {
                         const isActive =
-                            (item < 5 && quantity >= (item - 1) * 10 + 1 && quantity <= item * 10) ||
+                            (item < 5 &&
+                                quantity >= (item - 1) * 10 + 1 &&
+                                quantity <= item * 10) ||
                             (item === 5 && quantity >= 41);
                         const isDisabled = (item - 1) * 10 + 1 > tierInfo.remainingInTier;
                         return (
@@ -419,7 +421,9 @@ function VipPurchase() {
                     <div className="header-info">
                         <div className="info-item">
                             <div className="info-label">{t("miningIndex.totalMineable")}</div>
-                            <div className="info-value">{formatNumber(nodeInfo.ent_issue_num)} ENT</div>
+                            <div className="info-value">
+                                {formatNumber(nodeInfo.ent_issue_num)} ENT
+                            </div>
                         </div>
                         <div className="info-item">
                             <div className="info-label">{t("miningIndex.fixedHashrate")}</div>
