@@ -1,16 +1,16 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    // reactSwc(),
-    react({
-      babel: {
-        plugins: ['styled-jsx/babel'],
-      },
-    }),
-    tailwindcss(),
-  ],
-})
+    plugins: [
+        react({
+            babel: {
+                plugins: ["styled-jsx/babel"],
+            },
+        }),
+    ],
+    css: {
+        postcss: "./postcss.config.cjs",
+    },
+});

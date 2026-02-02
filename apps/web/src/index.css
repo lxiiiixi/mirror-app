@@ -54,6 +54,17 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+    font-size: 16px;
+}
+
+html,
+body {
+    /* 控制浏览器的自动字体调整行为，浏览器会在比如屏幕缩放等情况时自动调整字体大小，设置为 100% 表示禁用浏览器的自动调整，完全自动控制。 */
+    -webkit-text-size-adjust: 100%; /* WebKit 浏览器（Chrome、Safari等） */
+    -ms-text-size-adjust: 100%; /* IE 和 Edge 浏览器 */
+}
+
 a {
     font-weight: 500;
     color: var(--color-primary);
@@ -100,7 +111,6 @@ body.work-detail-page #root {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* 禁止长按选择文本（可选，根据需求调整） */
 img {
     -webkit-user-select: none;
     user-select: none;
