@@ -52,7 +52,7 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
         return (
             <div
                 ref={ref}
-                className={`token-item-card ${className}`}
+                className={`token-item-card text-[12px] ${className}`}
                 onClick={onCardClick}
                 style={{ "--token-progress": `${progressPercent}%` } as CSSProperties}
                 {...props}
@@ -67,13 +67,13 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                     </div>
                     <div className="ticket-item-card__content">
                         <div className="ticket-item-card__content-title">
-                            <span className="name">{data.name}</span>
+                            <span className="name text-[16px]">{data.name}</span>
                         </div>
 
-                        <div className="ticket-item-card__content-desc">
+                        <div className="ticket-item-card__content-desc text-[12px]">
                             <div>
                                 <span>{mergedLabels.person} </span>
-                                <span className="value">{shareCount}</span>
+                                <span className="value text-[13px]">{shareCount}</span>
                             </div>
                             {actionText ? (
                                 <div className="btn-wrapper">
@@ -82,7 +82,7 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                                         className="buy-btn"
                                         onClick={handleActionClick}
                                     >
-                                        <span>{actionText}</span>
+                                        <span className="text-[10px]">{actionText}</span>
                                     </button>
                                 </div>
                             ) : null}
@@ -94,7 +94,7 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                         <span className="progress-fill" />
                     </div>
                     {(data.progressText || data.balanceText) && (
-                        <div className="progress-info">
+                        <div className="progress-info text-[10px]">
                             <div className="progress-text">{data.progressText}</div>
                             <div className="balance-text">{data.balanceText}</div>
                         </div>
@@ -104,7 +104,6 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                 <style jsx>{`
                     .token-item-card {
                         font-family: var(--font-primary, "Rubik", sans-serif);
-                        font-size: 12px;
                         color: #ffffff;
                         min-height: 103px;
                         position: relative;
@@ -168,7 +167,6 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                     }
 
                     .ticket-item-card__content-title .name {
-                        font-size: 16px;
                         line-height: 20px;
                         white-space: nowrap;
                         overflow: hidden;
@@ -179,7 +177,6 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                     }
 
                     .ticket-item-card__content-desc {
-                        font-size: 12px;
                         font-weight: 700;
                         color: #999999;
                         line-height: 18px;
@@ -193,7 +190,6 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                     }
 
                     .ticket-item-card__content-desc .value {
-                        font-size: 13px;
                         color: #ffffff;
                         word-wrap: break-word;
                         overflow-wrap: break-word;
@@ -221,7 +217,6 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        font-size: 10px;
                         font-weight: 500;
                         color: #ffffff;
                     }
@@ -249,7 +244,6 @@ export const TokenItemCard = forwardRef<HTMLDivElement, TokenItemCardProps>(
                         margin-top: 6px;
                         display: flex;
                         justify-content: space-between;
-                        font-size: 10px;
                         color: #999999;
                     }
 

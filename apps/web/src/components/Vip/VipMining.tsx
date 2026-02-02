@@ -147,7 +147,7 @@ export function VipMining() {
             <div className="card hero">
                 <div className="hero-image">
                     <img src={images.account.channel} alt="" />
-                    <div className="hero-label">{t("miningMy.introduction")}</div>
+                    <div className="hero-label text-[12px]">{t("miningMy.introduction")}</div>
                     <div className="hero-icon">
                         <img src={images.account.ent} alt="" />
                     </div>
@@ -185,21 +185,21 @@ export function VipMining() {
             </div>
 
             <div className="section">
-                <div className="section-title">{t("miningMy.dataDetails")}</div>
+                <div className="section-title text-[14px]">{t("miningMy.dataDetails")}</div>
                 <div className="card gift" style={{ backgroundImage: `url(${images.vip.giftBg})` }}>
-                    <div className="gift-row">
+                    <div className="gift-row text-[13px]">
                         <span>{t("vipMining.numberOfVips")}</span>
                         <strong>{vipLevel}</strong>
                     </div>
-                    <div className="gift-row">
+                    <div className="gift-row text-[13px]">
                         <span>{t("miningMy.purchasedNode")}</span>
                         <strong>{purchasedNodes}</strong>
                     </div>
-                    <div className="gift-row">
+                    <div className="gift-row text-[13px]">
                         <span>{t("miningMy.fixedHashrate")}</span>
                         <strong>1500A × {purchasedNodes}</strong>
                     </div>
-                    <div className="gift-row">
+                    <div className="gift-row text-[13px]">
                         <span>{t("miningMy.accelerateRelease")}</span>
                         <strong>35%</strong>
                     </div>
@@ -207,41 +207,41 @@ export function VipMining() {
             </div>
 
             <div className="section">
-                <div className="section-title">{t("miningMy.todaysMiningData")}</div>
+                <div className="section-title text-[14px]">{t("miningMy.todaysMiningData")}</div>
                 <div className="card stat-summary">
                     <div className="stat-main">
                         <img src={images.account.ent2} alt="" />
                         <div>
-                            <div className="stat-value">{rewards.today_base_mining_reward} ENT</div>
-                            <div className="stat-speedup">{purchasedNodes}X SPEEDUP</div>
-                            <div className="stat-hint">{t("miningMy.todaysTip")}</div>
+                            <div className="stat-value text-[16px]">{rewards.today_base_mining_reward} ENT</div>
+                            <div className="stat-speedup text-[12px]">{purchasedNodes}X SPEEDUP</div>
+                            <div className="stat-hint text-[12px]">{t("miningMy.todaysTip")}</div>
                         </div>
                     </div>
                 </div>
                 <div className="card stat-grid-card">
                     <div className="stat-grid">
                         <div>
-                            <div className="stat-value">{rewards.today_invite_reward} ENT</div>
-                            <div className="stat-label">{t("miningMy.directEarnings")}</div>
+                            <div className="stat-value text-[16px]">{rewards.today_invite_reward} ENT</div>
+                            <div className="stat-label text-[12px]">{t("miningMy.directEarnings")}</div>
                         </div>
                         <div>
-                            <div className="stat-value">{rewards.today_level_bonus_reward} ENT</div>
-                            <div className="stat-label">{t("miningMy.dividendEarnings")}</div>
+                            <div className="stat-value text-[16px]">{rewards.today_level_bonus_reward} ENT</div>
+                            <div className="stat-label text-[12px]">{t("miningMy.dividendEarnings")}</div>
                         </div>
                         <div>
-                            <div className="stat-value">{t("vipMining.comingSoon")}</div>
-                            <div className="stat-label">{t("miningMy.destructionEarnings")}</div>
+                            <div className="stat-value text-[16px]">{t("vipMining.comingSoon")}</div>
+                            <div className="stat-label text-[12px]">{t("miningMy.destructionEarnings")}</div>
                         </div>
                         <div>
-                            <div className="stat-value">{rewards.today_total_reward} ENT</div>
-                            <div className="stat-label">{t("miningMy.totalMined")}</div>
+                            <div className="stat-value text-[16px]">{rewards.today_total_reward} ENT</div>
+                            <div className="stat-label text-[12px]">{t("miningMy.totalMined")}</div>
                         </div>
                     </div>
                 </div>
-                <div className="section-release">{t("miningMy.releaseInfo")}</div>
+                <div className="section-release text-[12px]">{t("miningMy.releaseInfo")}</div>
             </div>
 
-            {loading ? <div className="loading">...</div> : null}
+            {loading ? <div className="loading text-[12px]">...</div> : null}
 
             <style jsx>{`
                 .vip-mining {
@@ -291,7 +291,6 @@ export function VipMining() {
                     left: 0;
                     width: 100%;
                     text-align: center;
-                    font-size: 12px;
                     font-weight: 700;
                     background: rgba(255, 255, 255, 0.25);
                 }
@@ -328,7 +327,6 @@ export function VipMining() {
                 }
 
                 .hero-label-text {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.7);
                 }
 
@@ -338,7 +336,6 @@ export function VipMining() {
                     color: #fff;
                     border-radius: 999px;
                     padding: 6px 12px;
-                    font-size: 12px;
                     cursor: pointer;
                 }
 
@@ -353,7 +350,6 @@ export function VipMining() {
                 }
 
                 .section-title {
-                    font-size: 14px;
                     font-weight: 700;
                 }
 
@@ -367,7 +363,6 @@ export function VipMining() {
                     display: flex;
                     gap: 6px;
                     margin-bottom: 8px;
-                    font-size: 13px;
                 }
 
                 .stat-summary .stat-main {
@@ -382,12 +377,10 @@ export function VipMining() {
                 }
 
                 .stat-value {
-                    font-size: 16px;
                     font-weight: 700;
                 }
 
                 .stat-speedup {
-                    font-size: 12px;
                     font-weight: 600;
                     background: linear-gradient(0deg, #b546ff 0.96%, #ea82ff 100%);
                     -webkit-background-clip: text;
@@ -396,7 +389,6 @@ export function VipMining() {
                 }
 
                 .stat-hint {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.65);
                 }
 
@@ -427,18 +419,15 @@ export function VipMining() {
                 }
 
                 .stat-label {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.65);
                 }
 
                 .section-release {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.65);
                     line-height: 1.5;
                 }
 
                 .loading {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.6);
                 }
             `}</style>

@@ -160,7 +160,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                             {showWalletBar ? (
                                 <>
                                     <button
-                                        className="header-item"
+                                        className="header-item text-[12px]"
                                         type="button"
                                         onClick={onLanguageClick}
                                     >
@@ -183,7 +183,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                                 <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                                             </svg>
                                         )}
-                                        <span className="lang">{languageLabel}</span>
+                                        <span className="lang text-[12px]">{languageLabel}</span>
                                     </button>
 
                                     <div className="nav-item-logo">
@@ -198,14 +198,14 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                     </div>
 
                                     <button
-                                        className="header-item connector"
+                                        className="header-item text-[12px] connector"
                                         type="button"
                                         onClick={onWalletClick}
                                     >
                                         <span
                                             className={`connect-btn ${isLoggedIn ? "assets" : ""}`}
                                         >
-                                            <span className="text">
+                                            <span className="text text-[12px]">
                                                 {isLoggedIn ? assetsLabel : loginLabel}
                                             </span>
                                         </span>
@@ -223,7 +223,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                     >
                                         <img src={images.works.backBtn} alt="" aria-hidden="true" />
                                     </button>
-                                    <div className="page-title">{pageTitle}</div>
+                                    <div className="page-title text-[16px]">{pageTitle}</div>
                                     <div className="header-right">{headerRight}</div>
                                 </>
                             ) : null}
@@ -274,9 +274,9 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                             aria-hidden="true"
                                         />
                                     </span>
-                                    <span className="pr-text">
-                                        <span className="nav-text">{item.label}</span>
-                                    </span>
+                                        <span className="pr-text">
+                                            <span className="nav-text text-[12px]">{item.label}</span>
+                                        </span>
                                 </button>
                             );
                         })}
@@ -338,7 +338,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        font-size: 12px;
                         font-weight: 500;
                         padding: 0;
                         border: none;
@@ -388,7 +387,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     }
 
                     .logo-text {
-                        font-size: 18px;
                         font-weight: 700;
                         color: #fff;
                         letter-spacing: 2px;
@@ -401,12 +399,10 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     }
 
                     .lang {
-                        font-size: 12px;
                         font-weight: 700;
                     }
 
                     .connector .text {
-                        font-size: 12px;
                         font-weight: 700;
                         line-height: 16px;
                         text-align: left;
@@ -439,7 +435,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     .page-title {
                         flex: 1;
                         text-align: center;
-                        font-size: 16px;
                         font-weight: 700;
                         color: #fff;
                     }
@@ -502,7 +497,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     }
 
                     .footer-nav .nav-text {
-                        font-size: 12px;
                         color: rgba(252, 252, 252, 1);
                     }
 

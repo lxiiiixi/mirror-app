@@ -194,24 +194,24 @@ function Promotion() {
     }, [getUserCheck]);
 
     return (
-        <div className="promotion-page">
+        <div className="promotion-page text-[12px]">
             {isCanBind && inviteCode ? (
-                <button className="header-title-btn" type="button" onClick={bindUser}>
+                <button className="header-title-btn text-[16px]" type="button" onClick={bindUser}>
                     {t("promotion.bindSuperior")}
                 </button>
             ) : null}
 
-            <div className="sub-title">{t("promotion.subTitle")}</div>
+            <div className="sub-title text-[18px]">{t("promotion.subTitle")}</div>
 
             {userCanBuy ? (
                 <div className="content-card promotion-card">
                     <div className="card-title">
-                        <div className="title">{t("promotion.promotion")}</div>
+                        <div className="title text-[14px]">{t("promotion.promotion")}</div>
                         <div>
-                            <div className="commission-line">
+                            <div className="commission-line text-[12px]">
                                 {t("promotion.directCommission")} {inviteNum.direct_invites}
                             </div>
-                            <div className="commission-line">
+                            <div className="commission-line text-[12px]">
                                 {t("promotion.indirectCommission")} {inviteNum.indirect_invites}
                             </div>
                         </div>
@@ -226,12 +226,12 @@ function Promotion() {
                         </div>
                         <div className="promotion-right">
                             <div className="btn-row">
-                                <button type="button" className="save-btn" onClick={savePoster}>
+                                <button type="button" className="save-btn text-[12px]" onClick={savePoster}>
                                     {savingPoster
                                         ? t("miningShare.generating")
                                         : t("miningShare.savePoster")}
                                 </button>
-                                <button type="button" className="share-btn" onClick={copyLink}>
+                                <button type="button" className="share-btn text-[12px]" onClick={copyLink}>
                                     {t("miningShare.shareLink")}
                                 </button>
                             </div>
@@ -242,16 +242,16 @@ function Promotion() {
 
             <div className="content-card stats-card">
                 <div className="stats-col">
-                    <div className="stats-label">{t("promotion.todaysCommission")}</div>
-                    <div className="stats-value">{formatNumber(today)}</div>
+                    <div className="stats-label text-[12px]">{t("promotion.todaysCommission")}</div>
+                    <div className="stats-value text-[24px]">{formatNumber(today)}</div>
                 </div>
                 <div className="stats-col">
-                    <div className="stats-label">{t("promotion.cumulativeCommission")}</div>
-                    <div className="stats-value">${formatNumber(total)}</div>
+                    <div className="stats-label text-[12px]">{t("promotion.cumulativeCommission")}</div>
+                    <div className="stats-value text-[24px]">${formatNumber(total)}</div>
                 </div>
             </div>
 
-            <div className="tip-text">{t("promotion.tipText")}</div>
+            <div className="tip-text text-[14px]">{t("promotion.tipText")}</div>
 
             <Discover />
 
@@ -260,7 +260,6 @@ function Promotion() {
                     padding: 16px;
                     font-family: Rubik, sans-serif;
                     color: #ffffff;
-                    font-size: 12px;
                 }
 
                 .header-title-btn {
@@ -271,7 +270,6 @@ function Promotion() {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    font-size: 16px;
                     font-weight: 700;
                     margin-bottom: 16px;
                     border: none;
@@ -279,7 +277,6 @@ function Promotion() {
                 }
 
                 .sub-title {
-                    font-size: 18px;
                     font-weight: 600;
                     text-align: center;
                     margin-bottom: 16px;
@@ -304,12 +301,7 @@ function Promotion() {
                 }
 
                 .promotion-card .title {
-                    font-size: 14px;
                     font-weight: 700;
-                }
-
-                .commission-line {
-                    font-size: 12px;
                 }
 
                 .share-box {
@@ -358,7 +350,6 @@ function Promotion() {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    font-size: 12px;
                     font-weight: 600;
                     background: #eb1484;
                     color: #fff;
@@ -376,19 +367,16 @@ function Promotion() {
                 }
 
                 .stats-label {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.8);
                     margin-bottom: 6px;
                 }
 
                 .stats-value {
-                    font-size: 24px;
                     font-weight: 700;
                     color: #ff9d00;
                 }
 
                 .tip-text {
-                    font-size: 14px;
                     line-height: 1.5;
                     text-align: center;
                     color: rgba(255, 255, 255, 1);

@@ -15,14 +15,13 @@ export function AssetsLogoutButton() {
     };
 
     return (
-        <button type="button" className="assets-logout-btn" onClick={handleLogout}>
+        <button type="button" className="assets-logout-btn text-[12px]" onClick={handleLogout}>
             {t("account.logout")}
             <style jsx>{`
                 .assets-logout-btn {
                     border: 1px solid rgba(255, 255, 255, 0.3);
                     background: rgba(255, 255, 255, 0.08);
                     color: #fff;
-                    font-size: 12px;
                     font-weight: 600;
                     padding: 6px 12px;
                     border-radius: 8px;

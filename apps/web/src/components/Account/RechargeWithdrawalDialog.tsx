@@ -359,25 +359,24 @@ export function RechargeWithdrawalDialog({
                         <div className="bottom-tab">
                             <button
                                 type="button"
-                                className={activeTab === 0 ? "recharge-btn sel" : "recharge-btn"}
+                                className={`${activeTab === 0 ? "recharge-btn sel" : "recharge-btn"} text-[14px]`}
                                 onClick={() => setActiveTab(0)}
                             >
                                 {t("account.withdrawDialog.title")}
                             </button>
                             <button
                                 type="button"
-                                className={
-                                    activeTab === 1
-                                        ? "recharge-btn sel right"
-                                        : "recharge-btn right"
-                                }
+                                className={`${activeTab === 1
+                                    ? "recharge-btn sel right"
+                                    : "recharge-btn right"
+                                } text-[14px]`}
                                 onClick={() => setActiveTab(1)}
                             >
                                 {t("account.withdrawDialog.confirm")}
                             </button>
                         </div>
 
-                        <div className="bottom-text">
+                        <div className="bottom-text text-[13px]">
                             {activeTab === 0
                                 ? t("account.withdrawDialog.recharge_currency")
                                 : t("account.withdrawDialog.withdraw_currency")}
@@ -390,7 +389,7 @@ export function RechargeWithdrawalDialog({
                             onValueChange={setCurrency}
                         />
 
-                        <div className="bottom-text">
+                        <div className="bottom-text text-[13px]">
                             {activeTab === 0
                                 ? t("account.withdrawDialog.recharge_number")
                                 : t("account.withdrawDialog.withdraw_number")}
@@ -406,7 +405,7 @@ export function RechargeWithdrawalDialog({
                         />
 
                         {currency ? (
-                            <div className="bottom-text tips">
+                            <div className="bottom-text text-[13px] tips">
                                 {t("account.withdrawDialog.currentMax", {
                                     num: currentBalance || 0,
                                 })}
@@ -447,7 +446,6 @@ export function RechargeWithdrawalDialog({
                 .recharge-btn {
                     flex: 1;
                     border-radius: 10px;
-                    font-size: 14px;
                     padding: 8px 0;
                     font-weight: 600;
                     color: white;
@@ -468,7 +466,6 @@ export function RechargeWithdrawalDialog({
 
                 .bottom-text {
                     color: white;
-                    font-size: 13px;
                     margin-top: 14px;
                 }
 

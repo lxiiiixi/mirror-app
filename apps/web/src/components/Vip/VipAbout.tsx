@@ -29,7 +29,7 @@ export function VipAbout() {
             <div className="links">
                 <button
                     type="button"
-                    className="white-paper"
+                    className="white-paper text-[14px]"
                     onClick={() => openLink(MIRROR_EXTERNAL_LINKS.whitePaper)}
                 >
                     <img src={images.vip.whitePaperIcon} alt="" />
@@ -55,7 +55,7 @@ export function VipAbout() {
             </div>
 
             <div className="card">
-                <h3 className="card-title">{t("vipAbout.cardTitle")}</h3>
+                <h3 className="card-title text-[18px]">{t("vipAbout.cardTitle")}</h3>
                 <div className="privileges">
                     {[
                         {
@@ -81,13 +81,13 @@ export function VipAbout() {
                     ].map(item => (
                         <div key={item.title} className="privilege-item">
                             <span className="privilege-title">{item.title}</span>
-                            <span className="privilege-desc">{item.desc}</span>
+                            <span className="privilege-desc text-[13px]">{item.desc}</span>
                         </div>
                     ))}
                 </div>
 
                 <div className="join">
-                    <div className="join-title">{t("vipAbout.joinTitle")}</div>
+                    <div className="join-title text-[16px]">{t("vipAbout.joinTitle")}</div>
                     <button
                         type="button"
                         className="join-button"
@@ -99,14 +99,14 @@ export function VipAbout() {
             </div>
 
             <div className="card gifted">
-                <h3 className="card-title">{t("vipAbout.giftedNodes")}</h3>
-                <div className="centered">{t("vipAbout.totalMiningCapacity")}</div>
-                <div className="ent-amount">6,000,000,000 ENT</div>
-                <div className="centered">{t("vipAbout.currentLimit")}</div>
+                <h3 className="card-title text-[18px]">{t("vipAbout.giftedNodes")}</h3>
+                <div className="centered text-[13px]">{t("vipAbout.totalMiningCapacity")}</div>
+                <div className="ent-amount text-[22px]">6,000,000,000 ENT</div>
+                <div className="centered text-[13px]">{t("vipAbout.currentLimit")}</div>
                 <div className="logo">
                     <img src={images.logo} alt="" />
                 </div>
-                <div className="release">
+                <div className="release text-[12px]">
                     <span>{t("vipAbout.dailyOutputPerNode")}</span>
                     <span>{t("vipAbout.acceleratedRelease")}</span>
                     <span>{t("vipAbout.oneVipGiftNode")}</span>
@@ -145,7 +145,6 @@ export function VipAbout() {
                     border: none;
                     background: transparent;
                     color: #fff;
-                    font-size: 14px;
                     font-weight: 500;
                     cursor: pointer;
                 }
@@ -183,7 +182,6 @@ export function VipAbout() {
 
                 .card-title {
                     text-align: center;
-                    font-size: 18px;
                     font-weight: 700;
                     margin-bottom: 16px;
                 }
@@ -207,7 +205,6 @@ export function VipAbout() {
 
                 .privilege-desc {
                     color: rgba(255, 255, 255, 0.8);
-                    font-size: 13px;
                 }
 
                 .join {
@@ -219,7 +216,6 @@ export function VipAbout() {
                 }
 
                 .join-title {
-                    font-size: 16px;
                     font-weight: 600;
                     margin-bottom: 10px;
                     background: linear-gradient(90deg, #9afff2 0%, #e7cbfb 50.96%, #9efdf2 100%);
@@ -243,12 +239,10 @@ export function VipAbout() {
 
                 .centered {
                     color: rgba(255, 255, 255, 0.8);
-                    font-size: 13px;
                     margin-bottom: 8px;
                 }
 
                 .ent-amount {
-                    font-size: 22px;
                     font-weight: 700;
                     color: #05faea;
                     margin-bottom: 8px;
@@ -269,7 +263,6 @@ export function VipAbout() {
                     flex-direction: column;
                     gap: 6px;
                     margin: 16px 0 20px;
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.7);
                 }
             `}</style>

@@ -27,7 +27,7 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
     return (
       <div
         ref={ref}
-        className={`notice-container ${className}`}
+        className={`notice-container text-[12px] ${className}`}
         {...props}
       >
         {/* 左侧喇叭图标 */}
@@ -62,28 +62,28 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
         <style jsx>{`
           .notice-container {
             color: #fff;
-            font-size: 13px;
             background: var(--color-secondary-bg);
             border-radius: 20px;
-            padding: 8px 12px;
+            padding: 6px 2px 6px 10px;
             display: flex;
             align-items: center;
             overflow: hidden;
             box-sizing: border-box;
             width: 100%;
-            height: 36px;
+            height: 32px;
+            max-width: 100vw;
           }
 
           .icon {
-            width: 14px;
-            height: 14px;
-            margin-right: 10px;
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
             flex-shrink: 0;
           }
 
           .icon-jump {
             margin-right: 0;
-            margin-left: 8px;
+            margin-left: 6px;
             transform: rotate(180deg);
             cursor: pointer;
             transition: transform 0.3s ease;
@@ -115,25 +115,6 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
             }
           }
 
-          /* 响应式适配 */
-          @media (max-width: 768px) {
-            .notice-container {
-              font-size: 12px;
-              padding: 6px 2px 6px 10px;
-              height: 32px;
-              max-width: 100vw;
-            }
-
-            .icon {
-              width: 12px;
-              height: 12px;
-              margin-right: 8px;
-            }
-
-            .icon-jump {
-              margin-left: 6px;
-            }
-          }
         `}</style>
       </div>
     )
@@ -141,4 +122,3 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
 )
 
 Notice.displayName = 'Notice'
-

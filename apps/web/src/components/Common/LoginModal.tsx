@@ -28,10 +28,10 @@ export function LoginModal({ onWalletLogin, onEmailLogin }: LoginModalProps) {
     return (
         <Modal open={open} title={t("loginModal.title")} onClose={closeModal}>
             <div className="login-modal">
-                <button type="button" className="login-option" onClick={handleEmailLogin}>
+                <button type="button" className="login-option text-[16px]" onClick={handleEmailLogin}>
                     {t("loginModal.email")}
                 </button>
-                <button type="button" className="login-option" onClick={handleWalletLogin}>
+                <button type="button" className="login-option text-[16px]" onClick={handleWalletLogin}>
                     {t("loginModal.wallet")}
                 </button>
             </div>
@@ -55,7 +55,6 @@ export function LoginModal({ onWalletLogin, onEmailLogin }: LoginModalProps) {
                     border-radius: 6px;
                     border: 1px solid rgba(255, 255, 255, 0.6);
                     color: #fff;
-                    font-size: 16px;
                     font-weight: 600;
                     letter-spacing: 0.2px;
                     cursor: pointer;

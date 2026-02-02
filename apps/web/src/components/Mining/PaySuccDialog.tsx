@@ -16,7 +16,7 @@ export function PaySuccDialog({ open, onClose, onJump }: PaySuccDialogProps) {
 
     return (
         <Modal open={open} title={t("paySuccDialog.title")} onClose={onClose}>
-            <div className="pay-succ">
+            <div className="pay-succ text-[14px]">
                 <span>{before}</span>
                 <button type="button" className="link-btn" onClick={onJump}>
                     {label}
@@ -26,7 +26,6 @@ export function PaySuccDialog({ open, onClose, onJump }: PaySuccDialogProps) {
 
             <style jsx>{`
                 .pay-succ {
-                    font-size: 14px;
                     line-height: 1.6;
                     text-align: center;
                     color: #fff;
@@ -40,7 +39,6 @@ export function PaySuccDialog({ open, onClose, onJump }: PaySuccDialogProps) {
                     padding: 0;
                     margin: 0 4px;
                     cursor: pointer;
-                    font-size: inherit;
                 }
             `}</style>
         </Modal>

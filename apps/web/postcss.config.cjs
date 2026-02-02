@@ -3,7 +3,7 @@ module.exports = {
         // Tailwind v4 通过 PostCSS 处理，必须放在前面
         "@tailwindcss/postcss": {},
         "postcss-pxtorem": {
-            rootValue: 16, // 根元素字体大小（基础值）
+            rootValue: 16, // 构建阶段使用的换算基准，决定 px ÷ rootValue = rem 写入到最终 CSS。这里表示以 16px 为 1rem 去计算其他的 px 值最终会转换的 rem 值。
             unitPrecision: 5, // rem 小数点位数
             propList: [
                 'font',

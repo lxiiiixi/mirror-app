@@ -226,8 +226,8 @@ function BillingHistory() {
         return (
             <div className="billing-page">
                 <div className="login-content">
-                    <div className="login-title">{t("account.login")}</div>
-                    <button type="button" className="login-button" onClick={openLoginModal}>
+                    <div className="login-title text-[28px]">{t("account.login")}</div>
+                    <button type="button" className="login-button text-[16px]" onClick={openLoginModal}>
                         <img className="wallet-icon" src={images.account.phantomIcon} alt="" />
                         <span className="wallet-name">Wallet / Email</span>
                     </button>
@@ -247,7 +247,6 @@ function BillingHistory() {
                     }
 
                     .login-title {
-                        font-size: 28px;
                         font-weight: 700;
                         background: linear-gradient(90deg, #00f2ff 0%, #5773ff 100%);
                         -webkit-background-clip: text;
@@ -265,7 +264,6 @@ function BillingHistory() {
                         background: rgba(153, 153, 153, 0.06);
                         border: 1px solid rgba(255, 255, 255, 0.12);
                         color: #fff;
-                        font-size: 16px;
                         font-weight: 600;
                         cursor: pointer;
                         backdrop-filter: blur(20px);
@@ -285,19 +283,19 @@ function BillingHistory() {
             <div className="top" />
             <div className="top1" />
 
-            <div className="body-content">
+            <div className="body-content text-[12px]">
                 <div className="top-lay">
                     <div className="top-left">
                         <button
                             type="button"
-                            className={`top-lay-view ${activeTab === 1 ? "sel" : ""}`}
+                            className={`top-lay-view text-[13px] ${activeTab === 1 ? "sel" : ""}`}
                             onClick={() => handleTabChange(1)}
                         >
                             {t("miningRecords.income")}
                         </button>
                         <button
                             type="button"
-                            className={`top-lay-view ${activeTab === 2 ? "sel" : ""}`}
+                            className={`top-lay-view text-[13px] ${activeTab === 2 ? "sel" : ""}`}
                             onClick={() => handleTabChange(2)}
                         >
                             {t("miningRecords.expenditure")}
@@ -305,7 +303,7 @@ function BillingHistory() {
                     </div>
                     <button
                         type="button"
-                        className="top-lay-view"
+                        className="top-lay-view text-[13px]"
                         onClick={() => setShowType(prev => !prev)}
                     >
                         <span>{t("miningRecords.type")}</span>
@@ -322,7 +320,7 @@ function BillingHistory() {
                             <button
                                 key={option.value}
                                 type="button"
-                                className={option.value === selectType ? "type-sel" : ""}
+                                className={`${option.value === selectType ? "type-sel" : ""} text-[12px]`}
                                 onClick={() => handleTypeChange(option.value)}
                             >
                                 {option.label}
@@ -337,7 +335,7 @@ function BillingHistory() {
                             <button
                                 key={option.value}
                                 type="button"
-                                className={option.value === selectType ? "type-sel" : ""}
+                                className={`${option.value === selectType ? "type-sel" : ""} text-[12px]`}
                                 onClick={() => handleTypeChange(option.value)}
                             >
                                 {option.label}
@@ -347,17 +345,17 @@ function BillingHistory() {
                 ) : null}
 
                 {records.map((item, index) => (
-                    <div className="record-item" key={`${item.createTime}-${index}`}>
+                    <div className="record-item text-[14px]" key={`${item.createTime}-${index}`}>
                         <div className="record-info">
                             <div className="record-amount-info">{resolveRecordTitle(item)}</div>
-                            <div className="record-date">{formatDateTime(item.createTime)}</div>
+                            <div className="record-date text-[12px]">{formatDateTime(item.createTime)}</div>
                         </div>
-                        <div className="record-status">{resolveAmount(item)}</div>
+                        <div className="record-status text-[15px]">{resolveAmount(item)}</div>
                     </div>
                 ))}
 
                 {!loading && !loadingMore && records.length === 0 ? (
-                    <div className="empty-state">
+                    <div className="empty-state text-[14px]">
                         {t("billingHistory.noData", { defaultValue: "No data" })}
                     </div>
                 ) : null}
@@ -392,7 +390,6 @@ function BillingHistory() {
                 .body-content {
                     padding: 10px 0 0;
                     font-family: Rubik, sans-serif;
-                    font-size: 12px;
                     display: flex;
                     flex-direction: column;
                     gap: 12px;
@@ -412,7 +409,6 @@ function BillingHistory() {
 
                 .top-lay-view {
                     color: white;
-                    font-size: 13px;
                     padding: 6px 10px;
                     border-radius: 4px;
                     border: 1px solid #ffffff;
@@ -449,7 +445,6 @@ function BillingHistory() {
                     border: 1px solid #ffffff;
                     padding: 6px 16px;
                     border-radius: 14px;
-                    font-size: 12px;
                     /* background: transparent; */
                     color: #fff;
                     cursor: pointer;
@@ -471,7 +466,6 @@ function BillingHistory() {
                     align-items: center;
                     padding: 18px 0;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-                    font-size: 14px;
                 }
 
                 .record-info {
@@ -488,20 +482,17 @@ function BillingHistory() {
 
                 .record-status {
                     font-weight: 400;
-                    font-size: 15px;
                     min-width: 80px;
                     text-align: right;
                 }
 
                 .record-date {
-                    font-size: 12px;
                     color: #c0c0c6;
                 }
 
                 .empty-state {
                     text-align: center;
                     color: rgba(255, 255, 255, 0.5);
-                    font-size: 14px;
                     padding: 40px 16px;
                 }
 

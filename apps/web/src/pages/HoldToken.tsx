@@ -157,8 +157,8 @@ function HoldToken() {
     return (
       <div className="hold-token-page">
         <div className="login-content">
-          <div className="login-title">{t('account.login')}</div>
-          <button type="button" className="login-button" onClick={openLoginModal}>
+          <div className="login-title text-[28px]">{t('account.login')}</div>
+          <button type="button" className="login-button text-[16px]" onClick={openLoginModal}>
             <img className="wallet-icon" src={images.account.phantomIcon} alt="" />
             <span className="wallet-name">Wallet / Email</span>
           </button>
@@ -178,7 +178,6 @@ function HoldToken() {
           }
 
           .login-title {
-            font-size: 28px;
             font-weight: 700;
             background: linear-gradient(90deg, #00f2ff 0%, #5773ff 100%);
             -webkit-background-clip: text;
@@ -196,7 +195,6 @@ function HoldToken() {
             background: rgba(153, 153, 153, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: #fff;
-            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             backdrop-filter: blur(20px);
@@ -216,7 +214,7 @@ function HoldToken() {
       <div className="top" />
       <div className="top1" />
       {listedAssets.map((item) => (
-        <div key={`balance-${item.name}`} className="item">
+        <div key={`balance-${item.name}`} className="item text-[16px]">
           <div className="item_item">
             <div className={`avatar-border ${['ENT', 'ART', 'USDT'].includes(item.name) ? 'no-border' : ''}`}>
               {item.name === 'ENT' ? (
@@ -232,17 +230,17 @@ function HoldToken() {
           </div>
           <div className="item_item">
             <div>{item.name}</div>
-            <div className="item_text">{formatDisplayNumber(item.price)}</div>
+            <div className="item_text text-[12px]">{formatDisplayNumber(item.price)}</div>
           </div>
           <div className="item_item item_right flex-1">
             <div>{formatDisplayNumber(item.balance)}</div>
-            <div className="item_text">{formatCurrency(item.value)}</div>
+            <div className="item_text text-[12px]">{formatCurrency(item.value)}</div>
           </div>
         </div>
       ))}
 
       {tokenList.map((item, index) => (
-        <div key={`token-${index}`} className="item">
+        <div key={`token-${index}`} className="item text-[16px]">
           <div className="item_item">
             <div className="avatar-border">
               <TokenAvatar src={item.coverUrl} showTokenBorder={true} size={44} imageSize={36} />
@@ -250,11 +248,11 @@ function HoldToken() {
           </div>
           <div className="item_item">
             <div>{item.tokenName}</div>
-            <div className="item_text">-</div>
+            <div className="item_text text-[12px]">-</div>
           </div>
           <div className="item_item flex-1 item_right">
             <div>{item.tokenBalance ? formatDisplayNumber(item.tokenBalance) : '-'}</div>
-            <div className="item_text">-</div>
+            <div className="item_text text-[12px]">-</div>
           </div>
         </div>
       ))}
@@ -291,7 +289,6 @@ function HoldToken() {
           margin-left: 15px;
           margin-right: 15px;
           border-radius: 10px;
-          font-size: 16px;
           opacity: 1;
           margin-top: 15px;
           background: linear-gradient(
@@ -318,7 +315,6 @@ function HoldToken() {
         }
 
         .item_text {
-          font-size: 12px;
           color: #c0c0c6;
         }
 

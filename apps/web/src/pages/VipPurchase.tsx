@@ -284,8 +284,8 @@ function VipPurchase() {
         return (
             <div className="vip-purchase-page">
                 <div className="login-content">
-                    <div className="login-title">{t("account.login")}</div>
-                    <button type="button" className="login-button" onClick={openLoginModal}>
+                    <div className="login-title text-[28px]">{t("account.login")}</div>
+                    <button type="button" className="login-button text-[16px]" onClick={openLoginModal}>
                         <img className="wallet-icon" src={images.account.phantomIcon} alt="" />
                         <span className="wallet-name">Wallet / Email</span>
                     </button>
@@ -305,7 +305,6 @@ function VipPurchase() {
                     }
 
                     .login-title {
-                        font-size: 28px;
                         font-weight: 700;
                         background: linear-gradient(90deg, #00f2ff 0%, #5773ff 100%);
                         -webkit-background-clip: text;
@@ -323,7 +322,6 @@ function VipPurchase() {
                         background: rgba(153, 153, 153, 0.06);
                         border: 1px solid rgba(255, 255, 255, 0.12);
                         color: #fff;
-                        font-size: 16px;
                         font-weight: 600;
                         cursor: pointer;
                         backdrop-filter: blur(20px);
@@ -340,7 +338,7 @@ function VipPurchase() {
 
     return (
         <div className="vip-purchase-page">
-            <div className="body-content">
+            <div className="body-content text-[12px]">
                 <div className="header">
                     <div className="header-image-wrapper">
                         <img
@@ -355,21 +353,21 @@ function VipPurchase() {
                     </div>
                     <div className="header-info">
                         <div className="info-item">
-                            <div className="info-label">{t("miningIndex.clubName")}</div>
-                            <div className="info-value font-price">
+                            <div className="info-label text-[12px]">{t("miningIndex.clubName")}</div>
+                            <div className="info-value text-[12px] font-price text-[14px]">
                                 {tierInfo.nowPrice} USDT/VIP
                             </div>
                         </div>
-                        <div className="info-item info-desc">
+                        <div className="info-item info-desc text-[11px]">
                             {t("miningIndex.currentPromotion")}
                         </div>
-                        <div className="info-item info-desc">&nbsp;</div>
+                        <div className="info-item info-desc text-[11px]">&nbsp;</div>
                     </div>
                 </div>
 
-                <div className="current-power">{t("miningIndex.priceIncreaseNote")}</div>
+                <div className="current-power text-[11px]">{t("miningIndex.priceIncreaseNote")}</div>
 
-                <div className="section-label">
+                <div className="section-label text-[13px]">
                     {t("miningIndex.currentVipPrice", { price: tierInfo.nowPrice })}
                 </div>
                 <div className="vip-list">
@@ -384,7 +382,7 @@ function VipPurchase() {
                             <button
                                 key={item}
                                 type="button"
-                                className={`vip-item ${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`}
+                                className={`vip-item text-[14px] ${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`}
                                 onClick={() => selectVip(item)}
                                 disabled={isDisabled}
                             >
@@ -394,74 +392,74 @@ function VipPurchase() {
                     })}
                 </div>
 
-                <div className="current-power">{t("miningIndex.complimentaryNode")}</div>
+                <div className="current-power text-[11px]">{t("miningIndex.complimentaryNode")}</div>
 
-                <div className="section-label">{t("miningIndex.selectVipQuantity")}</div>
+                <div className="section-label text-[13px]">{t("miningIndex.selectVipQuantity")}</div>
                 <div className="buy-amount">
                     <div className="buy-control">
                         <button
                             type="button"
                             onClick={decreaseQuantity}
                             disabled={quantity <= 1}
-                            className={quantity <= 1 ? "disabled" : ""}
+                            className={`${quantity <= 1 ? "disabled" : ""} text-[20px]`}
                         >
                             -
                         </button>
-                        <div className="buy-input">{quantity}</div>
+                        <div className="buy-input text-[20px]">{quantity}</div>
                         <button
                             type="button"
                             onClick={increaseQuantity}
                             disabled={quantity >= tierInfo.remainingInTier}
-                            className={quantity >= tierInfo.remainingInTier ? "disabled" : ""}
+                            className={`${quantity >= tierInfo.remainingInTier ? "disabled" : ""} text-[20px]`}
                         >
                             +
                         </button>
                     </div>
                 </div>
 
-                <div className="current-power">
+                <div className="current-power text-[11px]">
                     {t("miningIndex.totalPayment", {
                         price: totalPrice,
                         quantity,
                     })}
                     {currentGiftNodes > 0 ? (
-                        <div className="gift-tip">
+                        <div className="gift-tip text-[12px]">
                             {t("miningIndex.extraGiftNodes", { count: currentGiftNodes })}
                         </div>
                     ) : null}
                 </div>
 
-                <div className="section-label">{t("miningIndex.dataDetails")}</div>
+                <div className="section-label text-[13px]">{t("miningIndex.dataDetails")}</div>
                 <div className="header detail-card">
                     <div className="header-info">
                         <div className="info-item">
-                            <div className="info-label">{t("miningIndex.totalMineable")}</div>
-                            <div className="info-value">
+                            <div className="info-label text-[12px]">{t("miningIndex.totalMineable")}</div>
+                            <div className="info-value text-[12px]">
                                 {formatNumber(nodeInfo.ent_issue_num)} ENT
                             </div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label">{t("miningIndex.fixedHashrate")}</div>
-                            <div className="info-value">{nodeInfo.power}A</div>
+                            <div className="info-label text-[12px]">{t("miningIndex.fixedHashrate")}</div>
+                            <div className="info-value text-[12px]">{nodeInfo.power}A</div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label">{t("miningIndex.variableHashrate")}</div>
-                            <div className="info-value muted">{t("miningIndex.notAvailable")}</div>
+                            <div className="info-label text-[12px]">{t("miningIndex.variableHashrate")}</div>
+                            <div className="info-value text-[12px] muted">{t("miningIndex.notAvailable")}</div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label">{t("miningIndex.overallDailyOutput")}</div>
-                            <div className="info-value">≈ {formatNumber(dailyOutput)} ENT</div>
+                            <div className="info-label text-[12px]">{t("miningIndex.overallDailyOutput")}</div>
+                            <div className="info-value text-[12px]">≈ {formatNumber(dailyOutput)} ENT</div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label">{t("miningIndex.accelerateRelease")}</div>
-                            <div className="info-value">35%</div>
+                            <div className="info-label text-[12px]">{t("miningIndex.accelerateRelease")}</div>
+                            <div className="info-value text-[12px]">35%</div>
                         </div>
                     </div>
                 </div>
 
                 {userCanBuy ? (
                     <button
-                        className={`buy-button ${isSubmitting ? "global-btn-disabled" : ""}`}
+                        className={`buy-button text-[20px] ${isSubmitting ? "global-btn-disabled" : ""}`}
                         type="button"
                         onClick={buyNode}
                         disabled={waitPay}
@@ -471,7 +469,7 @@ function VipPurchase() {
                             : t("miningIndex.buy", { price: totalPrice })}
                     </button>
                 ) : (
-                    <button className="buy-button global-btn-disabled" type="button" disabled>
+                    <button className="buy-button text-[20px] global-btn-disabled" type="button" disabled>
                         {t("miningIndex.comingSoon")}
                     </button>
                 )}
@@ -483,18 +481,18 @@ function VipPurchase() {
                         <div className="loading-box">
                             <div className="flex-center">
                                 <Spinner size="large" />
-                                <div className="loading-text">{loadingText}</div>
+                                <div className="loading-text text-[16px]">{loadingText}</div>
                             </div>
-                            <div className="loading-tips">
+                            <div className="loading-tips text-[12px]">
                                 {t("miningIndex.waitForChainConfirmation")}
                             </div>
                         </div>
                     ) : (
-                        <div className="loading-text center">
+                        <div className="loading-text text-[16px] center">
                             {t("miningIndex.paymentError")}
                             <button
                                 type="button"
-                                className="link-text"
+                                className="link-text text-[14px]"
                                 onClick={() => navigate("/account/billing")}
                             >
                                 {t("miningIndex.myRecords")}
@@ -519,11 +517,9 @@ function VipPurchase() {
                 .body-content {
                     padding: 18px 16px 100px;
                     font-family: Rubik, sans-serif;
-                    font-size: 12px;
                 }
 
                 .section-label {
-                    font-size: 13px;
                     font-weight: 700;
                     color: #fff;
                     margin-bottom: 6px;
@@ -587,7 +583,6 @@ function VipPurchase() {
                 }
 
                 .info-label {
-                    font-size: 12px;
                     color: rgba(224, 224, 224, 1);
                     min-width: 140px;
                 }
@@ -595,7 +590,6 @@ function VipPurchase() {
                 .info-value {
                     flex-grow: 1;
                     margin-left: 8px;
-                    font-size: 12px;
                     color: #ffffff;
                     font-weight: 700;
                 }
@@ -605,7 +599,6 @@ function VipPurchase() {
                 }
 
                 .font-price {
-                    font-size: 14px;
                     font-weight: 700;
                     background: linear-gradient(
                         146.07deg,
@@ -619,7 +612,6 @@ function VipPurchase() {
                 }
 
                 .info-desc {
-                    font-size: 11px;
                     line-height: 16px;
                     color: rgba(240, 240, 240, 1);
                 }
@@ -640,7 +632,6 @@ function VipPurchase() {
                     background: rgba(199, 199, 199, 0.08);
                     border: 1px solid rgba(235, 20, 132, 0.4);
                     box-shadow: 0 2px 8px rgba(235, 20, 132, 0.32);
-                    font-size: 14px;
                     font-weight: 700;
                     display: flex;
                     justify-content: center;
@@ -683,7 +674,6 @@ function VipPurchase() {
                     width: 32px;
                     height: 32px;
                     color: #ffffff;
-                    font-size: 20px;
                     font-weight: 700;
                     display: flex;
                     justify-content: center;
@@ -705,21 +695,18 @@ function VipPurchase() {
                     color: #ffffff;
                     text-align: center;
                     border: none;
-                    font-size: 20px;
                     font-weight: 700;
                     line-height: 32px;
                 }
 
                 .current-power {
                     margin-bottom: 12px;
-                    font-size: 11px;
                     line-height: 18px;
                     color: rgba(166, 166, 166, 1);
                 }
 
                 .gift-tip {
                     color: #eb1484;
-                    font-size: 12px;
                     margin-top: 4px;
                 }
 
@@ -737,7 +724,6 @@ function VipPurchase() {
                     width: calc(100% - 32px);
                     height: 56px;
                     color: #ffffff;
-                    font-size: 20px;
                     font-weight: 600;
                     text-shadow: 0 4px 20px rgba(4, 1, 26, 0.47);
                     border: none;
@@ -785,7 +771,6 @@ function VipPurchase() {
                 }
 
                 .loading-text {
-                    font-size: 16px;
                     font-weight: 700;
                 }
 
@@ -794,7 +779,6 @@ function VipPurchase() {
                 }
 
                 .loading-tips {
-                    font-size: 12px;
                     color: rgba(224, 224, 224, 1);
                     text-align: center;
                 }
@@ -805,7 +789,6 @@ function VipPurchase() {
                     text-decoration: underline;
                     background: none;
                     border: none;
-                    font-size: 14px;
                     margin-top: 6px;
                     cursor: pointer;
                 }

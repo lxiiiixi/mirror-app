@@ -132,6 +132,7 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
 
     const rootClassName = [
       'ticket-item-card',
+      'text-[11px]',
       isFlipped ? 'card-type-2' : '',
       className,
     ]
@@ -149,7 +150,7 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
     return (
       <div ref={ref} className={rootClassName} {...props}>
         {showCountdown && (
-          <div className={`time ${isFlipped ? 'leftTime' : ''}`}>
+          <div className={`time text-[14px] ${isFlipped ? 'leftTime' : ''}`}>
             {countdownIcon ? (
               <img className="countdown-icon" src={countdownIcon} alt="countdown" />
             ) : null}
@@ -157,7 +158,7 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
           </div>
         )}
 
-        <div className="up-day-box">
+        <div className="up-day-box text-[13px]">
           <span>
             {risingDay} {mergedLabels.day}
           </span>
@@ -172,27 +173,27 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
 
         <div className="ticket-item-card__content">
           <div className="ticket-item-card__content-title">
-            <span className="name">{data.name}</span>
+            <span className="name text-[16px]">{data.name}</span>
           </div>
 
           {cardType === 1 && (
-            <div className="ticket-item-card__content-desc">
+            <div className="ticket-item-card__content-desc text-[12px]">
               {data.presaleUserText ? <div className="btn_user">{data.presaleUserText}</div> : null}
               {data.priceText ? (
                 <div>
                   <span>{mergedLabels.price}</span>
-                  <span className="value">{data.priceText}</span>
+                  <span className="value text-[13px]">{data.priceText}</span>
                 </div>
               ) : null}
               {data.supplyText ? (
                 <div>
                   <span>{mergedLabels.numberOfIssues}</span>
-                  <span className="value">{data.supplyText}</span>
+                  <span className="value text-[13px]">{data.supplyText}</span>
                 </div>
               ) : null}
               {data.timeText ? (
                 <div>
-                  <span className="timeStr">{data.timeText}</span>
+                  <span className="timeStr text-[8px]">{data.timeText}</span>
                 </div>
               ) : null}
               <div className="btn-wrapper">
@@ -202,24 +203,24 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
                   onClick={handleActionClick}
                   disabled={actionDisabled}
                 >
-                  <span>{actionText}</span>
+                  <span className="text-[10px]">{actionText}</span>
                 </button>
               </div>
             </div>
           )}
 
           {cardType === 2 && (
-            <div className="ticket-item-card__content-desc">
+            <div className="ticket-item-card__content-desc text-[12px]">
               {data.priceText ? (
                 <div>
                   <span>{mergedLabels.price}</span>
-                  <span className="value">{data.priceText}</span>
+                  <span className="value text-[13px]">{data.priceText}</span>
                 </div>
               ) : null}
               {data.offerPriceText ? (
                 <div>
                   <span>{mergedLabels.offerPrice}</span>
-                  <span className="value">{data.offerPriceText}</span>
+                  <span className="value text-[13px]">{data.offerPriceText}</span>
                 </div>
               ) : null}
               {data.rateText ? (
@@ -247,17 +248,17 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
           )}
 
           {cardType === 3 && (
-            <div className="ticket-item-card__content-desc">
+            <div className="ticket-item-card__content-desc text-[12px]">
               {data.buyPriceText ? (
                 <div>
                   <span>{mergedLabels.buyPrice}</span>
-                  <span className="value">{data.buyPriceText}</span>
+                  <span className="value text-[13px]">{data.buyPriceText}</span>
                 </div>
               ) : null}
               {data.rateText ? (
                 <div>
                   <span>{mergedLabels.profitLoss}</span>
-                  <span className="value glow-green">{data.rateText}</span>
+                  <span className="value text-[13px] glow-green">{data.rateText}</span>
                 </div>
               ) : null}
               <div className="btn-wrapper">
@@ -267,7 +268,7 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
                   onClick={handleActionClick}
                   disabled={actionDisabled}
                 >
-                  <span>{actionText}</span>
+                  <span className="text-[10px]">{actionText}</span>
                 </button>
               </div>
             </div>
@@ -276,7 +277,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
 
         <style jsx>{`
           .ticket-item-card {
-            font-size: 11px;
             color: #ffffff;
             display: flex;
             min-height: 103px;
@@ -304,7 +304,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
             position: absolute;
             right: 0;
             font-weight: 600;
-            font-size: 14px;
             font-feature-settings: "kern" on;
             color: #ffb302;
             display: flex;
@@ -339,7 +338,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 13px;
             gap: 4px;
           }
 
@@ -404,7 +402,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
           }
 
           .ticket-item-card__content-title .name {
-            font-size: 16px;
             line-height: 19px;
             white-space: nowrap;
             overflow: hidden;
@@ -415,7 +412,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
           }
 
           .ticket-item-card__content-desc {
-            font-size: 12px;
             font-weight: 700;
             color: #999999;
             line-height: 18px;
@@ -429,7 +425,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
           }
 
           .ticket-item-card__content-desc .value {
-            font-size: 13px;
             color: #ffffff;
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -455,7 +450,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 10px;
             font-weight: 500;
             color: #ffffff;
           }
@@ -497,7 +491,6 @@ export const TicketItemCard = forwardRef<HTMLDivElement, TicketItemCardProps>(
           }
 
           .timeStr {
-            font-size: 8px;
             color: #ffffff;
           }
         `}</style>

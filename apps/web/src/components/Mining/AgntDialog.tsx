@@ -24,9 +24,9 @@ export function AgntDialog({ open, onClose }: AgntDialogProps) {
     return (
         <Modal open={open} title={t("agntDialog.title")} onClose={onClose}>
             <div className="agnt-dialog">
-                <h4 className="agnt-title">{t("agntDialog.joinVip")}</h4>
-                <p className="agnt-desc">{t("agntDialog.joinVipDesc")}</p>
-                <p className="agnt-gift" dangerouslySetInnerHTML={{
+                <h4 className="agnt-title text-[16px]">{t("agntDialog.joinVip")}</h4>
+                <p className="agnt-desc text-[13px]">{t("agntDialog.joinVipDesc")}</p>
+                <p className="agnt-gift text-[12px]" dangerouslySetInnerHTML={{
                     __html: t("agntDialog.giftNodeDesc"),
                 }} />
 
@@ -34,7 +34,7 @@ export function AgntDialog({ open, onClose }: AgntDialogProps) {
                     {rows.map((item, index) => (
                         <div className="agnt-item" key={`${index}-${item}`}>
                             {splitLines(item).map((line, lineIndex) => (
-                                <div key={`${index}-${lineIndex}`} className="agnt-line">
+                                <div key={`${index}-${lineIndex}`} className="agnt-line text-[12px]">
                                     {line}
                                 </div>
                             ))}
@@ -53,20 +53,17 @@ export function AgntDialog({ open, onClose }: AgntDialogProps) {
                 }
 
                 .agnt-title {
-                    font-size: 16px;
                     font-weight: 700;
                     margin: 0;
                 }
 
                 .agnt-desc {
-                    font-size: 13px;
                     line-height: 1.6;
                     color: rgba(238, 238, 238, 1);
                     margin: 0;
                 }
 
                 .agnt-gift {
-                    font-size: 12px;
                     line-height: 1.6;
                     color: rgba(224, 224, 224, 0.9);
                     margin: 0;
@@ -87,7 +84,6 @@ export function AgntDialog({ open, onClose }: AgntDialogProps) {
                 }
 
                 .agnt-line {
-                    font-size: 12px;
                     line-height: 1.5;
                 }
             `}</style>

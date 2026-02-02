@@ -38,14 +38,14 @@ export function Discover() {
     }, [i18n.language]);
 
     return (
-        <div className="discover">
+        <div className="discover text-[12px]">
             {newsList.map((item, index) => (
                 <div key={`discover-${index}`} className="news-item">
                     <div className="user-item">
                         <div className="user-avatar">
                             <img src={images.discover.userHead} alt="" />
                         </div>
-                        <div className="user-name">Mirror</div>
+                        <div className="user-name text-[14px]">Mirror</div>
                         <img className="auth-icon" src={images.discover.auth} alt="" />
                     </div>
 
@@ -53,8 +53,8 @@ export function Discover() {
                         <img src={discoverPicByIndex(index)} alt="" />
                     </button>
 
-                    <div className="news-content">{item.content}</div>
-                    <div className="news-time">{item.time}</div>
+                    <div className="news-content text-[13px]">{item.content}</div>
+                    <div className="news-time text-[11px]">{item.time}</div>
                 </div>
             ))}
 
@@ -62,7 +62,6 @@ export function Discover() {
                 .discover {
                     padding: 16px;
                     font-family: Rubik, sans-serif;
-                    font-size: 12px;
                     color: #ffffff;
                 }
 
@@ -89,7 +88,6 @@ export function Discover() {
                 }
 
                 .user-name {
-                    font-size: 14px;
                     font-weight: 500;
                     margin-right: 8px;
                 }
@@ -116,12 +114,10 @@ export function Discover() {
 
                 .news-content {
                     margin-top: 12px;
-                    font-size: 13px;
                     line-height: 1.5;
                 }
 
                 .news-time {
-                    font-size: 11px;
                     color: #999999;
                 }
             `}</style>

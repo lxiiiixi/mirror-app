@@ -39,14 +39,14 @@ export const CoefficientTable = forwardRef<HTMLDivElement, CoefficientTableProps
         className={`coefficient-table ${className}`}
         {...props}
       >
-        {tableTitle ? <div className="table-title">{tableTitle}</div> : null}
+        {tableTitle ? <div className="table-title text-[14px]">{tableTitle}</div> : null}
 
         <div
           className="table-header"
           style={{ gridTemplateColumns }}
         >
           {theadHeaders.map((header, index) => (
-            <span key={`header-${index}`} className="table-header-item">
+            <span key={`header-${index}`} className="table-header-item text-[12px]">
               {header}
             </span>
           ))}
@@ -59,7 +59,7 @@ export const CoefficientTable = forwardRef<HTMLDivElement, CoefficientTableProps
             style={{ gridTemplateColumns }}
           >
             {theadHeaderKeys.map((key, colIndex) => (
-              <span key={`cell-${rowIndex}-${colIndex}`}>
+              <span key={`cell-${rowIndex}-${colIndex}`} className="text-[13px]">
                 {row[key]}
               </span>
             ))}
@@ -75,7 +75,6 @@ export const CoefficientTable = forwardRef<HTMLDivElement, CoefficientTableProps
           }
 
           .table-title {
-            font-size: 14px;
             font-weight: 500;
             text-align: center;
             padding: 10px;
@@ -90,17 +89,8 @@ export const CoefficientTable = forwardRef<HTMLDivElement, CoefficientTableProps
             padding: 4px 0;
           }
 
-          .table-header span,
-          .table-row span {
-            font-size: 13px;
-          }
-
           .table-header {
             background: rgba(255, 255, 255, 0.1);
-          }
-
-          .table-header .table-header-item {
-            font-size: 12px;
           }
 
           .table-header span {

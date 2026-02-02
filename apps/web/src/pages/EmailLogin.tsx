@@ -155,7 +155,7 @@ function EmailLogin() {
 
                 <form className="login-form" onSubmit={handleLogin}>
                     <label className="field">
-                        <span className="field-label">{t("emailLogin.email")}</span>
+                        <span className="field-label text-[13px]">{t("emailLogin.email")}</span>
                         <Input
                             value={email}
                             inputSize="lg"
@@ -168,7 +168,7 @@ function EmailLogin() {
                     </label>
 
                     <label className="field">
-                        <span className="field-label">{t("emailLogin.code")}</span>
+                        <span className="field-label text-[13px]">{t("emailLogin.code")}</span>
                         <div className="code-row">
                             <Input
                                 value={code}
@@ -182,7 +182,7 @@ function EmailLogin() {
                             />
                             <button
                                 type="button"
-                                className={`code-button ${countdown > 0 || !isEmailValid ? "disabled" : ""}`}
+                                className={`code-button text-[12px] ${countdown > 0 || !isEmailValid ? "disabled" : ""}`}
                                 disabled={countdown > 0 || !isEmailValid || isSending}
                                 onClick={handleSendCode}
                             >
@@ -194,7 +194,7 @@ function EmailLogin() {
                     </label>
 
                     <label className="field">
-                        <span className="field-label">{t("emailLogin.inviteCode")}</span>
+                        <span className="field-label text-[13px]">{t("emailLogin.inviteCode")}</span>
                         <Input
                             value={inviteCode}
                             onChange={event => setInviteCode(event.target.value)}
@@ -259,7 +259,6 @@ function EmailLogin() {
                 }
 
                 .field-label {
-                    font-size: 13px;
                     font-weight: 600;
                     color: rgba(255, 255, 255, 0.85);
                 }
@@ -275,7 +274,6 @@ function EmailLogin() {
                     border: 1px solid rgba(255, 255, 255, 0.2);
                     background: rgba(255, 255, 255, 0.12);
                     color: #fff;
-                    font-size: 12px;
                     font-weight: 600;
                     padding: 0 12px;
                     cursor: pointer;

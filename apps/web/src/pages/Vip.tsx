@@ -26,7 +26,7 @@ function Vip() {
     );
 
     return (
-        <div className="vip-page">
+        <div className="vip-page text-[14px]">
             <Notice message={t("notice.defaultMessage")} />
             <ProjectTabs
                 tabs={tabs}
@@ -41,7 +41,6 @@ function Vip() {
             <style jsx>{`
                 .vip-page {
                     padding: 20px 16px 32px;
-                    font-size: 14px;
                     color: #fff;
                 }
             `}</style>

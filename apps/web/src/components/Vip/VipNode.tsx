@@ -62,17 +62,17 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
                         )}
                         <div className="info">
                             <div className="info-row1">
-                                <div className="avatar">VIP{level}</div>
+                                <div className="avatar text-[11px]">VIP{level}</div>
                             </div>
                             <div className="info-row2">
                                 <img className="wallet-icon" src={images.network.sol} alt="SOL" />
-                                <div className="address">{formatAddress(address)}</div>
+                                <div className="address text-[12px]">{formatAddress(address)}</div>
                             </div>
                         </div>
                     </div>
                     <div className="right">
-                        <div className="amount">+ {formatAmount(reward)} U</div>
-                        <div className="time">{formatDate(time)}</div>
+                        <div className="amount text-[12px]">+ {formatAmount(reward)} U</div>
+                        <div className="time text-[11px]">{formatDate(time)}</div>
                     </div>
                 </div>
                 {open && hasChildren ? (
@@ -156,7 +156,6 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
                 }
 
                 .avatar {
-                    font-size: 11px;
                     font-weight: 700;
                     padding: 2px 6px;
                     border-radius: 999px;
@@ -164,7 +163,6 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
                 }
 
                 .address {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.9);
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -177,12 +175,10 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
                 }
 
                 .amount {
-                    font-size: 12px;
                     font-weight: 700;
                 }
 
                 .time {
-                    font-size: 11px;
                     color: rgba(255, 255, 255, 0.55);
                 }
 
@@ -270,20 +266,20 @@ export function VipNode() {
             <div className="card revenue">
                 <div className="grid">
                     <div>
-                        <div className="value">{rewards.total_base_mining_reward} ENT</div>
-                        <div className="label">{t("totalRevenue.dailyRevenue")}</div>
+                        <div className="value text-[14px]">{rewards.total_base_mining_reward} ENT</div>
+                        <div className="label text-[12px]">{t("totalRevenue.dailyRevenue")}</div>
                     </div>
                     <div>
-                        <div className="value">{rewards.total_invite_reward} ENT</div>
-                        <div className="label">{t("totalRevenue.teamRevenue")}</div>
+                        <div className="value text-[14px]">{rewards.total_invite_reward} ENT</div>
+                        <div className="label text-[12px]">{t("totalRevenue.teamRevenue")}</div>
                     </div>
                     <div>
-                        <div className="value">{rewards.total_level_bonus_reward} ENT</div>
-                        <div className="label">{t("totalRevenue.destructionRevenue")}</div>
+                        <div className="value text-[14px]">{rewards.total_level_bonus_reward} ENT</div>
+                        <div className="label text-[12px]">{t("totalRevenue.destructionRevenue")}</div>
                     </div>
                     <div>
-                        <div className="value">{rewards.total_total_reward} ENT</div>
-                        <div className="label">{t("totalRevenue.directSalesRevenue")}</div>
+                        <div className="value text-[14px]">{rewards.total_total_reward} ENT</div>
+                        <div className="label text-[12px]">{t("totalRevenue.directSalesRevenue")}</div>
                     </div>
                 </div>
             </div>
@@ -323,7 +319,7 @@ export function VipNode() {
                         ))}
                     </div>
                 ) : (
-                    <div className="empty">{t("ticket.empty")}</div>
+                    <div className="empty text-[12px]">{t("ticket.empty")}</div>
                 )}
             </div>
 
@@ -343,7 +339,6 @@ export function VipNode() {
                 }
 
                 .revenue h3 {
-                    font-size: 16px;
                     margin-bottom: 12px;
                 }
 
@@ -354,17 +349,14 @@ export function VipNode() {
                 }
 
                 .value {
-                    font-size: 14px;
                     font-weight: 700;
                 }
 
                 .label {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.6);
                 }
 
                 .empty {
-                    font-size: 12px;
                     color: rgba(255, 255, 255, 0.6);
                     text-align: center;
                 }
