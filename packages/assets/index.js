@@ -122,17 +122,14 @@ import homeTokenTab1 from './images/home/token-tab-1.svg'
 import homeTokenTab2 from './images/home/token-tab-2.svg'
 import homeTokenTabFilter from './images/home/token-tab-filter.svg'
 
-// banner相关
-import banner1 from './images/home/banner/banner1.png'
-import banner2 from './images/home/banner/banner2.png'
-import banner3 from './images/home/banner/banner3.png'
-import banner4 from './images/home/banner/banner4.png'
-import banner5 from './images/home/banner/banner5.png'
-import banner1Cn from './images/home/banner/banner1_cn.png'
-import banner2Cn from './images/home/banner/banner2_cn.png'
-import banner3Cn from './images/home/banner/banner3_cn.png'
-import banner4Cn from './images/home/banner/banner4_cn.png'
-import banner5Cn from './images/home/banner/banner5_cn.png'
+// banner 相关：自动扫描目录，新增图片无需改此处
+const bannerGlob = import.meta.glob('./images/home/banner/*.png', { eager: true })
+const bannerImageMap = {}
+for (const path in bannerGlob) {
+  const name = path.replace(/^.+\/([^/]+)\.png$/, '$1')
+  bannerImageMap[name] = bannerGlob[path].default
+}
+export { bannerImageMap }
 
 // 挖矿相关
 import miningAboutLevel from './images/mining/about-level.png'
@@ -304,19 +301,8 @@ export const images = {
     tokenTabFilter: homeTokenTabFilter,
   },
 
-  // banner相关
-  banner: {
-    banner1: banner1,
-    banner2: banner2,
-    banner3: banner3,
-    banner4: banner4,
-    banner5: banner5,
-    banner1Cn: banner1Cn,
-    banner2Cn: banner2Cn,
-    banner3Cn: banner3Cn,
-    banner4Cn: banner4Cn,
-    banner5Cn: banner5Cn,
-  },
+  // banner 相关：来自 bannerImageMap，key 为文件名（如 banner1_cn、banner4_hk）
+  banner: bannerImageMap,
 
   // 挖矿相关
   mining: {

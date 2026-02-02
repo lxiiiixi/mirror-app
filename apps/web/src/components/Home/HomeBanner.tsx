@@ -4,17 +4,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { Banner as UIBanner } from '../../ui'
 import type { BannerItem } from '../../ui'
-// import banner1 from '@mirror/assets/images/home/banner/banner1.png'
-// import banner2 from '@mirror/assets/images/home/banner/banner2.png'
-// import banner3 from '@mirror/assets/images/home/banner/banner3.png'
-// import banner4 from '@mirror/assets/images/home/banner/banner4.png'
-// import banner5 from '@mirror/assets/images/home/banner/banner5.png'
-// import banner1Cn from '@mirror/assets/images/home/banner/banner1_cn.png'
-// import banner2Cn from '@mirror/assets/images/home/banner/banner2_cn.png'
-// import banner3Cn from '@mirror/assets/images/home/banner/banner3_cn.png'
-// import banner4Cn from '@mirror/assets/images/home/banner/banner4_cn.png'
-// import banner5Cn from '@mirror/assets/images/home/banner/banner5_cn.png'
 import { images } from '@mirror/assets'
+
+const bannerImageMap = images.banner as Record<string, string>
 
 interface HomeBannerProps {
   autoplay?: boolean
@@ -29,22 +21,32 @@ type BannerLocaleItem = {
   alt?: string
 }
 
-const bannerSrcMap: Record<string, string> = {
-  'banner1': images.banner.banner1,
-  'banner2': images.banner.banner2,
-  'banner3': images.banner.banner3,
-  'banner4': images.banner.banner4,
-  'banner5': images.banner.banner5,
-  'banner1_cn': images.banner.banner1Cn,
-  'banner2_cn': images.banner.banner2Cn,
-  'banner3_cn': images.banner.banner3Cn,
-  'banner4_cn': images.banner.banner4Cn,
-  'banner5_cn': images.banner.banner5Cn,
+const LOCALE_SUFFIXES = ['_cn', '_hk', '_en'] as const
+
+/** 从 img key 解析出 slot 名，如 banner4_cn -> banner4 */
+function getBannerSlot(key: string): string {
+  for (const suf of LOCALE_SUFFIXES) {
+    if (key.endsWith(suf)) return key.slice(0, -suf.length)
+  }
+  return key
 }
 
-const resolveBannerSrc = (src: string) => {
-  if (src in bannerSrcMap) return bannerSrcMap[src]
-  return src
+/**
+ * 解析 banner 图片：优先用配置的 key，不存在则按 slot 用「当前语言 -> 其它语言 -> 无后缀」顺序 fallback
+ */
+function resolveBannerSrc(imgKey: string, language: string): string {
+  if (imgKey in bannerImageMap) return bannerImageMap[imgKey]
+  const slot = getBannerSlot(imgKey)
+  const langSuffix = language === 'zh-CN' ? '_cn' : language === 'zh-HK' || language === 'zh-TW' ? '_hk' : '_en'
+  const fallbackKeys = [
+    slot + langSuffix,
+    ...LOCALE_SUFFIXES.filter(s => s !== langSuffix).map(s => slot + s),
+    slot,
+  ]
+  for (const k of fallbackKeys) {
+    if (k in bannerImageMap) return bannerImageMap[k]
+  }
+  return imgKey
 }
 
 export function Banner({ autoplay = false, interval = 6000, className = '' }: HomeBannerProps) {
@@ -52,12 +54,12 @@ export function Banner({ autoplay = false, interval = 6000, className = '' }: Ho
   const navigate = useNavigate()
 
   const banners = useMemo<BannerItem[]>(() => {
-    // 路径配置在 locales/en.json 中
     const raw = t('banners', { returnObjects: true }) as BannerLocaleItem[] | string
     if (!Array.isArray(raw)) return []
+    const lang = i18n.language || i18n.resolvedLanguage || 'en'
     return raw.map((item, index) => ({
       id: item.id ?? index,
-      img: resolveBannerSrc(item.img),
+      img: resolveBannerSrc(item.img, lang),
       link: item.link,
       alt: item.alt,
     }))
