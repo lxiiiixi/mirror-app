@@ -480,6 +480,13 @@ function createUserModule<E>(client: ArtsApiClient<E>) {
                 "/arts/user/checkLevelUpgrade",
                 { auth: "required" },
             ),
+        /**
+         * 检查用户是否在白名单中
+         */
+        checkUserWhitelist: () =>
+            client.requestJson<Types.UserWhitelistResponseData>("GET", "/arts/user/check", {
+                auth: "required",
+            }),
         getCommissionHistory: (params: Types.UserCommissionHistoryParams = {}) =>
             client.requestJson<Types.UserCommissionHistoryResponseData>(
                 "GET",
@@ -493,10 +500,6 @@ function createUserModule<E>(client: ArtsApiClient<E>) {
         getRegion: () =>
             client.requestJson<Types.UserRegionResponseData>("GET", "/arts/user/region", {
                 auth: "none",
-            }),
-        checkWhitelist: () =>
-            client.requestJson<Types.UserWhitelistResponseData>("GET", "/arts/user/check", {
-                auth: "required",
             }),
         bindUser: (payload: Types.UserBindProfileRequest) =>
             client.requestJson<Types.UserBindProfileResponseData>("POST", "/arts/user/bind", {

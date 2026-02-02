@@ -257,8 +257,8 @@ export interface UserRegionResponseData {
 }
 
 export interface UserWhitelistResponseData {
-    in_whitelist: boolean;
-    whitelist_type?: string;
+    is_invite: boolean;
+    is_wallet_while: boolean;
 }
 
 export interface UserBindProfileRequest {
@@ -908,15 +908,16 @@ export interface FileUploadResponseData {
 
 // Node module types
 export interface NodeInfoParams {
-    id?: number;
+    node_id?: number;
 }
 
 export interface NodeInfoResponseData {
-    node_id: number;
-    node_name: string;
-    node_type: string;
-    price: DecimalString;
-    description: string;
+    price: number;
+    node_total_num: number;
+    power: number;
+    node_remain_num: number;
+    ent_issue_num: number;
+    ent_release_num: number;
 }
 
 export interface NodeCurrentTierParams {
@@ -925,10 +926,12 @@ export interface NodeCurrentTierParams {
 
 export interface NodeCurrentTierResponseData {
     node_id: number;
-    current_tier: number;
-    tier_price: DecimalString;
-    remaining_quantity: number;
-    total_quantity: number;
+    current_tier_level: number;
+    price: DecimalString;
+    original_price: DecimalString;
+    remaining_in_tier: number;
+    total_in_tier: number;
+    total_num: number;
 }
 
 export interface NodeTxInfoParams {
@@ -948,11 +951,11 @@ export interface NodeQuoteRequest {
 }
 
 export interface NodeQuoteResponseData {
+    quote_id: string;
     node_id: number;
-    quantity: number;
-    unit_price: DecimalString;
-    total_price: DecimalString;
-    currency: Currency;
+    num: number;
+    expected_raw_amount: number;
+    expires_at: number;
 }
 
 export interface NodePurchaseRequest {

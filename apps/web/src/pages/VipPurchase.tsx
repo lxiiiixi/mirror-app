@@ -98,10 +98,10 @@ function VipPurchase() {
             const response = await artsApiClient.node.getCurrentTierInfo({ id: 1 });
             const data = response.data;
             setTierInfo({
-                totalNum: Number(data?.total_quantity ?? 0),
-                remainingInTier: Number(data?.remaining_quantity ?? 0),
-                totalInTier: Number(data?.total_quantity ?? 0),
-                nowPrice: Number(data?.tier_price ?? 0),
+                totalNum: Number(data?.total_num ?? 0),
+                remainingInTier: Number(data?.remaining_in_tier ?? 0),
+                totalInTier: Number(data?.total_in_tier ?? 0),
+                nowPrice: Number(data?.price ?? 0),
             });
         } catch (error) {
             console.error("[VipPurchase] tier info failed", error);
@@ -110,7 +110,7 @@ function VipPurchase() {
 
     const loadNodeInfo = useCallback(async () => {
         try {
-            const response = await artsApiClient.node.getNodeInfo({ id: 1 });
+            const response = await artsApiClient.node.getNodeInfo({ node_id: 1 });
             const data = response.data;
             const toRecord = (value: unknown) =>
                 value && typeof value === "object" && !Array.isArray(value)
@@ -137,7 +137,9 @@ function VipPurchase() {
                 node_remain_num: toNumber(
                     merged.node_remain_num ?? merged.remaining_num ?? merged.remaining_quantity,
                 ),
-                ent_issue_num: toNumber(merged.ent_issue_num ?? merged.ent_total ?? merged.total_ent),
+                ent_issue_num: toNumber(
+                    merged.ent_issue_num ?? merged.ent_total ?? merged.total_ent,
+                ),
                 ent_release_num: toNumber(
                     merged.ent_release_num ?? merged.ent_release ?? merged.released_ent,
                 ),
@@ -150,13 +152,11 @@ function VipPurchase() {
     const getUserCheck = useCallback(async () => {
         if (!isLoggedIn) return;
         try {
-            const response = await artsApiClient.requestJson<Record<string, unknown>>(
-                "GET",
-                "/arts/user/check",
-                { auth: "required" },
-            );
-            const data = response.data as Record<string, unknown>;
-            setUserCanBuy(Boolean(data?.is_wallet_while ?? data?.in_whitelist ?? true));
+            const response = await artsApiClient.user.checkUserWhitelist();
+            const data = response.data;
+            // 只有白名单用户和邀请用户可以购买
+            // TODO 确认需求是否正确
+            setUserCanBuy(Boolean(data?.is_wallet_while ?? data?.is_invite ?? true));
         } catch (error) {
             console.error("[VipPurchase] user check failed", error);
         }
@@ -169,11 +169,16 @@ function VipPurchase() {
         }
     }, [searchParams]);
 
+    // 仅挂载时加载 tier / node 信息，与登录状态无关，避免因 isLoggedIn 变化重复请求
     useEffect(() => {
         void loadTierInfo();
         void loadNodeInfo();
+    }, [loadTierInfo, loadNodeInfo]);
+
+    // 用户白名单校验依赖登录状态，登录态变化时需重新请求
+    useEffect(() => {
         void getUserCheck();
-    }, [getUserCheck, loadNodeInfo, loadTierInfo]);
+    }, [getUserCheck]);
 
     useEffect(() => {
         if (tierInfo.remainingInTier > 0 && quantity > tierInfo.remainingInTier) {
@@ -240,7 +245,7 @@ function VipPurchase() {
 
     const buyNode = useCallback(async () => {
         if (isSubmitting) return;
-        if (!isEmailLogin) {
+        if (isEmailLogin) {
             showLegalRestriction();
             return;
         }
@@ -251,8 +256,11 @@ function VipPurchase() {
         setShowLoadingText2(false);
 
         try {
+            // 获取报价单
             const quote = await artsApiClient.node.getQuote({ node_id: 1, quantity });
-            const paymentMethod = String(quote.data?.currency ?? "usdt");
+            const paymentMethod = String("usdt");
+
+            // 执行购买
             const purchase = await artsApiClient.node.purchase({
                 node_id: 1,
                 quantity,
@@ -285,7 +293,11 @@ function VipPurchase() {
             <div className="vip-purchase-page">
                 <div className="login-content">
                     <div className="login-title text-[28px]">{t("account.login")}</div>
-                    <button type="button" className="login-button text-[16px]" onClick={openLoginModal}>
+                    <button
+                        type="button"
+                        className="login-button text-[16px]"
+                        onClick={openLoginModal}
+                    >
                         <img className="wallet-icon" src={images.account.phantomIcon} alt="" />
                         <span className="wallet-name">Wallet / Email</span>
                     </button>
@@ -353,8 +365,10 @@ function VipPurchase() {
                     </div>
                     <div className="header-info">
                         <div className="info-item">
-                            <div className="info-label text-[12px]">{t("miningIndex.clubName")}</div>
-                            <div className="info-value text-[12px] font-price text-[14px]">
+                            <div className="info-label text-[12px]">
+                                {t("miningIndex.clubName")}
+                            </div>
+                            <div className="info-value font-price text-[14px]">
                                 {tierInfo.nowPrice} USDT/VIP
                             </div>
                         </div>
@@ -365,7 +379,9 @@ function VipPurchase() {
                     </div>
                 </div>
 
-                <div className="current-power text-[11px]">{t("miningIndex.priceIncreaseNote")}</div>
+                <div className="current-power text-[11px]">
+                    {t("miningIndex.priceIncreaseNote")}
+                </div>
 
                 <div className="section-label text-[13px]">
                     {t("miningIndex.currentVipPrice", { price: tierInfo.nowPrice })}
@@ -392,9 +408,13 @@ function VipPurchase() {
                     })}
                 </div>
 
-                <div className="current-power text-[11px]">{t("miningIndex.complimentaryNode")}</div>
+                <div className="current-power text-[11px]">
+                    {t("miningIndex.complimentaryNode")}
+                </div>
 
-                <div className="section-label text-[13px]">{t("miningIndex.selectVipQuantity")}</div>
+                <div className="section-label text-[13px]">
+                    {t("miningIndex.selectVipQuantity")}
+                </div>
                 <div className="buy-amount">
                     <div className="buy-control">
                         <button
@@ -433,25 +453,39 @@ function VipPurchase() {
                 <div className="header detail-card">
                     <div className="header-info">
                         <div className="info-item">
-                            <div className="info-label text-[12px]">{t("miningIndex.totalMineable")}</div>
+                            <div className="info-label text-[12px]">
+                                {t("miningIndex.totalMineable")}
+                            </div>
                             <div className="info-value text-[12px]">
                                 {formatNumber(nodeInfo.ent_issue_num)} ENT
                             </div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label text-[12px]">{t("miningIndex.fixedHashrate")}</div>
+                            <div className="info-label text-[12px]">
+                                {t("miningIndex.fixedHashrate")}
+                            </div>
                             <div className="info-value text-[12px]">{nodeInfo.power}A</div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label text-[12px]">{t("miningIndex.variableHashrate")}</div>
-                            <div className="info-value text-[12px] muted">{t("miningIndex.notAvailable")}</div>
+                            <div className="info-label text-[12px]">
+                                {t("miningIndex.variableHashrate")}
+                            </div>
+                            <div className="info-value text-[12px] muted">
+                                {t("miningIndex.notAvailable")}
+                            </div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label text-[12px]">{t("miningIndex.overallDailyOutput")}</div>
-                            <div className="info-value text-[12px]">≈ {formatNumber(dailyOutput)} ENT</div>
+                            <div className="info-label text-[12px]">
+                                {t("miningIndex.overallDailyOutput")}
+                            </div>
+                            <div className="info-value text-[12px]">
+                                ≈ {formatNumber(dailyOutput)} ENT
+                            </div>
                         </div>
                         <div className="info-item">
-                            <div className="info-label text-[12px]">{t("miningIndex.accelerateRelease")}</div>
+                            <div className="info-label text-[12px]">
+                                {t("miningIndex.accelerateRelease")}
+                            </div>
                             <div className="info-value text-[12px]">35%</div>
                         </div>
                     </div>
@@ -469,7 +503,11 @@ function VipPurchase() {
                             : t("miningIndex.buy", { price: totalPrice })}
                     </button>
                 ) : (
-                    <button className="buy-button text-[20px] global-btn-disabled" type="button" disabled>
+                    <button
+                        className="buy-button text-[20px] global-btn-disabled"
+                        type="button"
+                        disabled
+                    >
                         {t("miningIndex.comingSoon")}
                     </button>
                 )}
