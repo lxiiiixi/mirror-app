@@ -55,7 +55,8 @@
 }
 
 html {
-    font-size: 16px;
+    /* 根据屏幕宽度动态调整字体大小，最小 14px，最大 18px。运行阶段的根字号，决定 rem × html.font-size = 实际渲染像素。 */
+    font-size: clamp(14px, 4vw, 18px);
 }
 
 html,

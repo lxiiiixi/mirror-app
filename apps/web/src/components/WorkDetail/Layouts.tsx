@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { TokenAvatar } from "../Common/TokenAvatar";
@@ -9,6 +9,7 @@ import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "./Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
+import { Check } from "lucide-react";
 
 export function WorkDetailLayout({
     children,
@@ -93,7 +94,7 @@ export function WorkDetailHero({
     workId?: number;
     signedIn?: boolean;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const [isChecked, setIsChecked] = useState(Boolean(signedIn));
@@ -184,11 +185,13 @@ export function WorkDetailAirdrop({
     airdropAmount?: string;
     invitedCount?: number;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { isLoggedIn } = useAuth();
     const [inviteCode, setInviteCode] = useState("");
     const [inviteUrl, setInviteUrl] = useState("");
     const [showInvitationListModal, setShowInvitationListModal] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
+    const copyTimerRef = useRef<number | null>(null);
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const navigate = useNavigate();
 
@@ -196,6 +199,14 @@ export function WorkDetailAirdrop({
         setInviteCode("");
         setInviteUrl("");
     }, [workId]);
+
+    useEffect(() => {
+        return () => {
+            if (copyTimerRef.current) {
+                window.clearTimeout(copyTimerRef.current);
+            }
+        };
+    }, []);
 
     console.log("[WorkDetailAirdrop] States", {
         workId,
@@ -241,7 +252,31 @@ export function WorkDetailAirdrop({
     const copyLink = () => {
         const link = inviteUrl;
         if (!link) return;
-        void navigator.clipboard.writeText(link);
+        const language = i18n.resolvedLanguage ?? i18n.language ?? "en";
+        const isZh = language.startsWith("zh");
+        const isZhHant =
+            isZh &&
+            (language.includes("Hant") || language.includes("HK") || language.includes("TW"));
+        const workLabel = isZh ? "作品" : "Work";
+        const codeLabel = isZh ? (isZhHant ? "邀請碼" : "邀请码") : "Invite Code";
+        const linkLabel = isZh ? (isZhHant ? "邀請連結" : "邀请链接") : "Invite Link";
+        const nameSegment = workName
+            ? isZh
+                ? `《${workName}》`
+                : `"${workName}" `
+            : isZh
+              ? `《${workLabel}》`
+              : `${workLabel} `;
+        const colon = isZh ? "：" : ": ";
+        const text = `${nameSegment}${codeLabel}${colon}${inviteCode} ${linkLabel}${colon}${link}`;
+        void navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        if (copyTimerRef.current) {
+            window.clearTimeout(copyTimerRef.current);
+        }
+        copyTimerRef.current = window.setTimeout(() => {
+            setIsCopied(false);
+        }, 3000);
     };
 
     const handleShareX = useCallback(() => {
@@ -333,11 +368,15 @@ export function WorkDetailAirdrop({
                         </span>
                         <button
                             type="button"
-                            className="flex w-4 shrink-0 items-center justify-center"
+                            className="flex w-4 shrink-0 items-center justify-center cursor-pointer"
                             onClick={copyLink}
-                            aria-label="Copy link"
+                            aria-label={isCopied ? "Copied" : "Copy link"}
                         >
-                            <img src={images.icons.copyIcon} alt="" className="h-6 w-6" />
+                            {isCopied ? (
+                                <Check className="h-6 w-6 text-white" />
+                            ) : (
+                                <img src={images.icons.copyIcon} alt="" className="h-6 w-6" />
+                            )}
                         </button>
                     </div>
                 </div>
