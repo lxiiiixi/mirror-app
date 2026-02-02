@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
+import { useAppKitConnection, type Provider } from "@reown/appkit-adapter-solana/react";
 import { images } from "@mirror/assets";
-import { formatNumber } from "@mirror/utils";
+import { formatNumber, getTokenInfo, envConfigs, SupportedToken } from "@mirror/utils";
+import {
+    buildSplTokenTransferTransaction,
+    encodeBase64,
+    isSolanaTxError,
+    SolanaTxErrorCode,
+} from "@mirror/solana";
 import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
 import { useAuth } from "../hooks/useAuth";
@@ -44,6 +52,9 @@ function VipPurchase() {
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const showAlert = useAlertStore(state => state.show);
     const showLegalRestriction = useLegalRestrictionStore(state => state.show);
+    const { address: walletAddress, isConnected } = useAppKitAccount();
+    const { walletProvider } = useAppKitProvider<Provider>("solana");
+    const { connection } = useAppKitConnection();
 
     const [tierInfo, setTierInfo] = useState<TierInfo>({
         totalNum: 0,
@@ -249,6 +260,11 @@ function VipPurchase() {
             showLegalRestriction();
             return;
         }
+        // 仅钱包登录可进行链上购买，且需已连接 Solana
+        if (!isConnected || !walletAddress || !walletProvider?.signTransaction || !connection) {
+            showAlert({ message: t("miningIndex.pleaseConnectSolana"), variant: "error" });
+            return;
+        }
 
         setIsSubmitting(true);
         setWaitPay(true);
@@ -256,31 +272,100 @@ function VipPurchase() {
         setShowLoadingText2(false);
 
         try {
-            // 获取报价单
-            const quote = await artsApiClient.node.getQuote({ node_id: 1, quantity });
-            const paymentMethod = String("usdt");
+            // 1. 获取报价单（与 arts-app 一致：quote → 用 expected_raw_amount 构建 USDT 交易 → sign → send）
+            const quoteRes = await artsApiClient.node.getQuote({ node_id: 1, num: quantity });
+            const quoteId = quoteRes.data?.quote_id ?? "";
+            const expectedRawAmount = Number(quoteRes.data?.expected_raw_amount ?? 0);
+            if (!quoteId || expectedRawAmount <= 0) {
+                console.error("[VipPurchase] quote failed", quoteRes.data);
+                setWaitPay(false);
+                showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
+                return;
+            }
 
-            // 执行购买
-            const purchase = await artsApiClient.node.purchase({
-                node_id: 1,
-                quantity,
-                payment_method: paymentMethod,
+            // 2. 获取平台收款地址（与充值流程一致）
+            const addressRes = await artsApiClient.deposit.getAddress();
+            const recipientAddress = addressRes.data?.address;
+            if (!recipientAddress) {
+                console.error("[VipPurchase] recipient address failed", addressRes.data);
+                setWaitPay(false);
+                showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
+                return;
+            }
+
+            const tokenInfo = getTokenInfo(SupportedToken.USDT, envConfigs.NETWORK);
+            if (!tokenInfo?.address) {
+                console.error("[VipPurchase] token info failed", tokenInfo);
+                setWaitPay(false);
+                showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
+                return;
+            }
+
+            // 3. 构建 USDT 转账交易
+            const tx = await buildSplTokenTransferTransaction({
+                connection,
+                owner: walletAddress,
+                destination: recipientAddress,
+                mint: tokenInfo.address,
+                amountRaw: expectedRawAmount,
+                decimals: tokenInfo.decimals,
             });
-            const signature = purchase.data?.tx_signature ?? "";
+
+            // 4. 仅签名，不广播（由后端 /node/send 提交）
+            const signed = await walletProvider.signTransaction(tx);
+            const signedTxBase64 = encodeBase64(signed.serialize());
+
+            // 5. 提交已签名交易与 quote_id 到后端
+            const sendRes = await artsApiClient.node.send({
+                signed_tx: signedTxBase64,
+                quote_id: quoteId,
+                node_id: 1,
+                num: quantity,
+            });
+            const signature = sendRes.data?.tx_signature ?? "";
             if (signature) {
                 setLoadingText(t("miningIndex.queryTxResult"));
-                void searchTxStatus(signature);
+                setTimeout(() => {
+                    void searchTxStatus(signature);
+                }, 1000);
             } else {
                 setWaitPay(false);
             }
         } catch (error) {
-            console.error("[VipPurchase] buy failed", error);
-            showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
+            console.error(
+                "[VipPurchase] buy failed",
+                (error as unknown as { code: string })?.code,
+                error,
+            );
+            if (isSolanaTxError(error)) {
+                const message =
+                    error.code === SolanaTxErrorCode.INSUFFICIENT_BALANCE ||
+                    error.code === SolanaTxErrorCode.SOURCE_TOKEN_ACCOUNT_NOT_FOUND
+                        ? t("account.withdrawDialog.insufficientBalance", {
+                              defaultValue: "Insufficient USDT balance",
+                          })
+                        : t("miningIndex.walletTxFailed");
+                showAlert({ message, variant: "error" });
+            } else {
+                showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
+            }
             setWaitPay(false);
         } finally {
             setIsSubmitting(false);
         }
-    }, [isSubmitting, isEmailLogin, quantity, searchTxStatus, showAlert, showLegalRestriction, t]);
+    }, [
+        isSubmitting,
+        isEmailLogin,
+        quantity,
+        isConnected,
+        walletAddress,
+        walletProvider,
+        connection,
+        searchTxStatus,
+        showAlert,
+        showLegalRestriction,
+        t,
+    ]);
 
     useEffect(() => {
         return () => {

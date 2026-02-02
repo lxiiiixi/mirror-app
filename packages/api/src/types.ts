@@ -947,7 +947,7 @@ export interface NodeTxInfoResponseData {
 
 export interface NodeQuoteRequest {
     node_id: number;
-    quantity: number;
+    num: number;
 }
 
 export interface NodeQuoteResponseData {
@@ -962,6 +962,14 @@ export interface NodePurchaseRequest {
     node_id: number;
     quantity: number;
     payment_method: string;
+}
+
+/** POST /arts/node/send 请求体：客户端签名后的 USDT 交易 + 报价单 id */
+export interface NodeSendRequest {
+    signed_tx: string;
+    quote_id: string;
+    node_id: number;
+    num: number;
 }
 
 export interface NodePurchaseResponseData {

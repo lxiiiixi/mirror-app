@@ -831,7 +831,8 @@ function createNodeModule<E>(client: ArtsApiClient<E>) {
                 auth: "required",
                 body: payload,
             }),
-        purchase: (payload: Types.NodePurchaseRequest) =>
+        /** 提交已签名的 USDT 交易与 quote_id，后端广播后返回 tx_signature */
+        send: (payload: Types.NodeSendRequest) =>
             client.requestJson<Types.NodePurchaseResponseData>("POST", "/arts/node/send", {
                 auth: "required",
                 body: payload,
