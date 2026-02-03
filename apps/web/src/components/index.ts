@@ -8,3 +8,6 @@ export { LegalRestrictionHost } from "./Common/LegalRestrictionHost";
 export { VipAbout } from "./Vip/VipAbout";
 export { VipMining } from "./Vip/VipMining";
 export { VipNode } from "./Vip/VipNode";
+
+export { RedeemItemCard } from "./PointsRedemption/RedeemItemCard";
+export { MyRedemptionItemCard } from "./PointsRedemption/MyRedemptionItemCard";
