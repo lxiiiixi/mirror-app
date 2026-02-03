@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { images } from "@mirror/assets";
+import type { UserLevelProgressItem } from "@mirror/api";
 import { formatReward } from "@mirror/utils";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
@@ -37,13 +38,13 @@ export function VipMining() {
 
     const [vipLevel, setVipLevel] = useState(0);
     const [purchasedNodes, setPurchasedNodes] = useState(0);
-    // 不用额外定义字段了 可以直接沿用接口返回的字段
-    const [nextLevelInfo, setNextLevelInfo] = useState({
-        invitesCurrent: 0,
-        invitesRequired: 0,
-        teamCurrent: 0,
-        teamRequired: 0,
+    /** 下一级进度：有效用户（team_user_progress）与直推进度（vN_invites_progress，仅 VIP 有） */
+    const [teamProgress, setTeamProgress] = useState<UserLevelProgressItem>({
+        current: 0,
+        percentage: 0,
+        required: 1,
     });
+    const [invitesProgress, setInvitesProgress] = useState<UserLevelProgressItem | null>(null);
     const [inviteNum, setInviteNum] = useState({
         direct_invites: "0/0",
         indirect_invites: "0/0",
@@ -85,19 +86,27 @@ export function VipMining() {
             setPurchasedNodes(Number.isFinite(resolvedNodes) ? resolvedNodes : 0);
 
             const levelData = levelResponse.data;
-            const nextLevelRequire = levelData?.next_level_requirements ?? {};
-            // TODO
-            setNextLevelInfo({
-                invitesCurrent:
-                    Number(levelData?.v1_direct_count) ||
-                    Number(levelData?.v2_direct_count) ||
-                    Number(levelData?.v3_direct_count) ||
-                    Number(levelData?.v4_direct_count) ||
-                    0,
-                invitesRequired: Number(nextLevelRequire?.personal_nodes) || 0,
-                teamCurrent: Number(levelData?.user) || 0,
-                teamRequired: Number(nextLevelRequire?.personal_nodes) || 0,
-            });
+            const progress = levelData?.next_level_progress;
+            const team = progress?.team_user_progress ?? {
+                current: 0,
+                percentage: 0,
+                required: 1,
+            };
+            setTeamProgress(team);
+
+            const currentLevel = Number(levelData?.current_level ?? 0);
+            type InvitesProgressKey =
+                | "v1_invites_progress"
+                | "v2_invites_progress"
+                | "v3_invites_progress"
+                | "v4_invites_progress";
+            const invitesKey: InvitesProgressKey | null =
+                currentLevel >= 1 && currentLevel <= 4
+                    ? (`v${currentLevel}_invites_progress` as InvitesProgressKey)
+                    : null;
+            const invites = invitesKey && progress ? (progress[invitesKey] ?? null) : null;
+            setInvitesProgress(invites ?? null);
+
             setInviteNum({
                 direct_invites: String(levelData?.direct_invites ?? "0/0"),
                 indirect_invites: String(levelData?.indirect_invites ?? "0/0"),
@@ -158,19 +167,30 @@ export function VipMining() {
                         <span className="text-[16px] font-bold gradient-text">VIP {vipLevel}</span>{" "}
                         <span className="text-[12px] gradient-text">({purchasedNodes}x)</span>
                     </div>
-                    {/* 第一个 Progress 展示的是当前用户升级到下一个阶段所需的有效用户数量 也就是对应 v2_invites_progress 中的参数 */}
+                    {/* 第一个 Progress：升级所需有效用户数，对应 next_level_progress.team_user_progress */}
+                    {invitesProgress && (
+                        <Progress
+                            label={""}
+                            valueLabel={`${invitesProgress.current} / ${invitesProgress.required} VIP${vipLevel}`}
+                            value={invitesProgress.current}
+                            max={invitesProgress.required}
+                            size="small"
+                        />
+                    )}
+                    {/* 第二个 Progress：直推/间推进度，对应 vN_invites_progress（VIP 有），valueLabel 为直推/间推数量 */}
                     <Progress
                         label={t("vipMining.validUsers")}
-                        value={nextLevelInfo.teamCurrent}
-                        max={nextLevelInfo.teamRequired}
-                        size="small"
-                    />
-                    {/* 第二个 Progress 展示的是 team_user_progress 的内容 */}
-                    <Progress
-                        label={t("miningMy.sharedUsers")}
-                        valueLabel={`${inviteNum.direct_invites} / ${inviteNum.indirect_invites}`}
-                        value={parseInviteProgress(inviteNum.direct_invites).current}
-                        max={parseInviteProgress(inviteNum.direct_invites).max}
+                        // valueLabel={`${}`}
+                        value={
+                            teamProgress
+                                ? teamProgress.current
+                                : parseInviteProgress(inviteNum.direct_invites).current
+                        }
+                        max={
+                            teamProgress
+                                ? teamProgress.required
+                                : parseInviteProgress(inviteNum.direct_invites).max
+                        }
                         size="small"
                     />
                     <div className="flex justify-between items-center gap-4 mt">

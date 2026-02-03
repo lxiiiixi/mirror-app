@@ -183,30 +183,47 @@ export interface UserVipLevelResponseData {
     };
     user_level: number;
 }
+/** 等级进度项：current/percentage/required，用于 team_user_progress 与 vN_invites_progress */
+export interface UserLevelProgressItem {
+    current: number;
+    percentage: number;
+    required: number;
+}
+
+/** 非 VIP 时的下一级要求：购买节点 */
+export interface NextLevelRequirementsNonVip {
+    description: string;
+    personal_nodes: number;
+}
+
+/** VIP 时的下一级要求：直推数 + 有效用户数 */
+export interface NextLevelRequirementsVip {
+    description: string;
+    direct_required: number;
+    user_required: number;
+}
+
+export type NextLevelRequirements =
+    | NextLevelRequirementsNonVip
+    | NextLevelRequirementsVip;
+
 export interface UserLevelProgressResponseData {
     current_level: number;
     direct_invites: string;
     indirect_invites: string;
     next_level: number;
     next_level_progress: {
-        team_user_progress: {
-            current: number;
-            percentage: number;
-            required: number;
-        };
-        // 如果当前用户不是会员，只会返回上面的字段
-        // 如果已经是会员了，下面还会返回另一个字段，但是这里是动态的字段
-        // 比如如果我当前是 vip2，那么对我来说这里会多返回一个
-        // "v2_invites_progress": {
-        //     "current": 0,
-        //     "percentage": 0,
-        //     "required": 2
-        // }
+        team_user_progress: UserLevelProgressItem;
+        /** 当前为 VIP1 时存在 */
+        v1_invites_progress?: UserLevelProgressItem;
+        /** 当前为 VIP2 时存在 */
+        v2_invites_progress?: UserLevelProgressItem;
+        /** 当前为 VIP3 时存在 */
+        v3_invites_progress?: UserLevelProgressItem;
+        /** 当前为 VIP4 时存在 */
+        v4_invites_progress?: UserLevelProgressItem;
     };
-    next_level_requirements: {
-        description: string;
-        personal_nodes: number;
-    };
+    next_level_requirements: NextLevelRequirements;
     user: number;
     v1_direct_count: number;
     v2_direct_count: number;
