@@ -26,7 +26,7 @@ module.exports = {
                 'column-gap',
                 'border-radius',
             ], // 需要转换的 CSS 属性
-            selectorBlackList: [], // 黑名单，不转换这些选择器
+            selectorBlackList: [/\.rounded-full/], // 黑名单，不转换这些选择器
             replace: true, // 替换而不是添加
             mediaQuery: false, // 是否转换媒体查询中的 px
             minPixelValue: 0, // 小于此值的 px 不转换
