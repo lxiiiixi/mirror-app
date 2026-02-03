@@ -37,13 +37,6 @@ function Vip() {
             {activeProject === 0 ? <VipAbout /> : null}
             {activeProject === 1 ? <VipMining /> : null}
             {activeProject === 2 ? <VipNode /> : null}
-
-            <style jsx>{`
-                .vip-page {
-                    padding: 20px 16px 32px;
-                    color: #fff;
-                }
-            `}</style>
         </div>
     );
 }

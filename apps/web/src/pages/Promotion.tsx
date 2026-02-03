@@ -194,7 +194,7 @@ function Promotion() {
     }, [getUserCheck]);
 
     return (
-        <div className="promotion-page text-[12px]">
+        <div id="promotion-page" className="text-[12px]">
             {isCanBind && inviteCode ? (
                 <button className="header-title-btn text-[16px]" type="button" onClick={bindUser}>
                     {t("promotion.bindSuperior")}
@@ -226,12 +226,20 @@ function Promotion() {
                         </div>
                         <div className="promotion-right">
                             <div className="btn-row">
-                                <button type="button" className="save-btn text-[12px]" onClick={savePoster}>
+                                <button
+                                    type="button"
+                                    className="save-btn text-[12px]"
+                                    onClick={savePoster}
+                                >
                                     {savingPoster
                                         ? t("miningShare.generating")
                                         : t("miningShare.savePoster")}
                                 </button>
-                                <button type="button" className="share-btn text-[12px]" onClick={copyLink}>
+                                <button
+                                    type="button"
+                                    className="share-btn text-[12px]"
+                                    onClick={copyLink}
+                                >
                                     {t("miningShare.shareLink")}
                                 </button>
                             </div>
@@ -246,7 +254,9 @@ function Promotion() {
                     <div className="stats-value text-[24px]">{formatNumber(today)}</div>
                 </div>
                 <div className="stats-col">
-                    <div className="stats-label text-[12px]">{t("promotion.cumulativeCommission")}</div>
+                    <div className="stats-label text-[12px]">
+                        {t("promotion.cumulativeCommission")}
+                    </div>
                     <div className="stats-value text-[24px]">${formatNumber(total)}</div>
                 </div>
             </div>
@@ -256,12 +266,6 @@ function Promotion() {
             <Discover />
 
             <style jsx>{`
-                .promotion-page {
-                    padding: 16px;
-                    font-family: Rubik, sans-serif;
-                    color: #ffffff;
-                }
-
                 .header-title-btn {
                     width: 100%;
                     height: 44px;
