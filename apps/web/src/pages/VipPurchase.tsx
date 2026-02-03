@@ -275,8 +275,8 @@ function VipPurchase() {
             // 1. 获取报价单（与 arts-app 一致：quote → 用 expected_raw_amount 构建 USDT 交易 → sign → send）
             const quoteRes = await artsApiClient.node.getQuote({ node_id: 1, num: quantity });
             const quoteId = quoteRes.data?.quote_id ?? "";
-            const expectedRawAmount = Number(quoteRes.data?.expected_raw_amount ?? 0);
-            if (!quoteId || expectedRawAmount <= 0) {
+            const expectedAmount = Number(quoteRes.data?.expected_raw_amount ?? 0);
+            if (!quoteId || expectedAmount <= 0) {
                 console.error("[VipPurchase] quote failed", quoteRes.data);
                 setWaitPay(false);
                 showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
@@ -307,7 +307,7 @@ function VipPurchase() {
                 owner: walletAddress,
                 destination: recipientAddress,
                 mint: tokenInfo.address,
-                amountRaw: expectedRawAmount,
+                amount: expectedAmount.toString(),
                 decimals: tokenInfo.decimals,
             });
 
@@ -449,18 +449,15 @@ function VipPurchase() {
                         </div>
                     </div>
                     <div className="header-info">
-                        <div className="info-item">
-                            <div className="info-label text-[12px]">
-                                {t("miningIndex.clubName")}
-                            </div>
-                            <div className="info-value font-price text-[14px]">
+                        <div className="flex items-center">
+                            <div className="text-[12px]">{t("miningIndex.clubName")}</div>
+                            <div className="font-price text-[14px]">
                                 {tierInfo.nowPrice} USDT/VIP
                             </div>
                         </div>
-                        <div className="info-item info-desc text-[11px]">
+                        <div className="info-desc text-[11px]">
                             {t("miningIndex.currentPromotion")}
                         </div>
-                        <div className="info-item info-desc text-[11px]">&nbsp;</div>
                     </div>
                 </div>
 
@@ -535,7 +532,7 @@ function VipPurchase() {
                 </div>
 
                 <div className="section-label text-[13px]">{t("miningIndex.dataDetails")}</div>
-                <div className="header detail-card">
+                <div className="detail-card">
                     <div className="header-info">
                         <div className="info-item">
                             <div className="info-label text-[12px]">
@@ -637,11 +634,6 @@ function VipPurchase() {
                     color: #fff;
                 }
 
-                .body-content {
-                    padding: 18px 16px 100px;
-                    font-family: Rubik, sans-serif;
-                }
-
                 .section-label {
                     font-weight: 700;
                     color: #fff;
@@ -649,18 +641,22 @@ function VipPurchase() {
                 }
 
                 .header {
-                    height: 118px;
+                    height: 88px;
                     background: rgba(255, 255, 255, 0.1);
                     border-radius: 16px;
-                    margin-bottom: 16px;
+                    margin: 16px 0px;
                     display: flex;
                     align-items: center;
                     padding: 12px;
+                    padding-left: 100px;
                     gap: 12px;
+                    position: relative;
                 }
 
                 .header-image-wrapper {
-                    position: relative;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
                     width: 80px;
                     height: 96px;
                     border-radius: 12px;
@@ -693,7 +689,6 @@ function VipPurchase() {
                 }
 
                 .header-info {
-                    flex: 1;
                     display: flex;
                     flex-direction: column;
                     gap: 6px;
@@ -835,6 +830,12 @@ function VipPurchase() {
 
                 .detail-card {
                     height: auto;
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    padding: 12px;
+                    gap: 12px;
                 }
 
                 .buy-button {

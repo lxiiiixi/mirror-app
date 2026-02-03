@@ -1,7 +1,6 @@
 import {
     Connection,
     PublicKey,
-    Transaction,
     TransactionInstruction,
     TransactionMessage,
     VersionedTransaction,
@@ -30,10 +29,8 @@ export type BuildSignedSplTokenTransferParams = {
 /** 仅构建 SPL 代币转账交易（不签名、不发送），用于由调用方签名后提交给后端 */
 export type BuildSplTokenTransferTransactionParams = Omit<
     BuildSignedSplTokenTransferParams,
-    "sendTransaction" | "amount"
-> & {
-    amountRaw: number;
-};
+    "sendTransaction"
+>;
 
 export const buildSplTokenTransferTransaction = async (
     params: BuildSplTokenTransferTransactionParams,
@@ -42,7 +39,7 @@ export const buildSplTokenTransferTransaction = async (
     const destination = resolvePublicKey(params.destination);
     const mint = resolvePublicKey(params.mint);
     const feePayer = params.feePayer ? resolvePublicKey(params.feePayer) : owner;
-    const amount = params.amountRaw;
+    const amount = parseAmountToBaseUnits(params.amount, params.decimals);
 
     const sourceAta = await getAssociatedTokenAddress(mint, owner);
     const destinationAta = await getAssociatedTokenAddress(mint, destination);

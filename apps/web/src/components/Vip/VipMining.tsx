@@ -37,6 +37,7 @@ export function VipMining() {
 
     const [vipLevel, setVipLevel] = useState(0);
     const [purchasedNodes, setPurchasedNodes] = useState(0);
+    // 不用额外定义字段了 可以直接沿用接口返回的字段
     const [nextLevelInfo, setNextLevelInfo] = useState({
         invitesCurrent: 0,
         invitesRequired: 0,
@@ -84,8 +85,8 @@ export function VipMining() {
             setPurchasedNodes(Number.isFinite(resolvedNodes) ? resolvedNodes : 0);
 
             const levelData = levelResponse.data;
-            const currentLevel = levelData?.current_level ?? resolvedVipLevel ?? 0;
             const nextLevelRequire = levelData?.next_level_requirements ?? {};
+            // TODO
             setNextLevelInfo({
                 invitesCurrent:
                     Number(levelData?.v1_direct_count) ||
@@ -157,12 +158,14 @@ export function VipMining() {
                         <span className="text-[16px] font-bold gradient-text">VIP {vipLevel}</span>{" "}
                         <span className="text-[12px] gradient-text">({purchasedNodes}x)</span>
                     </div>
+                    {/* 第一个 Progress 展示的是当前用户升级到下一个阶段所需的有效用户数量 也就是对应 v2_invites_progress 中的参数 */}
                     <Progress
                         label={t("vipMining.validUsers")}
                         value={nextLevelInfo.teamCurrent}
                         max={nextLevelInfo.teamRequired}
                         size="small"
                     />
+                    {/* 第二个 Progress 展示的是 team_user_progress 的内容 */}
                     <Progress
                         label={t("miningMy.sharedUsers")}
                         valueLabel={`${inviteNum.direct_invites} / ${inviteNum.indirect_invites}`}
@@ -212,8 +215,12 @@ export function VipMining() {
                     <div className="stat-main">
                         <img src={images.account.ent2} alt="" />
                         <div>
-                            <div className="stat-value text-[16px]">{rewards.today_base_mining_reward} ENT</div>
-                            <div className="stat-speedup text-[12px]">{purchasedNodes}X SPEEDUP</div>
+                            <div className="stat-value text-[16px]">
+                                {rewards.today_base_mining_reward} ENT
+                            </div>
+                            <div className="stat-speedup text-[12px]">
+                                {purchasedNodes}X SPEEDUP
+                            </div>
                             <div className="stat-hint text-[12px]">{t("miningMy.todaysTip")}</div>
                         </div>
                     </div>
@@ -221,19 +228,33 @@ export function VipMining() {
                 <div className="card stat-grid-card">
                     <div className="stat-grid">
                         <div>
-                            <div className="stat-value text-[16px]">{rewards.today_invite_reward} ENT</div>
-                            <div className="stat-label text-[12px]">{t("miningMy.directEarnings")}</div>
+                            <div className="stat-value text-[16px]">
+                                {rewards.today_invite_reward} ENT
+                            </div>
+                            <div className="stat-label text-[12px]">
+                                {t("miningMy.directEarnings")}
+                            </div>
                         </div>
                         <div>
-                            <div className="stat-value text-[16px]">{rewards.today_level_bonus_reward} ENT</div>
-                            <div className="stat-label text-[12px]">{t("miningMy.dividendEarnings")}</div>
+                            <div className="stat-value text-[16px]">
+                                {rewards.today_level_bonus_reward} ENT
+                            </div>
+                            <div className="stat-label text-[12px]">
+                                {t("miningMy.dividendEarnings")}
+                            </div>
                         </div>
                         <div>
-                            <div className="stat-value text-[16px]">{t("vipMining.comingSoon")}</div>
-                            <div className="stat-label text-[12px]">{t("miningMy.destructionEarnings")}</div>
+                            <div className="stat-value text-[16px]">
+                                {t("vipMining.comingSoon")}
+                            </div>
+                            <div className="stat-label text-[12px]">
+                                {t("miningMy.destructionEarnings")}
+                            </div>
                         </div>
                         <div>
-                            <div className="stat-value text-[16px]">{rewards.today_total_reward} ENT</div>
+                            <div className="stat-value text-[16px]">
+                                {rewards.today_total_reward} ENT
+                            </div>
                             <div className="stat-label text-[12px]">{t("miningMy.totalMined")}</div>
                         </div>
                     </div>

@@ -194,6 +194,14 @@ export interface UserLevelProgressResponseData {
             percentage: number;
             required: number;
         };
+        // 如果当前用户不是会员，只会返回上面的字段
+        // 如果已经是会员了，下面还会返回另一个字段，但是这里是动态的字段
+        // 比如如果我当前是 vip2，那么对我来说这里会多返回一个
+        // "v2_invites_progress": {
+        //     "current": 0,
+        //     "percentage": 0,
+        //     "required": 2
+        // }
     };
     next_level_requirements: {
         description: string;

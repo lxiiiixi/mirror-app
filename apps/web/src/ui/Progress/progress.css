@@ -6,9 +6,8 @@
 }
 
 .progress-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: relative;
+    width: 100%;
 }
 
 .progress-track {
@@ -31,10 +30,10 @@
     transition: width 0.25s ease;
 }
 
-/* 数值固定在填充条末端（尾部）：用 left 定位到 percent 处，再 translateX(-100%) 让文字右边缘对齐 */
 .progress-value--tail {
-    flex-shrink: 0;
-    padding: 0 4px;
+    position: absolute;
+    right: 0;
+    top: 0;
     pointer-events: none;
 }
 
