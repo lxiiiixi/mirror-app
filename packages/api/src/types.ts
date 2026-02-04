@@ -3,6 +3,10 @@ export type DateString = string;
 export type DecimalString = string;
 export type Int64String = string;
 
+export type ArtsApiLanguage = "en" | "zh-Hant" | "zh-CN" | "zh-TW" | string;
+
+export type ArtsApiErrorType = "client" | "network" | "http" | "parse" | "business";
+
 export interface ApiResponse<T> {
     code: number;
     msg: string;
