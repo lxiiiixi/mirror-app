@@ -134,11 +134,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
 
                                     {/* 分享到X按钮 */}
                                     <div
-                                        className={`absolute z-8 top-[4.71%] left-[6.25%] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${
-                                            product.isShared
-                                                ? "bg-[#eb1484]"
-                                                : "bg-[rgba(0,0,0,0.4)]"
-                                        }`}
+                                        className={`absolute z-8 top-[4.71%] left-[6.25%] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${"bg-[rgba(0,0,0,0.4)]"}`}
                                         onClick={e => handleShareClick(e, product)}
                                     >
                                         <img
@@ -152,7 +148,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                             className="w-[21.67%] h-[60%]"
                                         />
                                         {product.shareCount ? (
-                                            <div className="absolute z-8 w-full text-center top-full text-[60%] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
+                                            <div className="absolute z-8 w-full text-center top-full text-[14px] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
                                                 {product.shareCount}
                                             </div>
                                         ) : null}

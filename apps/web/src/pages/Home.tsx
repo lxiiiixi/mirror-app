@@ -28,7 +28,13 @@ function Home() {
     const [activeProject, setActiveProject] = useState(0);
     const navigate = useNavigate();
 
-    const { items, isLoading, isLoadingMore, setScrollElement, refresh } = useInfiniteWorkList({
+    const {
+        items: workList,
+        isLoading,
+        isLoadingMore,
+        setScrollElement,
+        refresh,
+    } = useInfiniteWorkList({
         pageSize: 12,
         autoLoad: false,
     });
@@ -46,7 +52,7 @@ function Home() {
         return () => {
             setScrollElement(null);
         };
-    }, [items.length, setScrollElement]);
+    }, [workList.length, setScrollElement]);
 
     const tabs = useMemo<ProjectTabItem[]>(
         () => [
@@ -64,7 +70,7 @@ function Home() {
         [t],
     );
 
-    const tokenItems = useMemo(() => items.filter(isTokenWork), [items]);
+    const tokenItems = useMemo(() => workList.filter(isTokenWork), [workList]);
 
     const tokenCards = useMemo(() => {
         return tokenItems.map(work => {
@@ -95,49 +101,19 @@ function Home() {
     };
 
     const products = useMemo<Array<ProductData & { rawType?: number }>>(() => {
-        return items.map(work => {
-            const rawWorkType =
-                (work as { work_type?: number | string }).work_type ??
-                (work as { type?: number | string }).type ??
-                4;
+        return workList.map(work => {
+            const rawWorkType = work.type ?? 4;
             const workTypeValue =
                 typeof rawWorkType === "string" ? Number(rawWorkType) : rawWorkType;
-            const coverUrl = resolveImageUrl(
-                (work as { cover?: string }).cover ||
-                    (work as { cover_url?: string }).cover_url ||
-                    "",
-            );
-            const name =
-                (work as { work_name?: string }).work_name ||
-                (work as { name?: string }).name ||
-                "";
-            const description =
-                (work as { work_description?: string }).work_description ||
-                (work as { description?: string }).description ||
-                "";
-            const shareCount =
-                (work as { share_count?: number }).share_count ||
-                (work as { shareCount?: number }).shareCount;
-            const isShared =
-                (work as { is_shared?: boolean }).is_shared ??
-                (work as { isShared?: boolean }).isShared ??
-                false;
-            const names = (work as { names?: string[] }).names;
-            const author = (work as { author?: string }).author ?? "";
-            const creatorName =
-                (work as { creator_name?: string }).creator_name ||
-                (work as { work_creator_name?: string }).work_creator_name ||
-                "";
-            const creators =
-                Array.isArray(names) && names.length > 0
-                    ? names.filter(Boolean).slice(0, 3)
-                    : creatorName
-                      ? splitCreators(creatorName).slice(0, 3)
-                      : author
-                        ? splitCreators(author).slice(0, 3)
-                        : [];
-
-            const shareLink = "";
+            const coverUrl = resolveImageUrl(work.cover_url || "");
+            const name = work.name || "";
+            const description = work.description || "";
+            const shareCount = work.share_count || 0;
+            const names = work.name
+                .split(/[/|、,，]/g)
+                .map(name => name.trim())
+                .filter(Boolean);
+            const creators = names.filter(Boolean).slice(0, 3);
 
             return {
                 id: work.id,
@@ -145,14 +121,13 @@ function Home() {
                 coverUrl,
                 type: getWorkTypeByValue(workTypeValue)?.type ?? "comic",
                 shareCount,
-                isShared,
                 creators,
                 description,
                 rawType: workTypeValue,
-                shareLink,
+                shareLink: "",
             };
         });
-    }, [items]);
+    }, [workList]);
 
     return (
         <div className="">

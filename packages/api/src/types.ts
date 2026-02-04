@@ -1085,7 +1085,7 @@ export interface NodeQuoteResponseData {
     quote_id: string;
     node_id: number;
     num: number;
-    expected_raw_amount: number;
+    expected_raw_amount: number; // 比如返回 100000 就是 0.1 USDT
     expires_at: number;
 }
 

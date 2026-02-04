@@ -16,9 +16,7 @@ export interface ProductData {
     type: WorkType;
     shareLink: string;
     shareCount?: number;
-    isShared?: boolean;
     likeCount?: number;
-    isLike?: boolean;
     creators?: string[]; // 作者/创作者列表
     description?: string;
 }
@@ -93,9 +91,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
 
                 {/* 分享到X按钮 */}
                 <div
-                    className={`absolute z-8 top-[9.38%] left-[9.09%] w-[32.73%] h-[7.5%] rounded-[20px] flex justify-center items-center ${
-                        product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"
-                    }`}
+                    className={`absolute z-8 top-[9.38%] left-[9.09%] w-[32.73%] h-[7.5%] rounded-[20px] flex justify-center items-center bg-[rgba(0,0,0,0.4)]`}
                     onClick={handleShareClick}
                 >
                     <img
@@ -109,7 +105,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                         className="w-[23.61%] h-[66.67%]"
                     />
                     {product.shareCount ? (
-                        <div className="absolute z-8 w-full text-center top-[83.33%] text-[83.33%] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
+                        <div className="absolute z-8 w-full text-center top-[85%] text-[10px] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
                             {product.shareCount}
                         </div>
                     ) : null}
