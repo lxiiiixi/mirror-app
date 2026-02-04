@@ -3,11 +3,6 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-interface NewsItem {
-    content: string;
-    time: string;
-}
-
 const DISCOVER_PIC_KEYS = ["d1", "d2", "d3"] as const;
 const DISCOVER_PIC_KEYS_CN = ["d1Cn", "d2Cn", "d3Cn"] as const;
 
@@ -38,7 +33,7 @@ export function Discover() {
     }, [i18n.language]);
 
     return (
-        <div className="discover text-[12px]">
+        <div id="discover" className="text-[12px] text-white">
             {newsList.map((item, index) => (
                 <div key={`discover-${index}`} className="news-item">
                     <div className="user-item">
@@ -59,12 +54,6 @@ export function Discover() {
             ))}
 
             <style jsx>{`
-                .discover {
-                    padding: 16px;
-                    font-family: Rubik, sans-serif;
-                    color: #ffffff;
-                }
-
                 .news-item {
                     margin-bottom: 16px;
                 }

@@ -1,0 +1,127 @@
+/* Promotion 页面与 CommunityCard 共用样式 */
+
+#promotion-page .header-title-btn {
+    width: 100%;
+    height: 44px;
+    background: var(--gradient-primary);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    margin-bottom: 16px;
+    border: none;
+    color: #fff;
+}
+
+#promotion-page .sub-title {
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #9afff2 0%, #e7cbfb 50.96%, #7b69ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#promotion-page .content-card {
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(40px);
+}
+
+#promotion-page .promotion-card .card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#promotion-page .promotion-card .title {
+    font-weight: 700;
+}
+
+#promotion-page .share-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 12px;
+    gap: 16px;
+}
+
+#promotion-page .qrcode-box {
+    width: 180px;
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000000db;
+    border-radius: 12px;
+    gap: 8px;
+}
+
+#promotion-page .share-logo {
+    width: 80px;
+}
+
+#promotion-page .promotion-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+#promotion-page .btn-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#promotion-page .save-btn,
+#promotion-page .share-btn {
+    width: 120px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    background: #eb1484;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#promotion-page .stats-card {
+    display: flex;
+    gap: 12px;
+}
+
+#promotion-page .stats-col {
+    flex: 1;
+}
+
+#promotion-page .stats-label {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 6px;
+}
+
+#promotion-page .stats-value {
+    font-weight: 700;
+    color: #ff9d00;
+}
+
+#promotion-page .tip-text {
+    line-height: 1.5;
+    text-align: center;
+    color: rgba(255, 255, 255, 1);
+    margin-bottom: 24px;
+}
+
+#promotion-page .empty-tip {
+    text-align: center;
+    padding: 20px 0;
+    color: #999;
+}

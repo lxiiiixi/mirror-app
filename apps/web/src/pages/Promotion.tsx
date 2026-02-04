@@ -1,23 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import QRCode from "qrcode";
-import { images } from "@mirror/assets";
-import { formatNumber } from "@mirror/utils";
 import { artsApiClient } from "../api/artsClient";
 import { useAlertStore } from "../store/useAlertStore";
 import { useAuth } from "../hooks/useAuth";
-import { QrcodeCanvas } from "../components/Promotion/QrcodeCanvas";
 import { Discover } from "../components/Promotion/Discover";
-
-const loadImage = (src: string) =>
-    new Promise<HTMLImageElement>((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error("load image failed"));
-        img.src = src;
-    });
+import { CommissionCard, CommunityCard } from "../components/Promotion/components";
+import "../components/Promotion/promotion.css";
 
 function Promotion() {
     const { t } = useTranslation();
@@ -25,14 +14,13 @@ function Promotion() {
     const { isLoggedIn } = useAuth();
     const showAlert = useAlertStore(state => state.show);
 
-    const [inviteUrl, setInviteUrl] = useState("");
     const [today, setToday] = useState("0");
     const [total, setTotal] = useState("0");
     const [inviteCode, setInviteCode] = useState("");
-    const [userCanBuy, setUserCanBuy] = useState(false);
+    const [isInWhitelist, setIsInWhitelist] = useState(false);
     const [isCanBind, setIsCanBind] = useState(false);
     const [inviteNum, setInviteNum] = useState({ direct_invites: "0/0", indirect_invites: "0/0" });
-    const [savingPoster, setSavingPoster] = useState(false);
+    const [inviteUrl, setInviteUrl] = useState("");
 
     const inviteBase = useMemo(() => {
         if (typeof window === "undefined") return "";
@@ -62,30 +50,12 @@ function Promotion() {
 
     const getInviteNumbers = useCallback(async () => {
         try {
-            const response = await artsApiClient.requestJson<Record<string, unknown>>(
-                "GET",
-                "/arts/user/levelProgress",
-                { auth: "required" },
-            );
-            const data = response.data as Record<string, unknown>;
-            const currentLevel = Number(data?.current_level ?? data?.currentLevel ?? 0) || 0;
-            const direct =
-                (data?.direct_invites as string) ||
-                (data?.directInvites as string) ||
-                (currentLevel
-                    ? (data as Record<string, unknown>)[`v${currentLevel}_direct_count`]
-                    : undefined) ||
-                "0/0";
-            const indirect =
-                (data?.indirect_invites as string) ||
-                (data?.indirectInvites as string) ||
-                (currentLevel
-                    ? (data as Record<string, unknown>)[`v${currentLevel}_indirect_count`]
-                    : undefined) ||
-                "0/0";
+            const response = await artsApiClient.user.getLevelProgress();
+            const data = response.data;
+            // const currentLevel = Number(data?.current_level ?? 0) || 0;
             setInviteNum({
-                direct_invites: String(direct),
-                indirect_invites: String(indirect),
+                direct_invites: data?.direct_invites ?? "0/0",
+                indirect_invites: data?.indirect_invites ?? "0/0",
             });
         } catch (error) {
             console.error("[Promotion] level progress failed", error);
@@ -95,16 +65,12 @@ function Promotion() {
     const getUserCheck = useCallback(async () => {
         if (!isLoggedIn) return;
         try {
-            const response = await artsApiClient.requestJson<Record<string, unknown>>(
-                "GET",
-                "/arts/user/check",
-                { auth: "required" },
-            );
-            const data = response.data as Record<string, unknown>;
-            const canBuy = Boolean(data?.is_wallet_while ?? data?.in_whitelist ?? true);
-            setUserCanBuy(canBuy);
+            const response = await artsApiClient.user.checkUserWhitelist();
+            const data = response.data;
+            const isInWhitelist = Boolean(data?.is_wallet_while ?? true);
+            setIsInWhitelist(isInWhitelist);
             setIsCanBind(Boolean(data?.is_invite === false));
-            if (canBuy) {
+            if (isInWhitelist) {
                 await Promise.all([getInviteInfo(), getInviteNumbers()]);
             }
         } catch (error) {
@@ -115,9 +81,10 @@ function Promotion() {
     const bindUser = useCallback(async () => {
         if (!inviteCode) return;
         try {
-            await artsApiClient.requestJson("POST", "/arts/user/bind", {
-                auth: "required",
-                body: { code: inviteCode },
+            // TODO 绑定接口有问题 可能是功能没有实现
+            await artsApiClient.user.bindUser({
+                username: "",
+                avatar: "",
             });
             showAlert({ message: t("promotion.bindSu"), variant: "success" });
             setIsCanBind(false);
@@ -127,63 +94,6 @@ function Promotion() {
             showAlert({ message: t("assets.loadFailed"), variant: "error" });
         }
     }, [getUserCheck, inviteCode, showAlert, t]);
-
-    const copyLink = useCallback(async () => {
-        if (!inviteUrl) return;
-        try {
-            await navigator.clipboard.writeText(inviteUrl);
-            showAlert({ message: t("miningShare.copiedSuccess"), variant: "success" });
-        } catch (error) {
-            console.error("[Promotion] copy failed", error);
-            showAlert({ message: t("account.copyFailed"), variant: "error" });
-        }
-    }, [inviteUrl, showAlert, t]);
-
-    const savePoster = useCallback(async () => {
-        if (!inviteUrl || savingPoster) return;
-        setSavingPoster(true);
-        try {
-            const qrDataUrl = await QRCode.toDataURL(inviteUrl, {
-                width: 260,
-                margin: 0,
-                color: {
-                    dark: "#ffffff",
-                    light: "rgba(0,0,0,0)",
-                },
-            });
-            const [logoImage, qrImage] = await Promise.all([
-                loadImage(images.vip.shareLogo),
-                loadImage(qrDataUrl),
-            ]);
-
-            const canvas = document.createElement("canvas");
-            canvas.width = 900;
-            canvas.height = 430;
-            const ctx = canvas.getContext("2d");
-            if (!ctx) throw new Error("no canvas context");
-
-            ctx.fillStyle = "#000000";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const logoWidth = 260;
-            const logoHeight = 70;
-            ctx.drawImage(logoImage, (canvas.width - logoWidth) / 2, 40, logoWidth, logoHeight);
-
-            const qrSize = 240;
-            ctx.drawImage(qrImage, (canvas.width - qrSize) / 2, 140, qrSize, qrSize);
-
-            const downloadUrl = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.href = downloadUrl;
-            link.download = "promotion.png";
-            link.click();
-        } catch (error) {
-            console.error("[Promotion] save poster failed", error);
-            showAlert({ message: t("miningShare.saveFailed"), variant: "error" });
-        } finally {
-            setSavingPoster(false);
-        }
-    }, [inviteUrl, savingPoster, showAlert, t]);
 
     useEffect(() => {
         getInviteData();
@@ -203,196 +113,13 @@ function Promotion() {
 
             <div className="sub-title text-[18px]">{t("promotion.subTitle")}</div>
 
-            {userCanBuy ? (
-                <div className="content-card promotion-card">
-                    <div className="card-title">
-                        <div className="title text-[14px]">{t("promotion.promotion")}</div>
-                        <div>
-                            <div className="commission-line text-[12px]">
-                                {t("promotion.directCommission")} {inviteNum.direct_invites}
-                            </div>
-                            <div className="commission-line text-[12px]">
-                                {t("promotion.indirectCommission")} {inviteNum.indirect_invites}
-                            </div>
-                        </div>
-                    </div>
+            {isInWhitelist ? <CommunityCard inviteUrl={inviteUrl} inviteNum={inviteNum} /> : null}
 
-                    <div className="share-box">
-                        <div className="promotion-left">
-                            <div className="qrcode-box">
-                                <img className="share-logo" src={images.vip.shareLogo} alt="" />
-                                <QrcodeCanvas value={inviteUrl} size={86} />
-                            </div>
-                        </div>
-                        <div className="promotion-right">
-                            <div className="btn-row">
-                                <button
-                                    type="button"
-                                    className="save-btn text-[12px]"
-                                    onClick={savePoster}
-                                >
-                                    {savingPoster
-                                        ? t("miningShare.generating")
-                                        : t("miningShare.savePoster")}
-                                </button>
-                                <button
-                                    type="button"
-                                    className="share-btn text-[12px]"
-                                    onClick={copyLink}
-                                >
-                                    {t("miningShare.shareLink")}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ) : null}
-
-            <div className="content-card stats-card">
-                <div className="stats-col">
-                    <div className="stats-label text-[12px]">{t("promotion.todaysCommission")}</div>
-                    <div className="stats-value text-[24px]">{formatNumber(today)}</div>
-                </div>
-                <div className="stats-col">
-                    <div className="stats-label text-[12px]">
-                        {t("promotion.cumulativeCommission")}
-                    </div>
-                    <div className="stats-value text-[24px]">${formatNumber(total)}</div>
-                </div>
-            </div>
+            <CommissionCard today={today} total={total} />
 
             <div className="tip-text text-[14px]">{t("promotion.tipText")}</div>
 
             <Discover />
-
-            <style jsx>{`
-                .header-title-btn {
-                    width: 100%;
-                    height: 44px;
-                    background: var(--gradient-primary);
-                    border-radius: 10px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-weight: 700;
-                    margin-bottom: 16px;
-                    border: none;
-                    color: #fff;
-                }
-
-                .sub-title {
-                    font-weight: 600;
-                    text-align: center;
-                    margin-bottom: 16px;
-                    background: linear-gradient(90deg, #9afff2 0%, #e7cbfb 50.96%, #7b69ff 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
-
-                .content-card {
-                    border-radius: 12px;
-                    padding: 16px;
-                    margin-bottom: 16px;
-                    background: rgba(255, 255, 255, 0.06);
-                    border: 1px solid rgba(255, 255, 255, 0.18);
-                    backdrop-filter: blur(40px);
-                }
-
-                .promotion-card .card-title {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .promotion-card .title {
-                    font-weight: 700;
-                }
-
-                .share-box {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-end;
-                    margin-top: 12px;
-                    gap: 16px;
-                }
-
-                .qrcode-box {
-                    width: 180px;
-                    height: 110px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    background: #000000db;
-                    border-radius: 12px;
-                    gap: 8px;
-                }
-
-                .share-logo {
-                    width: 90px;
-                    height: 26px;
-                }
-
-                .promotion-right {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 12px;
-                }
-
-                .btn-row {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .save-btn,
-                .share-btn {
-                    width: 120px;
-                    height: 34px;
-                    border-radius: 8px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-weight: 600;
-                    background: #eb1484;
-                    color: #fff;
-                    border: none;
-                    cursor: pointer;
-                }
-
-                .stats-card {
-                    display: flex;
-                    gap: 12px;
-                }
-
-                .stats-col {
-                    flex: 1;
-                }
-
-                .stats-label {
-                    color: rgba(255, 255, 255, 0.8);
-                    margin-bottom: 6px;
-                }
-
-                .stats-value {
-                    font-weight: 700;
-                    color: #ff9d00;
-                }
-
-                .tip-text {
-                    line-height: 1.5;
-                    text-align: center;
-                    color: rgba(255, 255, 255, 1);
-                    margin-bottom: 24px;
-                }
-
-                .empty-tip {
-                    text-align: center;
-                    padding: 20px 0;
-                    color: #999;
-                }
-            `}</style>
         </div>
     );
 }

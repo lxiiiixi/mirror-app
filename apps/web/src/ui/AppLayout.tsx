@@ -236,7 +236,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     ref={contentRef}
                     onScroll={handleContentScroll}
                     style={{
-                        paddingTop: `${contentPaddingTop}px`,
+                        paddingTop: `${contentPaddingTop + 10}px`,
                         paddingBottom: `${contentPaddingBottom}px`,
                         paddingLeft: "15px",
                         paddingRight: "15px",
@@ -274,9 +274,9 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                             aria-hidden="true"
                                         />
                                     </span>
-                                        <span className="pr-text">
-                                            <span className="nav-text text-[12px]">{item.label}</span>
-                                        </span>
+                                    <span className="pr-text">
+                                        <span className="nav-text text-[12px]">{item.label}</span>
+                                    </span>
                                 </button>
                             );
                         })}
