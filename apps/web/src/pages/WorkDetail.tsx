@@ -121,18 +121,10 @@ export default function WorkDetail() {
                 signedIn={data.signed_in === true}
             />
 
-            <div className="p-6 space-y-6">
-                {/* 空投/推广区块（有数据或占位展示） */}
-                <WorkDetailAirdrop
-                    workId={workId}
-                    workName={data.work_name}
-                    visits={data.airdrop_visits}
-                    progressPercent={data.airdrop_progress_percent}
-                    countdown={data.airdrop_countdown}
-                    airdropAmount={data.airdrop_amount}
-                    invitedCount={data.invited_count}
-                />
+            {/* 空投/推广区块（有数据或占位展示） */}
+            <WorkDetailAirdrop workId={workId} workData={data} />
 
+            <div className="p-6 space-y-6">
                 {/* 作品信息卡片：封面 + 标题/作者/简介 */}
                 <ProductCover
                     coverUrl={data.work_cover_url}
@@ -144,7 +136,9 @@ export default function WorkDetail() {
                 <ExternalLink links={externalLinks} />
 
                 {/* 制作团队 */}
-                <WorkDetailProductionTeam members={data.production_team} />
+                {data.creative_team_members && data.creative_team_members.length > 0 && (
+                    <WorkDetailProductionTeam members={data.creative_team_members} />
+                )}
 
                 {/* 章节内容 / 媒体 */}
                 <WorkDetailContent

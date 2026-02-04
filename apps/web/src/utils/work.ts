@@ -63,7 +63,7 @@ export const WORK_TYPE: Array<WorkTypeInfo> = [
         type: "comic",
         text: "Comic",
         isShowChapter: true,
-        isShowTrailersStills: true,
+        isShowTrailersStills: false,
         icon: icons.comic,
     },
     {
@@ -102,7 +102,7 @@ export const WORK_TYPE: Array<WorkTypeInfo> = [
         value: 9,
         type: "movie",
         text: "Movie",
-        isShowChapter: false,
+        isShowChapter: true,
         isShowTrailersStills: true,
         icon: icons.regular,
     },

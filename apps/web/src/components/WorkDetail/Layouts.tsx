@@ -10,6 +10,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "./Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check } from "lucide-react";
+import { WorkDetailResponseData } from "@mirror/api";
 
 export function WorkDetailLayout({
     children,
@@ -94,7 +95,7 @@ export function WorkDetailHero({
     workId?: number;
     signedIn?: boolean;
 }) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const [isChecked, setIsChecked] = useState(Boolean(signedIn));
@@ -170,20 +171,10 @@ export function WorkDetailHero({
 /** 空投统计 + 邀请码/链接 + 操作按钮 */
 export function WorkDetailAirdrop({
     workId,
-    workName,
-    visits = 4561,
-    progressPercent = 50,
-    countdown = "71:56:51",
-    airdropAmount = "1,324k",
-    invitedCount = 0,
+    workData,
 }: {
-    workId?: number;
-    workName?: string;
-    visits?: number;
-    progressPercent?: number;
-    countdown?: string;
-    airdropAmount?: string;
-    invitedCount?: number;
+    workId: number;
+    workData: WorkDetailResponseData;
 }) {
     const { t, i18n } = useTranslation();
     const { isLoggedIn } = useAuth();
@@ -194,6 +185,13 @@ export function WorkDetailAirdrop({
     const copyTimerRef = useRef<number | null>(null);
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const navigate = useNavigate();
+
+    const [countdown, setCountdown] = useState("00:00:00");
+    const [airdropInfo, setAirdropInfo] = useState<{
+        total_amount: number;
+        claimed_amount: number;
+        available_amount: number;
+    } | null>(null);
 
     useEffect(() => {
         setInviteCode("");
@@ -207,19 +205,6 @@ export function WorkDetailAirdrop({
             }
         };
     }, []);
-
-    console.log("[WorkDetailAirdrop] States", {
-        workId,
-        workName,
-        inviteCode,
-        inviteUrl,
-        visits,
-        progressPercent,
-        countdown,
-        airdropAmount,
-        invitedCount,
-        showInvitationListModal,
-    });
 
     useEffect(() => {
         if (!workId) return;
@@ -249,6 +234,31 @@ export function WorkDetailAirdrop({
         };
     }, [isLoggedIn, workId]);
 
+    useEffect(() => {
+        if (!workId || !isLoggedIn) {
+            setAirdropInfo(null);
+            return;
+        }
+        let isActive = true;
+        artsApiClient.work
+            .getAirdropInfo({ work_id: workId })
+            .then(res => {
+                if (!isActive) return;
+                setAirdropInfo({
+                    total_amount: res.data?.total_amount ?? 0,
+                    claimed_amount: res.data?.claimed_amount ?? 0,
+                    available_amount: res.data?.available_amount ?? 0,
+                });
+            })
+            .catch(() => {
+                if (!isActive) return;
+                setAirdropInfo(null);
+            });
+        return () => {
+            isActive = false;
+        };
+    }, [workId, isLoggedIn]);
+
     const copyLink = () => {
         const link = inviteUrl;
         if (!link) return;
@@ -260,10 +270,10 @@ export function WorkDetailAirdrop({
         const workLabel = isZh ? "作品" : "Work";
         const codeLabel = isZh ? (isZhHant ? "邀請碼" : "邀请码") : "Invite Code";
         const linkLabel = isZh ? (isZhHant ? "邀請連結" : "邀请链接") : "Invite Link";
-        const nameSegment = workName
+        const nameSegment = workData.work_name
             ? isZh
-                ? `《${workName}》`
-                : `"${workName}" `
+                ? `《${workData.work_name}》`
+                : `"${workData.work_name}" `
             : isZh
               ? `《${workLabel}》`
               : `${workLabel} `;
@@ -286,11 +296,11 @@ export function WorkDetailAirdrop({
         }
         const link = inviteUrl;
         if (!link) return;
-        const titleSegment = workName ? `《${workName}》 ` : "";
+        const titleSegment = workData.work_name ? `《${workData.work_name}》 ` : "";
         const text = `Exciting news! Enjoy ${titleSegment}Airdrop by Daily Check event and Share Invite Links. ${link}`;
         const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
         window.open(shareUrl, "_blank");
-    }, [inviteUrl, workName, isLoggedIn, openLoginModal]);
+    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal]);
 
     const handleShowInvitationListModal = useCallback(() => {
         if (!isLoggedIn) {
@@ -309,49 +319,98 @@ export function WorkDetailAirdrop({
         navigate(`/points-redemption${query}`);
     }, [isLoggedIn, openLoginModal, navigate, workId]);
 
+    const visits = workData.number_of_participants ?? 0;
+    const totalAmount = airdropInfo?.total_amount ?? 0;
+    const claimedAmount = airdropInfo?.claimed_amount ?? 0;
+    const progressPercent =
+        totalAmount > 0 ? Math.min(100, Math.round((claimedAmount / totalAmount) * 100)) : 0;
+    const airdropAmountFormatted =
+        totalAmount >= 1000 ? `${(totalAmount / 1000).toFixed(0)}k` : totalAmount.toLocaleString();
+
+    useEffect(() => {
+        const premiereTime = workData.premiere_time;
+        if (!premiereTime || typeof premiereTime !== "string") {
+            setCountdown("00:00:00");
+            return;
+        }
+        const endTime = (() => {
+            const trimmed = premiereTime.trim();
+            const parts = trimmed.split(/[/-]/);
+            if (parts.length >= 3) {
+                const y = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1;
+                const d = parseInt(parts[2], 10);
+                if (!Number.isNaN(y) && !Number.isNaN(m) && !Number.isNaN(d)) {
+                    return new Date(y, m, d, 0, 0, 0, 0).getTime();
+                }
+            }
+            const fallback = new Date(trimmed).getTime();
+            return Number.isNaN(fallback) ? 0 : fallback;
+        })();
+        if (!endTime) {
+            setCountdown("00:00:00");
+            return;
+        }
+        const tick = () => {
+            const now = Date.now();
+            const remain = Math.max(0, Math.floor((endTime - now) / 1000));
+            const h = Math.floor(remain / 3600);
+            const m = Math.floor((remain % 3600) / 60);
+            const s = remain % 60;
+            setCountdown([h, m, s].map(v => String(v).padStart(2, "0")).join(":"));
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [workData.premiere_time]);
+
+    console.log("[WorkDetailAirdrop] countdown", countdown);
+
     return (
-        <section>
-            <div className="mb-5 flex justify-between items-center gap-4">
-                <div className="flex flex-col gap-1">
-                    <p className="text-[18px] font-semibold text-white">
-                        {t("workDetail.visits", { defaultValue: "There have been" })}:{" "}
-                        {visits.toLocaleString()}
-                    </p>
-                    <p className="text-[18px] font-semibold text-white">
-                        {t("workDetail.progress", { defaultValue: "Progress" })}: {progressPercent}%
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 rounded-[20px]">
-                        {countdown.split(":").map((part, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center justify-center text-[18px] font-bold text-white gap-1"
-                            >
-                                <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[8px] py-[10px] rounded-lg border border-[#E358FF]">
-                                    {part}{" "}
-                                </div>
-                                {i < 2 ? ":" : ""}
+        <section className="px-6">
+            {/* 倒计时 */}
+            <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center gap-1 rounded-[20px]">
+                    {countdown.split(":").map((part, i) => (
+                        <div
+                            key={i}
+                            className="flex items-center justify-center text-[18px] font-bold text-white gap-1"
+                        >
+                            <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[8px] py-[10px] rounded-lg border border-[#E358FF]">
+                                {part}{" "}
                             </div>
-                        ))}
-                    </div>
+                            {i < 2 ? ":" : ""}
+                        </div>
+                    ))}
                 </div>
             </div>
 
-            {/* 空投说明文案 */}
-            <div className="mb-4 flex flex-col items-center gap-1 text-center text-[14px] text-[#c0c1c7]">
-                <p className=" ">
-                    {visits.toLocaleString()}{" "}
-                    {t("workDetail.visitsLabel", { defaultValue: "visits" })}{" "}
-                    {t("workDetail.airdropProgress", { defaultValue: "Airdrop Progress" })}:{" "}
-                    {progressPercent}% (Note: Countdown ratio)
-                </p>
-                <p>
-                    {t("workDetail.airdropAmount", { defaultValue: "Airdrop Amount" })}:{" "}
-                    {airdropAmount}{" "}
-                    {t("workDetail.airdropCountdown", { defaultValue: "Airdrop Countdown" })}:{" "}
-                    {countdown}
-                </p>
+            <div className="my-4 space-y-1">
+                <div className="flex flex-row items-center justify-between text-[14px] font-medium leading-tight text-white">
+                    <span>
+                        {t("workDetail.airdropAmount", { defaultValue: "Airdrop Amount" })}:{" "}
+                        {airdropAmountFormatted}
+                    </span>
+                    <span>
+                        {t("workDetail.visits", { defaultValue: "There have been" })}:{" "}
+                        {visits.toLocaleString()}
+                    </span>
+                </div>
+                <div className="relative h-5 w-full overflow-hidden rounded-full bg-white/20">
+                    <div
+                        className="absolute inset-y-0 left-0 rounded-full border border-transparent"
+                        style={{
+                            width: `${progressPercent}%`,
+                            background: "linear-gradient(90deg, #ec62ce 0%, #484bfa 100%)",
+                        }}
+                    />
+                    <div className="relative flex h-full items-center justify-center">
+                        <span className="text-[12px] font-normal text-white">
+                            {t("workDetail.progress", { defaultValue: "Progress" })}:{" "}
+                            {progressPercent}%
+                        </span>
+                    </div>
+                </div>
             </div>
 
             {/* 邀请码 + 邀请链接 */}
@@ -384,8 +443,14 @@ export function WorkDetailAirdrop({
             )}
 
             {/* 三个操作按钮 */}
-            <div id="work_detail_airdrop_buttons" className="flex justify-between gap-4">
-                <Button variant="primary" size="medium" fullWidth onClick={handleShareX}>
+            <div id="work_detail_airdrop_buttons" className="flex justify-between gap-2">
+                <Button
+                    variant="primary"
+                    size="medium"
+                    fullWidth
+                    onClick={handleShareX}
+                    className="text-[14px]! text-nowrap"
+                >
                     {t("workDetail.shareOnX", { defaultValue: "Share on X" })}
                 </Button>
                 <Button
@@ -393,10 +458,19 @@ export function WorkDetailAirdrop({
                     size="medium"
                     fullWidth
                     onClick={handleShowInvitationListModal}
+                    className="text-[14px]! text-nowrap"
                 >
-                    {invitedCount} {t("workDetail.invited", { defaultValue: "Invited" })}
+                    {workData.signed_in === true && workData.my_invite_count
+                        ? workData.my_invite_count
+                        : 0}{" "}
+                    {t("workDetail.invited", { defaultValue: "Invited" })}
                 </Button>
-                <Button size="medium" fullWidth onClick={handleGoToPointsMall}>
+                <Button
+                    size="medium"
+                    fullWidth
+                    onClick={handleGoToPointsMall}
+                    className="text-[14px]! text-nowrap"
+                >
                     {t("workDetail.pointsMall", { defaultValue: "Points Mall" })}
                 </Button>
             </div>

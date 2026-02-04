@@ -5,38 +5,25 @@ import { useEffect, useState } from "react";
 import { Directory } from "./Directory";
 import { artsApiClient } from "../../api/artsClient";
 import { Spinner } from "../../ui";
-
-const headingClass = "mb-5 text-[18px] font-semibold text-white";
+import { CreativeTeamMembersItem } from "@mirror/api";
 
 function Heading({ title }: { title: string }) {
-    return <h3 className={headingClass}>{title}</h3>;
+    return <h3 className="mb-5 text-[18px] font-semibold text-white">{title}</h3>;
 }
 
 /** 制作团队：头像 + 姓名 + 角色 */
 export function WorkDetailProductionTeam({
     members = [],
 }: {
-    members?: Array<{ name: string; role: string; avatar_url?: string }>;
+    members?: CreativeTeamMembersItem[];
 }) {
     const { t } = useTranslation();
-    const list =
-        members.length > 0
-            ? members
-            : [
-                  { name: "卞灼", role: "导演", avatar_url: "" },
-                  { name: "李振平", role: "饰 谢树文", avatar_url: "" },
-                  { name: "王娟", role: "饰 谢淑贞", avatar_url: "" },
-                  { name: "李红梅", role: "饰 谢淑娟", avatar_url: "" },
-                  { name: "卞灼", role: "导演", avatar_url: "" },
-                  { name: "卞灼", role: "导演", avatar_url: "" },
-                  { name: "卞灼", role: "导演", avatar_url: "" },
-              ];
 
     return (
         <section id="production-team">
             <Heading title={t("workDetail.productionTeam", { defaultValue: "Production Team" })} />
             <div className="flex flex-wrap justify-start gap-x-4 gap-y-4">
-                {list.map((person, index) => (
+                {members.map((person, index) => (
                     <div key={index} className="flex flex-col items-center">
                         <div className="mb-2 h-[60px] w-[60px] overflow-hidden rounded-full bg-[#d9d9d9]">
                             {person.avatar_url ? (
@@ -63,15 +50,15 @@ function Tab({
 }: {
     labels: string[];
     activeIndex: number;
-    onClick: () => void;
+    onClick: (index: number) => void;
 }) {
     return (
-        <div className="flex">
+        <div className="flex gap-2">
             {labels.map((label, index) => (
                 <h3
                     key={index}
-                    className={`${headingClass} ${activeIndex === index ? "text-primary" : ""}`}
-                    onClick={onClick}
+                    className={`mb-5 text-[18px] font-semibold ${activeIndex === index ? "text-white" : "text-[#AEB1CE] cursor-pointer"}`}
+                    onClick={() => onClick(index)}
                 >
                     {label}
                 </h3>
@@ -256,7 +243,7 @@ export function WorkDetailContent({
         <section id="work-detail-content">
             {/* 这里首先显示的是一个可以切换的 Tab，用于切换内容类型，目前支持：Chapters、Trailers&Stills */}
             {/* 如果这个作品只有章节的内容就展示章节，如果只有剧照就展示剧照 */}
-            <Tab labels={lableList} activeIndex={active} onClick={() => {}} />
+            <Tab labels={lableList} activeIndex={active} onClick={index => setActive(index)} />
             {lableList[active] === "Chapters" && (
                 <Chapters
                     workId={workId}

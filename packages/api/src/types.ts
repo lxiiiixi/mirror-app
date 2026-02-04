@@ -332,6 +332,11 @@ export interface WorkListResponseData {
 export interface WorkDetailParams {
     work_id: number;
 }
+export interface CreativeTeamMembersItem {
+    avatar_url: string;
+    name: string;
+    role: string;
+}
 
 /** 作品详情接口公共字段（未签到 / 已签到都会返回） */
 export interface WorkDetailBase {
@@ -352,19 +357,13 @@ export interface WorkDetailBase {
     work_name: string;
     work_total_chapter: number;
     work_type: number;
-
-    /** 空投/推广相关（可选，后端未提供时用占位） */
-    airdrop_visits?: number;
-    airdrop_progress_percent?: number;
-    airdrop_countdown?: string;
-    airdrop_amount?: string;
-    invitation_code?: string;
-    invitation_link?: string;
-    invited_count?: number;
-    /** 制作团队（可选，已签到场景下也可用 creative_team_members） */
-    production_team?: Array<{ name: string; role: string; avatar_url?: string }>;
-    /** 预告/剧照视频 URL（可选） */
-    trailer_video_url?: string;
+    creative_team_block: {
+        title: string;
+        image_url: string;
+        description: string;
+        link_url: string;
+    } | null;
+    creative_team_members: CreativeTeamMembersItem[];
 }
 
 /** 未完成签到时的返回：仅包含基础字段，无 signed_in 或 signed_in 为 false */
@@ -383,8 +382,6 @@ export interface WorkDetailCreativeTeamMember {
 export interface WorkDetailAfterSignIn extends WorkDetailBase {
     signed_in: true;
     can_show_team_btn: boolean;
-    creative_team_block: unknown;
-    creative_team_members: WorkDetailCreativeTeamMember[];
     ever_signed_in: boolean;
     invite_count: number;
     is_shared: boolean;
