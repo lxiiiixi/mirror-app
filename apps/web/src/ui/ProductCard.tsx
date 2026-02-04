@@ -3,6 +3,8 @@ import { images } from "@mirror/assets";
 import { resolveImageUrl, shareToX } from "@mirror/utils";
 import { getWorkTypeInfo, goToWorkDetail, WorkType } from "../utils/work";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { useLoginModalStore } from "../store/useLoginModalStore";
 
 /**
  * 产品数据接口
@@ -44,17 +46,20 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
         const creatorText = creators.slice(0, 3).join("/");
 
         const navigate = useNavigate();
+        const { isLoggedIn } = useAuth();
+        const openLoginModal = useLoginModalStore(state => state.openModal);
 
         const handleCardClick = () => {
             goToWorkDetail(navigate, product.id);
         };
 
         const handleShareClick = (e: React.MouseEvent) => {
-            // TODO
-            // 如果没有登陆，则打开登录弹窗
             e.stopPropagation();
-            if (!product.shareLink) return;
-            if (!product.name) return;
+            if (!product.shareLink || !product.name) return;
+            if (!isLoggedIn) {
+                openLoginModal();
+                return;
+            }
             shareToX(product.shareLink, product.name);
         };
 

@@ -4,6 +4,8 @@ import { images } from "@mirror/assets";
 import { resolveImageUrl, shareToX } from "@mirror/utils";
 import { getWorkTypeInfo, goToWorkDetail } from "../utils/work";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { useLoginModalStore } from "../store/useLoginModalStore";
 
 export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement> {
     /**
@@ -33,6 +35,8 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
         const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
         const navigate = useNavigate();
+        const { isLoggedIn } = useAuth();
+        const openLoginModal = useLoginModalStore(state => state.openModal);
 
         // 限制最多6个产品
         const displayProducts = products.slice(0, 6);
@@ -58,11 +62,12 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
         };
 
         const handleShareClick = (e: React.MouseEvent, product: ProductData) => {
-            // TODO
-            // 如果没有登陆，则打开登录弹窗
             e.stopPropagation();
-            if (!product.shareLink) return;
-            if (!product.name) return;
+            if (!product.shareLink || !product.name) return;
+            if (!isLoggedIn) {
+                openLoginModal();
+                return;
+            }
             shareToX(product.shareLink, product.name);
         };
 

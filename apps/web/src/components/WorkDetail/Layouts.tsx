@@ -81,29 +81,17 @@ export function WorkDetailCheckInButton({
 
 /** 头部大图 + 圆形头像 + 作品标题 */
 export function WorkDetailHero({
-    coverUrl,
-    avatarUrl,
-    title,
-    showTokenBorder = true,
     workId,
-    signedIn = false,
+    workData,
 }: {
-    coverUrl?: string;
-    avatarUrl?: string;
-    title?: string;
-    showTokenBorder?: boolean;
-    workId?: number;
-    signedIn?: boolean;
+    workId: number;
+    workData: WorkDetailResponseData;
 }) {
     const { t } = useTranslation();
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
-    const [isChecked, setIsChecked] = useState(Boolean(signedIn));
+    const [isChecked, setIsChecked] = useState(Boolean(workData.signed_in));
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    useEffect(() => {
-        setIsChecked(Boolean(signedIn));
-    }, [signedIn]);
 
     const handleCheckIn = useCallback(() => {
         if (isChecked || isSubmitting) return;
@@ -132,9 +120,9 @@ export function WorkDetailHero({
 
     return (
         <section className="relative h-[276px] overflow-hidden">
-            {coverUrl ? (
+            {workData.work_cover_url ? (
                 <img
-                    src={resolveImageUrl(coverUrl)}
+                    src={resolveImageUrl(workData.work_cover_url)}
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -149,13 +137,14 @@ export function WorkDetailHero({
             />
             <div className="absolute top-0 left-0 right-0 flex flex-col items-center h-[80%] gap-3 mt-4">
                 <TokenAvatar
-                    src={avatarUrl ?? ""}
-                    showTokenBorder={showTokenBorder}
+                    src={workData.token_cover_url ?? ""}
+                    showTokenBorder={workData.show_token_border}
                     size={130}
                     imageSize={110}
                 />
                 <h2 className="text-2xl font-bold leading-none text-white text-center">
-                    {title || "—"}
+                    {/* 默认取作品英文名字前三个首字母，作品名字不足三个英文单词取最大，作品积分名字在作品代币名字后面加“s” */}
+                    {workData.token_name + "s" || "—"}
                 </h2>
                 <WorkDetailCheckInButton
                     onClick={handleCheckIn}

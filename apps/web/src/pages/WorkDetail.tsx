@@ -112,18 +112,21 @@ export default function WorkDetail() {
     return (
         <WorkDetailLayout pageTitle={pageTitle}>
             {/* 头部大图 + 圆形头像 + 标题 */}
-            <WorkDetailHero
-                coverUrl={data.work_cover_url}
-                avatarUrl={data.token_cover_url ?? data.work_cover_url}
-                title={data.work_name}
-                showTokenBorder={Boolean(data.show_token_border)}
-                workId={workId}
-                signedIn={data.signed_in === true}
-            />
-
+            <div className="relative z-10">
+                <WorkDetailHero
+                    workId={workId}
+                    workData={data}
+                    // coverUrl={data.work_cover_url}
+                    // avatarUrl={data.token_cover_url ?? data.work_cover_url}
+                    // title={`${data.token_name}s`}
+                    // showTokenBorder={Boolean(data.show_token_border)}
+                    // signedIn={data.signed_in === true}
+                />
+            </div>
             {/* 空投/推广区块（有数据或占位展示） */}
-            <WorkDetailAirdrop workId={workId} workData={data} />
-
+            <div className="relative z-20 -mt-6">
+                <WorkDetailAirdrop workId={workId} workData={data} />
+            </div>
             <div className="p-6 space-y-6">
                 {/* 作品信息卡片：封面 + 标题/作者/简介 */}
                 <ProductCover
