@@ -218,7 +218,7 @@ function EmailLogin() {
 
             <style jsx>{`
                 .email-login-page {
-                    width: 100vw;
+                    width: 100%;
                     min-height: 100vh;
                     display: flex;
                     align-items: start;

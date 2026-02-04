@@ -2,13 +2,7 @@ import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
 import { displayNumber } from "@mirror/utils";
 import { LinearDivideHorizontal, LinearDivideVertical, UserInfo } from "./component";
-
-interface AssetState {
-    ent_balance?: string | number;
-    usdt_balance?: string | number;
-    token_balance?: string | number;
-    nft_count?: number;
-}
+import { UserAssetItem } from "@mirror/api";
 
 export interface OverlapInfoCardProps {
     /** 总资产数值（已格式化） */
@@ -16,10 +10,18 @@ export interface OverlapInfoCardProps {
     /** 刷新回调 */
     onRefresh: () => void;
     /** 资产数据 */
-    assets: AssetState;
+    assets: UserAssetItem[];
     walletAddress: string;
     email: string;
     onCopyAddress: () => void;
+}
+
+// 对应 assets 接口返回列表中的 name 字段
+enum AssetName {
+    ENT = "ENT",
+    USDT = "USDT",
+    ART = "ART",
+    TICKET = "TICKET",
 }
 
 /**
@@ -70,7 +72,9 @@ export function OverlapInfoCard({
                                 {t("account.ent")}
                             </div>
                             <div className="text-[15px] font-medium text-white">
-                                {displayNumber(assets.ent_balance)}
+                                {displayNumber(
+                                    assets.find(item => item.name === AssetName.ENT)?.balance ?? 0,
+                                )}
                             </div>
                         </div>
                     </div>
@@ -89,7 +93,9 @@ export function OverlapInfoCard({
                                 {t("account.rwa_token")}
                             </div>
                             <div className="text-[15px] font-medium text-white">
-                                {displayNumber(assets.usdt_balance)}
+                                {displayNumber(
+                                    assets.find(item => item.name === AssetName.USDT)?.balance ?? 0,
+                                )}
                             </div>
                         </div>
                     </div>
@@ -109,7 +115,9 @@ export function OverlapInfoCard({
                                 {t("account.ticket")}
                             </div>
                             <div className="text-[15px] font-medium text-[#32f4dd]">
-                                {displayNumber(assets.nft_count ?? 0)}
+                                {displayNumber(
+                                    assets.find(item => item.name === AssetName.ART)?.balance ?? 0,
+                                )}
                             </div>
                         </div>
                     </div>
@@ -124,7 +132,10 @@ export function OverlapInfoCard({
                                 {t("account.rwa_ticket")}
                             </div>
                             <div className="text-[15px] font-medium text-white">
-                                {displayNumber(assets.token_balance)}
+                                {displayNumber(
+                                    assets.find(item => item.name === AssetName.TICKET)?.balance ??
+                                        0,
+                                )}
                             </div>
                         </div>
                     </div>

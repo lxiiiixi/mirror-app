@@ -292,7 +292,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     }
 
                     .content {
-                        width: 100vw;
+                        width: 100%;
                         flex: 1;
                         min-height: 0;
                         overflow-y: auto;

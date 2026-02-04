@@ -45,6 +45,20 @@ function App() {
 
     const storedLanguage =
         typeof window !== "undefined" ? window.localStorage.getItem("user-lang") : null;
+    const whitepaperRedirectKey = "skip-whitepaper-redirect";
+    const whitepaperUrl = "https://whitepaper.mirror.fan/";
+
+    const fromWhitepaperParam = useMemo(() => {
+        if (typeof window === "undefined") return false;
+        const params = new URLSearchParams(location.search);
+        return params.get("from_whitepaper") === "true";
+    }, [location.search]);
+
+    const shouldSkipWhitepaperRedirect = useMemo(() => {
+        if (fromWhitepaperParam) return true;
+        if (typeof window === "undefined") return false;
+        return window.localStorage.getItem(whitepaperRedirectKey) === "true";
+    }, [fromWhitepaperParam]);
 
     // 匹配当前路由配置
     const currentRoute = useMemo(() => matchRoute(location.pathname), [location.pathname]);
@@ -94,12 +108,32 @@ function App() {
         [currentRoute, routeContext],
     );
 
-    // 桌面端自动重定向到白皮书网站
     useEffect(() => {
-        if (isDesktop) {
-            window.location.href = "https://whitepaper.mirror.fan/";
+        if (typeof window === "undefined") return;
+        const params = new URLSearchParams(location.search);
+        const param = params.get("from_whitepaper");
+        if (param === "true") {
+            window.localStorage.setItem(whitepaperRedirectKey, "true");
+        } else if (param === "false") {
+            window.localStorage.removeItem(whitepaperRedirectKey);
         }
-    }, [isDesktop]);
+    }, [location.search]);
+
+    // 桌面端默认重定向到白皮书网站（除非明确从白皮书返回）
+    useEffect(() => {
+        if (!isDesktop) return;
+        if (shouldSkipWhitepaperRedirect) return;
+        window.location.href = whitepaperUrl;
+    }, [isDesktop, shouldSkipWhitepaperRedirect, whitepaperUrl]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        if (isDesktop && shouldSkipWhitepaperRedirect) {
+            document.body.classList.add("desktop-frame");
+        } else {
+            document.body.classList.remove("desktop-frame");
+        }
+    }, [isDesktop, shouldSkipWhitepaperRedirect]);
 
     useEffect(() => {
         document.documentElement.lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
@@ -150,7 +184,7 @@ function App() {
     };
 
     // 如果是桌面端，先不渲染任何内容（等待重定向）
-    if (isDesktop) {
+    if (isDesktop && !shouldSkipWhitepaperRedirect) {
         return null;
     }
 

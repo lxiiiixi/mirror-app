@@ -124,13 +124,15 @@ export interface UserBindWalletRequest {
 
 export interface UserBindWalletResponseData extends ApiMessageData {}
 
-export interface UserAssetResponseData {
-    token_balance: DecimalString;
-    ent_balance: DecimalString;
-    usdt_balance: DecimalString;
-    nft_count: number;
+export interface UserAssetItem {
+    balance: DecimalString;
+    can_list: boolean;
+    can_recharge: boolean;
+    can_withdraw: boolean;
+    frozen: number;
+    name: string;
+    price: DecimalString;
 }
-
 export interface UserVipLevelResponseData {
     direct_invites: number;
     indirect_invites: number;
@@ -203,9 +205,7 @@ export interface NextLevelRequirementsVip {
     user_required: number;
 }
 
-export type NextLevelRequirements =
-    | NextLevelRequirementsNonVip
-    | NextLevelRequirementsVip;
+export type NextLevelRequirements = NextLevelRequirementsNonVip | NextLevelRequirementsVip;
 
 export interface UserLevelProgressResponseData {
     current_level: number;

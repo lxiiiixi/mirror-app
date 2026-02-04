@@ -327,7 +327,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
                     /* 场景高度完全按视口宽度比例：卡片高 ≈ 68vw * (129/267)，取 50vw 留余量 */
                     .banner-2d-scene {
                         width: 100%;
-                        height: 42vw;
+                        height: clamp(140px, 42vw, 300px);
                         position: relative;
                         touch-action: pan-y;
                     }
@@ -343,7 +343,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
                         position: absolute;
                         left: 50%;
                         top: 50%;
-                        width: 68vw;
+                        width: clamp(220px, 68vw, 420px);
                         aspect-ratio: 267 / 129;
                         transition: all 0.5s ease;
                         cursor: pointer;

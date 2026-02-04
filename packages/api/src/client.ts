@@ -461,7 +461,7 @@ function createUserModule<E>(client: ArtsApiClient<E>) {
                 body: payload,
             }),
         getAsset: () =>
-            client.requestJson<Types.UserAssetResponseData>("GET", "/arts/user/asset", {
+            client.requestJson<Types.UserAssetItem[]>("GET", "/arts/user/asset", {
                 auth: "required",
             }),
         getVipLevel: () =>

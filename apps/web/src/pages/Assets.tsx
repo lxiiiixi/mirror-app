@@ -8,20 +8,14 @@ import { Spinner } from "../ui";
 import { RechargeWithdrawalDialog } from "../components/Account/RechargeWithdrawalDialog";
 import { GlassButton, OverlapInfoCard, WithdrawButton } from "../components/Assets";
 import { displayNumber } from "@mirror/utils";
-
-interface AssetState {
-    ent_balance?: string | number;
-    usdt_balance?: string | number;
-    token_balance?: string | number;
-    nft_count?: number;
-}
+import { UserAssetItem } from "@mirror/api";
 
 function Assets() {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { isLoggedIn, hydrated } = useAuth();
     const showAlert = useAlertStore(state => state.show);
-    const [assets, setAssets] = useState<AssetState>({});
+    const [assets, setAssets] = useState<UserAssetItem[]>([]);
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [loading, setLoading] = useState(false);
@@ -57,12 +51,9 @@ function Assets() {
     }, [refreshAssets]);
 
     const total = useMemo(() => {
-        const ent = Number(assets.ent_balance ?? 0);
-        const usdt = Number(assets.usdt_balance ?? 0);
-        const token = Number(assets.token_balance ?? 0);
-        const sum = ent + usdt + token;
+        const sum = assets.reduce((acc, item) => acc + Number(item.balance ?? 0), 0);
         return Number.isFinite(sum) ? sum : 0;
-    }, [assets.ent_balance, assets.usdt_balance, assets.token_balance]);
+    }, [assets]);
 
     const handleCopyAddress = async () => {
         if (!walletAddress) return;

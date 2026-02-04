@@ -90,6 +90,15 @@ body {
     overscroll-behavior-y: contain;
 }
 
+#root {
+    width: 100%;
+}
+
+body.desktop-frame #root {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
 body.work-detail-page {
     align-items: flex-start;
     justify-content: flex-start;
@@ -97,6 +106,11 @@ body.work-detail-page {
 
 body.work-detail-page #root {
     width: 100%;
+}
+
+body.desktop-frame {
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .iconfont {

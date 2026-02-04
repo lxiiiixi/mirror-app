@@ -71,7 +71,7 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
             box-sizing: border-box;
             width: 100%;
             height: 32px;
-            max-width: 100vw;
+            max-width: 100%;
           }
 
           .icon {
