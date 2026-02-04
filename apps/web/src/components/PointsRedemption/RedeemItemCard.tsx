@@ -1,18 +1,11 @@
 import { HTMLAttributes, forwardRef, MouseEvent } from "react";
 import { resolveImageUrl } from "@mirror/utils";
 import { Button } from "../../ui";
-
-export interface RedeemItemCardData {
-    id: string;
-    name: string;
-    coverUrl: string;
-    points: number;
-}
+import { PointsProductItem } from "@mirror/api";
 
 export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
-    data: RedeemItemCardData;
-    actionText?: string;
-    actionDisabled?: boolean;
+    data: PointsProductItem;
+    redeemablePoints: number | null;
     onAction?: () => void;
 }
 
@@ -20,10 +13,17 @@ export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
  * 积分商城商品卡片：左侧图片，右侧标题 + 积分 + 兑换按钮
  */
 export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
-    (
-        { data, actionText = "Redeem", actionDisabled = false, onAction, className = "", ...props },
-        ref,
-    ) => {
+    ({ data, redeemablePoints, onAction, className = "", ...props }, ref) => {
+        const isUnavailable = data.status !== 1 || data.stock <= 0;
+        const isInsufficient =
+            redeemablePoints != null && Number(redeemablePoints) < Number(data.points_price);
+        const actionText = isUnavailable
+            ? "Unavailable"
+            : isInsufficient
+              ? "Insufficient Points"
+              : "Redeem";
+        const actionDisabled = isUnavailable || isInsufficient;
+
         const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onAction?.();
@@ -32,13 +32,13 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
         return (
             <div
                 ref={ref}
-                className={`flex gap-4 rounded-2xl border border-white/20 bg-linear-to-br from-white/5 to-white/20 p-4 backdrop-blur-sm ${className}`}
+                className={`relative flex gap-4 rounded-2xl border border-white/20 bg-linear-to-br from-white/5 to-white/20 p-4 pl-[130px] h-[130px] backdrop-blur-sm ${className}`}
                 {...props}
             >
-                <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-white/10">
-                    {data.coverUrl ? (
+                <div className="absolute left-4 bottom-4 w-[100px] h-[140px] shrink-0 overflow-hidden rounded-xl bg-white/10">
+                    {data.image_url ? (
                         <img
-                            src={resolveImageUrl(data.coverUrl)}
+                            src={resolveImageUrl(data.image_url)}
                             alt={data.name}
                             className="h-full w-full object-cover"
                         />
@@ -51,17 +51,18 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
                         </div>
                     )}
                 </div>
-                <div className="flex min-w-0 flex-1 flex-col justify-between">
+                <div className="flex min-w-0 flex-1 flex-col">
                     <h3 className="truncate text-base font-bold text-white">{data.name}</h3>
                     <div className="mt-1 text-sm font-medium text-white/80">
-                        {data.points.toLocaleString()} Points
+                        Points {data.points_price.toLocaleString()}
                     </div>
-                    <div className="mt-2">
+                    <div className="mt-1 text-sm font-medium text-white/80">
+                        Stock {data.stock.toLocaleString()}
+                    </div>
+                    <div className="absolute right-4 bottom-4">
                         <Button
                             variant="primary"
                             size="small"
-                            rounded
-                            className="min-w-[80px]"
                             disabled={actionDisabled}
                             onClick={handleAction}
                         >
