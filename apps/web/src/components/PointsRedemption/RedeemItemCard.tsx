@@ -20,7 +20,10 @@ export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
  * 积分商城商品卡片：左侧图片，右侧标题 + 积分 + 兑换按钮
  */
 export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
-    ({ data, actionText = "SAVE", actionDisabled = false, onAction, className = "", ...props }, ref) => {
+    (
+        { data, actionText = "Redeem", actionDisabled = false, onAction, className = "", ...props },
+        ref,
+    ) => {
         const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onAction?.();
@@ -40,7 +43,10 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
                             className="h-full w-full object-cover"
                         />
                     ) : (
-                        <div className="flex h-full w-full items-center justify-center text-white/30" aria-hidden>
+                        <div
+                            className="flex h-full w-full items-center justify-center text-white/30"
+                            aria-hidden
+                        >
                             —
                         </div>
                     )}

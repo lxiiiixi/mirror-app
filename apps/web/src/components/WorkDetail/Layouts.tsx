@@ -305,8 +305,9 @@ export function WorkDetailAirdrop({
             openLoginModal();
             return;
         }
-        navigate("/points-redemption");
-    }, [isLoggedIn, openLoginModal, navigate]);
+        const query = workId ? `?work_id=${encodeURIComponent(String(workId))}` : "";
+        navigate(`/points-redemption${query}`);
+    }, [isLoggedIn, openLoginModal, navigate, workId]);
 
     return (
         <section>
