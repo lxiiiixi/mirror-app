@@ -383,7 +383,7 @@ export function WorkDetailAirdrop({
             )}
 
             {/* 三个操作按钮 */}
-            <div className="flex justify-between gap-4">
+            <div id="work_detail_airdrop_buttons" className="flex justify-between gap-4">
                 <Button variant="primary" size="medium" fullWidth onClick={handleShareX}>
                     {t("workDetail.shareOnX", { defaultValue: "Share on X" })}
                 </Button>

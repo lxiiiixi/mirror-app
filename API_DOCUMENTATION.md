@@ -12,7 +12,7 @@
 ### 快速导航
 - [1. 用户模块 (User)](#1-用户模块-user)
 - [2. 作品模块 (Work)](#2-作品模块-work)
-- [3. 积分兑换模块 (Points)](#3-积分兑换模块-points)
+- [3. 作品积分商城 (Points)](#3-作品积分商城-points)
 - [4. 文件模块 (File)](#4-文件模块-file)
 - [5. 节点模块 (Node)](#5-节点模块-node)
 - [6. 入金模块 (Deposit)](#6-入金模块-deposit)
@@ -2447,7 +2447,6 @@ work_id=214
     "work_cover_url": "upload/poster/xxx.png",
     "work_description": "作品描述",
     
-    "points_mall_url": "https://mall.example.com/work/214",
     "creative_team_block": {
       "title": "创作团队",
       "image_url": "https://example.com/images/team-banner.jpg",
@@ -2472,6 +2471,7 @@ work_id=214
     "joined_community": true,
     "invite_count": 5,
     "token_balance": 100,
+    "points_balance": 100,
     
     "team_sign_in_progress": "2/3",
     "team_sign_in_reward_claimed": false,
@@ -2488,7 +2488,8 @@ work_id=214
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| points_mall_url | string | 积分商城链接（每作品独立配置，可为空） |
+| token_balance | number | 该作品下用户代币余额（即作品积分） |
+| points_balance | number | 该作品下用户作品积分（与 token_balance 一致；商城入口由前端根据作品 id 跳转） |
 | creative_team_block | object\|null | 创作团队区块信息（标题、图片、描述、链接） |
 | creative_team_members | array | 创作团队成员列表（头像、姓名、角色，最多30人） |
 | team_sign_in_progress | string | 组队签到进度（格式："0/3"、"1/3"、"2/3"、"3/3"） |
@@ -2763,23 +2764,30 @@ work_id=214&page=1&page_size=10
 
 ---
 
-## 3. 积分兑换模块 (Points)
+## 3. 作品积分商城 (Points)
 
-**基础路径**: `/arts/points`
+**基础路径**: `/arts/points`  
+**说明**：积分按作品维度（作品积分 = user_work_token.token_balance）。所有接口需传 `work_id` 标识作品；前端根据作品 id 跳转商城并传 `work_id`。
 
-### 3.1 我的积分余额
+### 3.1 该作品下的作品积分余额
 
-查询当前用户的积分余额。
+查询当前用户在该作品下的作品积分余额（= 该作品下的 token_balance）。
 
 **接口地址**
 ```
-GET /arts/points/balance
+GET /arts/points/balance?work_id={作品ID}
 ```
 
 **请求头**
 ```
 token: {用户token}  // 必需
 ```
+
+**请求参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| work_id | int | 是 | 作品ID |
 
 **响应示例**
 ```json
@@ -2796,17 +2804,17 @@ token: {用户token}  // 必需
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| points_balance | int64 | 用户当前积分余额 |
+| points_balance | int64 | 该作品下用户作品积分余额 |
 
 ---
 
-### 3.2 积分商品列表
+### 3.2 该作品下的积分商品列表
 
-获取可兑换的积分商品列表，支持分页和状态筛选。
+获取该作品下可兑换的积分商品列表，支持分页和状态筛选。
 
 **接口地址**
 ```
-GET /arts/points/products
+GET /arts/points/products?work_id={作品ID}
 ```
 
 **请求头**
@@ -2816,11 +2824,12 @@ token: {用户token}  // 可选（公开接口）
 
 **请求参数**
 ```
-page=1&page_size=10&status=1
+work_id=214&page=1&page_size=10&status=1
 ```
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
+| work_id | int | 是 | 作品ID |
 | page | int | 否 | 页码（从1开始，默认1） |
 | page_size | int | 否 | 每页数量（默认10） |
 | status | int | 否 | 商品状态（1=上架，0=下架），不传则返回全部 |
@@ -2834,6 +2843,7 @@ page=1&page_size=10&status=1
     "list": [
       {
         "id": 1,
+        "work_id": 214,
         "name": "测试商品1 - 精美笔记本",
         "image_url": "https://example.com/products/notebook.jpg",
         "points_price": 100,
@@ -2854,6 +2864,7 @@ page=1&page_size=10&status=1
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | id | int64 | 商品ID |
+| work_id | int | 作品ID |
 | name | string | 商品名称 |
 | image_url | string | 商品图片URL |
 | points_price | int | 所需积分 |
@@ -2867,22 +2878,24 @@ page=1&page_size=10&status=1
 
 ### 3.3 商品详情
 
-获取单个商品的详细信息。
+获取单个商品的详细信息。可选传 `work_id` 校验商品属于该作品。
 
 **接口地址**
 ```
-GET /arts/points/product/:id
+GET /arts/points/product/:id?work_id={作品ID}
 ```
 
 **请求头**
 ```
-token: {用户token}  // 必需
+token: {用户token}  // 可选（公开接口）
 ```
 
 **请求参数**
-```
-id: 商品ID（路径参数）
-```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| id | 路径 | 是 | 商品ID |
+| work_id | int | 否 | 作品ID（传则校验商品属于该作品） |
 
 **响应示例**
 ```json
@@ -2893,6 +2906,7 @@ id: 商品ID（路径参数）
     "id": 1,
     "name": "测试商品1 - 精美笔记本",
     "image_url": "https://example.com/products/notebook.jpg",
+    "work_id": 214,
     "points_price": 100,
     "stock": 50,
     "status": 1,
@@ -2905,9 +2919,9 @@ id: 商品ID（路径参数）
 
 ---
 
-### 3.4 积分兑换
+### 3.4 作品积分兑换
 
-使用积分兑换商品。扣减积分、减少库存、创建订单（事务保证一致性）。
+使用该作品下的作品积分兑换商品。扣减 user_work_token.token_balance（该作品）、减少库存、创建订单（事务保证一致性）。
 
 **接口地址**
 ```
@@ -2923,6 +2937,7 @@ token: {用户token}  // 必需
 **请求参数**
 ```json
 {
+  "work_id": 214,
   "product_id": 1,
   "quantity": 1,
   "receiver_name": "张三",
@@ -2934,7 +2949,8 @@ token: {用户token}  // 必需
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| product_id | int64 | 是 | 商品ID |
+| work_id | int | 是 | 作品ID |
+| product_id | int64 | 是 | 商品ID（须属于该作品） |
 | quantity | int | 是 | 兑换数量（必须>0） |
 | receiver_name | string | 否 | 收货人姓名（可在兑换时填写或后续更新） |
 | receiver_phone | string | 否 | 收货电话 |
@@ -2961,21 +2977,21 @@ token: {用户token}  // 必需
 | 412 | 参数错误（quantity <= 0） |
 
 **业务逻辑**
-1. 检查商品是否存在且上架
+1. 检查商品存在且属于该作品且上架
 2. 检查库存是否充足
-3. 检查用户积分是否充足
-4. 事务中：扣减积分、减少库存、创建订单、记录积分流水
+3. 检查用户在该作品下的作品积分是否充足（user_work_token.token_balance）
+4. 事务中：扣减该作品下作品积分、减少库存、创建订单（带 work_id）
 5. 如果任何步骤失败，整个事务回滚
 
 ---
 
 ### 3.5 我的兑换列表
 
-获取当前用户的兑换订单列表，支持分页和状态筛选。
+获取当前用户的兑换订单列表，支持按作品筛选、分页和状态筛选。
 
 **接口地址**
 ```
-GET /arts/points/orders
+GET /arts/points/orders?work_id={作品ID}
 ```
 
 **请求头**
@@ -2985,11 +3001,12 @@ token: {用户token}  // 必需
 
 **请求参数**
 ```
-page=1&page_size=10&status=0
+work_id=214&page=1&page_size=10&status=0
 ```
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
+| work_id | int | 否 | 作品ID（不传则查全部作品的订单） |
 | page | int | 否 | 页码（从1开始，默认1） |
 | page_size | int | 否 | 每页数量（默认10） |
 | status | int | 否 | 订单状态（0=待发货，1=已发货，2=已完成，3=已取消），不传则返回全部 |
@@ -3004,6 +3021,7 @@ page=1&page_size=10&status=0
       {
         "id": 1,
         "user_id": 17683558763961652,
+        "work_id": 214,
         "product_id": 1,
         "points_cost": 100,
         "quantity": 1,
@@ -3030,6 +3048,7 @@ page=1&page_size=10&status=0
 |------|------|------|
 | id | int64 | 订单ID |
 | user_id | int64 | 用户ID |
+| work_id | int | 作品ID |
 | product_id | int64 | 商品ID |
 | points_cost | int | 消耗积分 |
 | quantity | int | 兑换数量 |
@@ -3073,6 +3092,7 @@ id: 订单ID（路径参数）
   "data": {
     "id": 1,
     "user_id": 17683558763961652,
+    "work_id": 214,
     "product_id": 1,
     "points_cost": 100,
     "quantity": 1,
