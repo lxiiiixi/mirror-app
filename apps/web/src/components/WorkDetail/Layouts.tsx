@@ -461,6 +461,7 @@ export function WorkDetailAirdrop({
                 </Button>
             </div>
             <InvitationListModal
+                workId={workId}
                 open={showInvitationListModal}
                 onClose={() => setShowInvitationListModal(false)}
             />

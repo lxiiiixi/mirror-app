@@ -11,6 +11,7 @@ import {
     isSolanaTxError,
     SolanaTxErrorCode,
 } from "@mirror/solana";
+import { NODE_QUOTE_RAW_AMOUNT_SCALE } from "@mirror/api";
 import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
 import { useAuth } from "../hooks/useAuth";
@@ -275,13 +276,21 @@ function VipPurchase() {
             // 1. 获取报价单（与 arts-app 一致：quote → 用 expected_raw_amount 构建 USDT 交易 → sign → send）
             const quoteRes = await artsApiClient.node.getQuote({ node_id: 1, num: quantity });
             const quoteId = quoteRes.data?.quote_id ?? "";
-            const expectedAmount = Number(quoteRes.data?.expected_raw_amount ?? 0);
-            if (!quoteId || expectedAmount <= 0) {
+            const expectedRawAmount = Number(quoteRes.data?.expected_raw_amount ?? 0);
+            const expiresAt = quoteRes.data?.expires_at;
+            if (!quoteId || expectedRawAmount <= 0) {
                 console.error("[VipPurchase] quote failed", quoteRes.data);
                 setWaitPay(false);
                 showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
                 return;
             }
+            if (expiresAt != null && Date.now() / 1000 > expiresAt) {
+                setWaitPay(false);
+                showAlert({ message: t("miningIndex.orderCreateFailed"), variant: "error" });
+                return;
+            }
+            // expected_raw_amount 为 1e6 精度（100000 = 0.1 USDT），需转为人类可读金额再传给构建交易
+            const expectedHumanAmount = (expectedRawAmount / NODE_QUOTE_RAW_AMOUNT_SCALE).toFixed(6);
 
             // 2. 获取平台收款地址（与充值流程一致）
             const addressRes = await artsApiClient.deposit.getAddress();
@@ -301,13 +310,13 @@ function VipPurchase() {
                 return;
             }
 
-            // 3. 构建 USDT 转账交易
+            // 3. 构建 USDT 转账交易（amount 为人类可读金额，如 "0.1"）
             const tx = await buildSplTokenTransferTransaction({
                 connection,
                 owner: walletAddress,
                 destination: recipientAddress,
                 mint: tokenInfo.address,
-                amount: expectedAmount.toString(),
+                amount: expectedHumanAmount,
                 decimals: tokenInfo.decimals,
             });
 

@@ -1081,11 +1081,16 @@ export interface NodeQuoteRequest {
     num: number;
 }
 
+/** expected_raw_amount 的精度：raw 值除以该常量得到 USDT 人类可读金额，如 100000 / 1e6 = 0.1 USDT */
+export const NODE_QUOTE_RAW_AMOUNT_SCALE = 1_000_000;
+
 export interface NodeQuoteResponseData {
     quote_id: string;
     node_id: number;
     num: number;
-    expected_raw_amount: number; // 比如返回 100000 就是 0.1 USDT
+    /** 以 1e6 为精度的金额（100000 表示 0.1 USDT），用于构建 USDT 转账时需除以 NODE_QUOTE_RAW_AMOUNT_SCALE 转为人类可读金额 */
+    expected_raw_amount: number;
+    /** 报价过期时间戳（秒），可用于前端校验报价是否仍有效 */
     expires_at: number;
 }
 
