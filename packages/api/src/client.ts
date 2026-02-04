@@ -83,6 +83,7 @@ export class ArtsApiClient<E = ArtsApiError> {
 
     public readonly user: ReturnType<typeof modules.default.createUserModule<E>>;
     public readonly work: ReturnType<typeof modules.default.createWorkModule<E>>;
+    public readonly points: ReturnType<typeof modules.default.createPointsModule<E>>;
     public readonly file: ReturnType<typeof modules.default.createFileModule<E>>;
     public readonly static: ReturnType<typeof modules.default.createStaticModule<E>>;
     public readonly node: ReturnType<typeof modules.default.createNodeModule<E>>;
@@ -104,6 +105,7 @@ export class ArtsApiClient<E = ArtsApiError> {
 
         this.user = modules.default.createUserModule(this);
         this.work = modules.default.createWorkModule(this);
+        this.points = modules.default.createPointsModule(this);
         this.file = modules.default.createFileModule(this);
         this.static = modules.default.createStaticModule(this);
         this.node = modules.default.createNodeModule(this);

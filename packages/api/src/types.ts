@@ -927,6 +927,104 @@ export interface WorkFriendsListResponseData {
     page_size: number;
 }
 
+// Points module types
+export interface PointsBalanceParams {
+    work_id: number;
+}
+
+export interface PointsBalanceResponseData {
+    points_balance: number;
+}
+
+export interface PointsProductListParams extends PaginationParams {
+    work_id: number;
+    status?: number;
+}
+
+export interface PointsProductItem {
+    id: number;
+    work_id: number;
+    name: string;
+    image_url: string;
+    points_price: number;
+    stock: number;
+    status: number;
+    sort: number;
+    create_time: ISODateTimeString;
+    update_time: ISODateTimeString;
+}
+
+export interface PointsProductListResponseData {
+    list: PointsProductItem[];
+    total: number;
+}
+
+export interface PointsProductDetailParams {
+    id: number;
+    work_id?: number;
+}
+
+export type PointsProductDetailResponseData = PointsProductItem;
+
+export interface PointsRedeemRequest {
+    work_id: number;
+    product_id: number;
+    quantity: number;
+    receiver_name?: string;
+    receiver_phone?: string;
+    receiver_region?: string;
+    receiver_address?: string;
+}
+
+export interface PointsRedeemResponseData {
+    order_id: number;
+}
+
+export interface PointsOrderListParams extends PaginationParams {
+    work_id?: number;
+    status?: number;
+}
+
+export interface PointsOrderItem {
+    id: number;
+    user_id: Int64String;
+    work_id: number;
+    product_id: number;
+    points_cost: number;
+    quantity: number;
+    status: number;
+    receiver_name: string;
+    receiver_phone: string;
+    receiver_region: string;
+    receiver_address: string;
+    express_company: string;
+    express_no: string;
+    ship_time: ISODateTimeString | null;
+    create_time: ISODateTimeString;
+    update_time: ISODateTimeString;
+}
+
+export interface PointsOrderListResponseData {
+    list: PointsOrderItem[];
+    total: number;
+}
+
+export interface PointsOrderDetailParams {
+    id: number;
+}
+
+export type PointsOrderDetailResponseData = PointsOrderItem;
+
+export interface PointsOrderAddressRequest {
+    order_id: number;
+    receiver_name: string;
+    receiver_phone: string;
+    receiver_region?: string;
+    receiver_address: string;
+}
+
+export type PointsOrderAddressResponseData = Record<string, never>;
+
 // File module types
 export type UploadFile = File | Blob | { uri: string; name?: string; type?: string };
 

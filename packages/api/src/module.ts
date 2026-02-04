@@ -331,6 +331,53 @@ function createWorkModule<E>(client: ArtsApiClient<E>) {
     };
 }
 
+function createPointsModule<E>(client: ArtsApiClient<E>) {
+    return {
+        getBalance: (params: Types.PointsBalanceParams) =>
+            client.requestJson<Types.PointsBalanceResponseData>("GET", "/arts/points/balance", {
+                auth: "required",
+                query: params,
+            }),
+        getProducts: (params: Types.PointsProductListParams) =>
+            client.requestJson<Types.PointsProductListResponseData>(
+                "GET",
+                "/arts/points/products",
+                {
+                    auth: "optional",
+                    query: params,
+                },
+            ),
+        getProductDetail: (params: Types.PointsProductDetailParams) =>
+            client.requestJson<Types.PointsProductDetailResponseData>(
+                "GET",
+                `/arts/points/product/${encodePathSegment(params.id)}`,
+                { auth: "optional", query: { work_id: params.work_id } },
+            ),
+        redeem: (payload: Types.PointsRedeemRequest) =>
+            client.requestJson<Types.PointsRedeemResponseData>("POST", "/arts/points/redeem", {
+                auth: "required",
+                body: payload,
+            }),
+        getOrders: (params: Types.PointsOrderListParams = {}) =>
+            client.requestJson<Types.PointsOrderListResponseData>("GET", "/arts/points/orders", {
+                auth: "required",
+                query: params,
+            }),
+        getOrderDetail: (params: Types.PointsOrderDetailParams) =>
+            client.requestJson<Types.PointsOrderDetailResponseData>(
+                "GET",
+                `/arts/points/order/${encodePathSegment(params.id)}`,
+                { auth: "required" },
+            ),
+        updateOrderAddress: (payload: Types.PointsOrderAddressRequest) =>
+            client.requestJson<Types.PointsOrderAddressResponseData>(
+                "POST",
+                "/arts/points/order/address",
+                { auth: "required", body: payload },
+            ),
+    };
+}
+
 function createFileModule<E>(client: ArtsApiClient<E>) {
     return {
         upload: (file: Types.UploadFile | FormData, filename?: string) =>
@@ -886,6 +933,7 @@ function createAdminModule<E>(client: ArtsApiClient<E>) {
 export default {
     createUserModule,
     createWorkModule,
+    createPointsModule,
     createFileModule,
     createStaticModule,
     createNodeModule,
