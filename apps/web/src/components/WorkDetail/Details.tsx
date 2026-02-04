@@ -1,11 +1,11 @@
 import { MediaItem, parseMediaType, resolveImageUrl } from "@mirror/utils";
 import { useTranslation } from "react-i18next";
 import { getWorkTypeByValue } from "../../utils/work";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Directory } from "./Directory";
 import { artsApiClient } from "../../api/artsClient";
 import { Spinner } from "../../ui";
-import { CreativeTeamMembersItem } from "@mirror/api";
+import type { CreativeTeamMembersItem, WorkLinkListItem } from "@mirror/api";
 
 function Heading({ title }: { title: string }) {
     return <h3 className="mb-5 text-[18px] font-semibold text-white">{title}</h3>;
@@ -212,8 +212,170 @@ function Chapters({
     );
 }
 
-function TrailersAndStills() {
-    return <section>{/* 在这里展示视频/照片 */}</section>;
+type TrailerItem = {
+    id: string;
+    title?: string;
+    videoUrl: string;
+    coverUrl?: string;
+    duration?: number;
+};
+
+type StillItem = {
+    id: string;
+    title?: string;
+    imageUrl: string;
+};
+
+const normalizeLinkList = (data: unknown): WorkLinkListItem[] => {
+    if (Array.isArray(data)) {
+        return data as WorkLinkListItem[];
+    }
+    if (data && typeof data === "object") {
+        const record = data as { list?: unknown; links?: unknown };
+        if (Array.isArray(record.list)) {
+            return record.list as WorkLinkListItem[];
+        }
+        if (Array.isArray(record.links)) {
+            return record.links as WorkLinkListItem[];
+        }
+    }
+    return [];
+};
+
+function TrailersAndStills({ workId }: { workId: number }) {
+    const [loading, setLoading] = useState(false);
+    const [trailers, setTrailers] = useState<TrailerItem[]>([]);
+    const [stills, setStills] = useState<StillItem[]>([]);
+
+    useEffect(() => {
+        if (!workId || Number.isNaN(workId)) {
+            setTrailers([]);
+            setStills([]);
+            return;
+        }
+
+        let mounted = true;
+        setLoading(true);
+
+        artsApiClient.work
+            .getLinkList({ work_id: workId })
+            .then(response => {
+                if (!mounted) return;
+                const list = normalizeLinkList(response.data);
+                const nextTrailers: TrailerItem[] = [];
+                const nextStills: StillItem[] = [];
+
+                list.forEach(item => {
+                    const contentType = Number((item as { content_type?: unknown }).content_type);
+                    const videoUrl = (item as { video_url?: string }).video_url;
+                    const coverUrl = (item as { cover_url?: string }).cover_url;
+                    const title = (item as { title?: string }).title;
+                    const duration = (item as { duration_seconds?: number }).duration_seconds;
+                    const idValue =
+                        String((item as { id?: number }).id ?? videoUrl ?? coverUrl ?? title ?? "");
+
+                    if (contentType === 1 || (videoUrl && contentType !== 2)) {
+                        if (videoUrl) {
+                            nextTrailers.push({
+                                id: idValue,
+                                title,
+                                videoUrl,
+                                coverUrl,
+                                duration,
+                            });
+                        }
+                        return;
+                    }
+
+                    if (contentType === 2 || coverUrl) {
+                        if (coverUrl) {
+                            nextStills.push({
+                                id: idValue,
+                                title,
+                                imageUrl: coverUrl,
+                            });
+                        }
+                    }
+                });
+
+                setTrailers(nextTrailers);
+                setStills(nextStills);
+            })
+            .catch(() => {
+                if (!mounted) return;
+                setTrailers([]);
+                setStills([]);
+            })
+            .finally(() => {
+                if (!mounted) return;
+                setLoading(false);
+            });
+
+        return () => {
+            mounted = false;
+        };
+    }, [workId]);
+
+    const hasContent = useMemo(() => trailers.length > 0 || stills.length > 0, [trailers, stills]);
+
+    if (loading) {
+        return (
+            <section>
+                <div className="flex justify-center py-8">
+                    <Spinner size="medium" />
+                </div>
+            </section>
+        );
+    }
+
+    if (!hasContent) {
+        return (
+            <section>
+                <div className="py-8 text-center text-sm text-white/60">暂无预告或剧照</div>
+            </section>
+        );
+    }
+
+    return (
+        <section className="space-y-6">
+            {trailers.length > 0 ? (
+                <div className="space-y-3">
+                    {trailers.map(item => (
+                        <div key={item.id} className="space-y-2">
+                            {item.title ? (
+                                <p className="text-sm font-medium text-white/80">{item.title}</p>
+                            ) : null}
+                            <video
+                                className="w-full rounded-lg"
+                                src={item.videoUrl}
+                                poster={item.coverUrl ? resolveImageUrl(item.coverUrl) : undefined}
+                                controls
+                            />
+                            {item.duration ? (
+                                <p className="text-xs text-white/50">{item.duration}s</p>
+                            ) : null}
+                        </div>
+                    ))}
+                </div>
+            ) : null}
+            {stills.length > 0 ? (
+                <div className="grid grid-cols-2 gap-3">
+                    {stills.map(item => (
+                        <div key={item.id} className="space-y-1">
+                            <img
+                                src={resolveImageUrl(item.imageUrl)}
+                                alt={item.title ?? ""}
+                                className="w-full rounded-lg object-cover"
+                            />
+                            {item.title ? (
+                                <p className="text-xs text-white/70">{item.title}</p>
+                            ) : null}
+                        </div>
+                    ))}
+                </div>
+            ) : null}
+        </section>
+    );
 }
 
 /** 预告与剧照：视频占位或列表 */
@@ -252,7 +414,7 @@ export function WorkDetailContent({
                     work_type={work_type}
                 />
             )}
-            {lableList[active] === "Trailers&Stills" && <TrailersAndStills />}
+            {lableList[active] === "Trailers&Stills" && <TrailersAndStills workId={workId} />}
         </section>
     );
 }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { TokenAvatar } from "../Common/TokenAvatar";
-import { resolveImageUrl } from "@mirror/utils";
+import { resolveImageUrl, shareToX } from "@mirror/utils";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
@@ -296,10 +296,7 @@ export function WorkDetailAirdrop({
         }
         const link = inviteUrl;
         if (!link) return;
-        const titleSegment = workData.work_name ? `《${workData.work_name}》 ` : "";
-        const text = `Exciting news! Enjoy ${titleSegment}Airdrop by Daily Check event and Share Invite Links. ${link}`;
-        const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-        window.open(shareUrl, "_blank");
+        shareToX(link, workData.work_name);
     }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal]);
 
     const handleShowInvitationListModal = useCallback(() => {

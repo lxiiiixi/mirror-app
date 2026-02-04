@@ -1,7 +1,8 @@
 import { HTMLAttributes, forwardRef } from "react";
 import { images } from "@mirror/assets";
-import { resolveImageUrl } from "@mirror/utils";
-import { getWorkTypeInfo, WorkType } from "../utils/work";
+import { resolveImageUrl, shareToX } from "@mirror/utils";
+import { getWorkTypeInfo, goToWorkDetail, WorkType } from "../utils/work";
+import { useNavigate } from "react-router-dom";
 
 /**
  * 产品数据接口
@@ -11,6 +12,7 @@ export interface ProductData {
     name: string;
     coverUrl: string;
     type: WorkType;
+    shareLink: string;
     shareCount?: number;
     isShared?: boolean;
     likeCount?: number;
@@ -26,16 +28,6 @@ export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "
     product: ProductData;
 
     /**
-     * 点击卡片回调
-     */
-    onClick?: (product: ProductData) => void;
-
-    /**
-     * 点击分享到X按钮回调
-     */
-    onShareToX?: (product: ProductData) => void;
-
-    /**
      * 点击收藏按钮回调
      */
     onLike?: (product: ProductData) => void;
@@ -46,18 +38,24 @@ export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "
  * 用于展示作品信息的卡片组件
  */
 export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
-    ({ product, onClick, onShareToX, onLike, className = "", ...props }, ref) => {
+    ({ product, onLike, className = "", ...props }, ref) => {
         const workInfo = getWorkTypeInfo(product.type, true);
         const creators = product.creators || [];
         const creatorText = creators.slice(0, 3).join("/");
 
+        const navigate = useNavigate();
+
         const handleCardClick = () => {
-            onClick?.(product);
+            goToWorkDetail(navigate, product.id);
         };
 
         const handleShareClick = (e: React.MouseEvent) => {
+            // TODO
+            // 如果没有登陆，则打开登录弹窗
             e.stopPropagation();
-            onShareToX?.(product);
+            if (!product.shareLink) return;
+            if (!product.name) return;
+            shareToX(product.shareLink, product.name);
         };
 
         const handleLikeClick = (e: React.MouseEvent) => {

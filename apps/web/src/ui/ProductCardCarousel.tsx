@@ -1,24 +1,15 @@
 import { HTMLAttributes, forwardRef, useState, useEffect, useRef } from "react";
 import { ProductData } from "./ProductCard";
 import { images } from "@mirror/assets";
-import { resolveImageUrl } from "@mirror/utils";
-import { getWorkTypeInfo } from "../utils/work";
+import { resolveImageUrl, shareToX } from "@mirror/utils";
+import { getWorkTypeInfo, goToWorkDetail } from "../utils/work";
+import { useNavigate } from "react-router-dom";
 
 export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * 轮播的产品列表（最多6个）
      */
     products: ProductData[];
-
-    /**
-     * 点击卡片回调
-     */
-    onClickProduct?: (product: ProductData) => void;
-
-    /**
-     * 点击分享到X按钮回调
-     */
-    onShareToX?: (product: ProductData) => void;
 
     /**
      * 自动播放间隔（毫秒），默认5000ms
@@ -36,21 +27,12 @@ export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement>
  * 带轮播功能的大卡片组件
  */
 export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouselProps>(
-    (
-        {
-            products,
-            onClickProduct,
-            onShareToX,
-            autoplayInterval = 5000,
-            autoplay = true,
-            className = "",
-            ...props
-        },
-        ref,
-    ) => {
+    ({ products, autoplayInterval = 5000, autoplay = true, className = "", ...props }, ref) => {
         const [currentIndex, setCurrentIndex] = useState(0);
         const [expandedDesc, setExpandedDesc] = useState(false);
         const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+        const navigate = useNavigate();
 
         // 限制最多6个产品
         const displayProducts = products.slice(0, 6);
@@ -72,12 +54,16 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
         }, [autoplay, autoplayInterval, displayProducts.length]);
 
         const handleCardClick = (product: ProductData) => {
-            onClickProduct?.(product);
+            goToWorkDetail(navigate, product.id);
         };
 
         const handleShareClick = (e: React.MouseEvent, product: ProductData) => {
+            // TODO
+            // 如果没有登陆，则打开登录弹窗
             e.stopPropagation();
-            onShareToX?.(product);
+            if (!product.shareLink) return;
+            if (!product.name) return;
+            shareToX(product.shareLink, product.name);
         };
 
         const handleDotClick = (index: number) => {
@@ -104,6 +90,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
 
         return (
             <div
+                id="product_card_carousel"
                 ref={ref}
                 className={`relative z-5 w-full max-w-[380px] mx-auto aspect-320/470 pt-[4.26%] ${className}`}
                 {...props}

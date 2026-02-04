@@ -57,6 +57,7 @@ function UIShowcase() {
             shareCount: 539,
             isShared: false,
             creators: ["Gangseoul", "Masgom", "Masgom"],
+            shareLink: "https://x.com/intent/post?text=${encodeURIComponent(text)}",
         },
         {
             id: 2,
@@ -66,6 +67,7 @@ function UIShowcase() {
             shareCount: 462,
             isShared: true,
             creators: ["Jeff(WHYNOTME)", "NULL"],
+            shareLink: "https://x.com/intent/post?text=${encodeURIComponent(text)}",
         },
         {
             id: 3,
@@ -75,6 +77,7 @@ function UIShowcase() {
             shareCount: 128,
             isShared: false,
             creators: ["John Director", "Jane Producer"],
+            shareLink: "https://x.com/intent/post?text=${encodeURIComponent(text)}",
         },
     ];
 
@@ -448,12 +451,7 @@ function UIShowcase() {
                         </h4>
                         <div className="flex flex-wrap items-start gap-6 rounded-3xl border border-white/10 bg-white/5 p-8">
                             {sampleProducts.map(product => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={product}
-                                    onClick={handleProductClick}
-                                    onShareToX={handleShareToX}
-                                />
+                                <ProductCard key={product.id} product={product} />
                             ))}
                         </div>
                     </div>
@@ -465,8 +463,6 @@ function UIShowcase() {
                         </h4>
                         <ProductCardCarousel
                             products={carouselProducts}
-                            onClickProduct={handleProductClick}
-                            onShareToX={handleShareToX}
                             autoplay={true}
                             autoplayInterval={5000}
                         />

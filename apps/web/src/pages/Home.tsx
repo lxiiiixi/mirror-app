@@ -137,6 +137,8 @@ function Home() {
                         ? splitCreators(author).slice(0, 3)
                         : [];
 
+            const shareLink = "";
+
             return {
                 id: work.id,
                 name,
@@ -147,6 +149,7 @@ function Home() {
                 creators,
                 description,
                 rawType: workTypeValue,
+                shareLink,
             };
         });
     }, [items]);
@@ -195,24 +198,10 @@ function Home() {
                                                 products={carouselProducts}
                                                 autoplay={true}
                                                 autoplayInterval={5000}
-                                                onClickProduct={product =>
-                                                    handleNavigateToDetail(
-                                                        product.id,
-                                                        (product as { rawType?: number }).rawType,
-                                                    )
-                                                }
                                             />
                                         </div>
                                     ) : null}
-                                    <ProductCard
-                                        product={product}
-                                        onClick={() =>
-                                            handleNavigateToDetail(
-                                                product.id,
-                                                (product as { rawType?: number }).rawType,
-                                            )
-                                        }
-                                    />
+                                    <ProductCard product={product} />
                                 </div>
                             );
                         })}

@@ -102,7 +102,7 @@ export const WORK_TYPE: Array<WorkTypeInfo> = [
         value: 9,
         type: "movie",
         text: "Movie",
-        isShowChapter: true,
+        isShowChapter: false,
         isShowTrailersStills: true,
         icon: icons.regular,
     },
