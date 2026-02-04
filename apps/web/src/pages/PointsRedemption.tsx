@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { formatNumber } from "@mirror/utils";
 import { WorkDetailLayout } from "../components/WorkDetail";
@@ -223,14 +223,19 @@ export default function PointsRedemption() {
         console.log("save", item);
     };
 
+    const lastProductsWorkIdRef = useRef<number | null>(null);
+
     useEffect(() => {
         if (!hasValidWorkId) {
             showAlert({ message: "Missing work id for points redemption.", variant: "error" });
             return;
         }
-        void fetchProducts();
+        if (lastProductsWorkIdRef.current !== workId) {
+            lastProductsWorkIdRef.current = workId;
+            void fetchProducts();
+        }
         void fetchBalance();
-    }, [fetchBalance, fetchProducts, hasValidWorkId, showAlert]);
+    }, [fetchBalance, fetchProducts, hasValidWorkId, showAlert, workId]);
 
     useEffect(() => {
         if (!hydrated) return;

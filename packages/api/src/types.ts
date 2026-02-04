@@ -947,9 +947,10 @@ export interface PointsProductItem {
     name: string;
     image_url: string;
     points_price: number;
-    stock: number;
-    status: number;
-    sort: number;
+    product_type: number; // 商品类型（0=实物，1=虚拟）
+    stock: number; // 库存数量
+    status: number; // 状态（1=上架，0=下架）
+    sort: number; // 排序值
     create_time: ISODateTimeString;
     update_time: ISODateTimeString;
 }
@@ -985,6 +986,12 @@ export interface PointsOrderListParams extends PaginationParams {
     status?: number;
 }
 
+enum PointsOrderStatus {
+    PENDING = 0,
+    SHIPPED = 1,
+    COMPLETED = 2,
+    CANCELLED = 3,
+}
 export interface PointsOrderItem {
     id: number;
     user_id: Int64String;
@@ -992,7 +999,7 @@ export interface PointsOrderItem {
     product_id: number;
     points_cost: number;
     quantity: number;
-    status: number;
+    status: PointsOrderStatus; // （0=待发货，1=已发货，2=已完成，3=已取消）
     receiver_name: string;
     receiver_phone: string;
     receiver_region: string;
