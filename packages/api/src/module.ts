@@ -52,6 +52,7 @@ function createUserModule<E>(client: ArtsApiClient<E>) {
                 { auth: "required" },
             ),
         /**
+         * @deprecated 之前白名单用于购买 vip 优惠，现在没有这个逻辑了。
          * 检查用户是否在白名单中
          */
         checkUserWhitelist: () =>
