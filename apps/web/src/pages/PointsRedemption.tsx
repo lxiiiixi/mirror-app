@@ -16,7 +16,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import type { PointsOrderItem, PointsProductItem } from "@mirror/api";
-import { PointsRedemptionLayout } from "../components/PointsRedemption";
+import { BlackBarHeader } from "../ui/Headers";
 
 /** 积分商城 Tab 索引 */
 const TAB_MALL = 0;
@@ -329,7 +329,8 @@ export default function PointsRedemption() {
         redeemablePoints == null ? "—" : formatNumber(Number(redeemablePoints) || 0);
 
     return (
-        <PointsRedemptionLayout>
+        <div className="min-h-screen bg-[#030620] text-white w-dvw" role="presentation">
+            <BlackBarHeader title="Points Redemption" />
             <div className="px-4 pb-8 pt-4">
                 <p className="text-base font-semibold text-white">
                     Redeemable Points: {balanceDisplay}
@@ -415,6 +416,6 @@ export default function PointsRedemption() {
                     <Spinner size="large" />
                 </div>
             ) : null}
-        </PointsRedemptionLayout>
+        </div>
     );
 }
