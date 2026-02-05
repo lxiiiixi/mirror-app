@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
@@ -41,6 +41,19 @@ export default function WorkDetail() {
             document.body.classList.remove("work-detail-page");
         };
     }, []);
+
+    const fetchWorkDetail = useCallback(() => {
+        if (!workId || Number.isNaN(workId)) return;
+        artsApiClient.work
+            .detail({ work_id: workId })
+            .then(response => {
+                setData(response.data);
+                setStatus("success");
+            })
+            .catch(() => {
+                setStatus("error");
+            });
+    }, [workId]);
 
     useEffect(() => {
         if (!workId || Number.isNaN(workId)) {
@@ -116,6 +129,7 @@ export default function WorkDetail() {
                 <WorkDetailHero
                     workId={workId}
                     workData={data}
+                    onCheckInSuccess={fetchWorkDetail}
                     // coverUrl={data.work_cover_url}
                     // avatarUrl={data.token_cover_url ?? data.work_cover_url}
                     // title={`${data.token_name}s`}

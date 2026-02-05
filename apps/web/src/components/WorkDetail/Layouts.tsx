@@ -83,15 +83,20 @@ export function WorkDetailCheckInButton({
 export function WorkDetailHero({
     workId,
     workData,
+    onCheckInSuccess,
 }: {
     workId: number;
     workData: WorkDetailResponseData;
+    /** 签到成功后调用，用于刷新作品详情（如 signed_in、积分等） */
+    onCheckInSuccess?: () => void;
 }) {
     const { t } = useTranslation();
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const [isChecked, setIsChecked] = useState(Boolean(workData.signed_in));
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    console.log(workData.signed_in);
 
     const handleCheckIn = useCallback(() => {
         if (isChecked || isSubmitting) return;
@@ -105,6 +110,7 @@ export function WorkDetailHero({
             .signIn({ work_id: workId })
             .then(() => {
                 setIsChecked(true);
+                onCheckInSuccess?.();
             })
             .catch(error => {
                 console.error("[WorkDetailHero] signIn failed", error);
@@ -112,7 +118,7 @@ export function WorkDetailHero({
             .finally(() => {
                 setIsSubmitting(false);
             });
-    }, [isChecked, isSubmitting, isLoggedIn, openLoginModal, workId]);
+    }, [isChecked, isSubmitting, isLoggedIn, openLoginModal, workId, onCheckInSuccess]);
 
     const checkInText = isChecked
         ? t("productShare.checked", { defaultValue: "Checked" })
@@ -362,7 +368,7 @@ export function WorkDetailAirdrop({
                             key={i}
                             className="flex items-center justify-center text-[18px] font-bold text-white gap-1"
                         >
-                            <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[8px] py-[10px] rounded-lg border border-[#E358FF]">
+                            <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[16px] py-[8px] rounded-lg border border-[#E358FF]">
                                 {part}{" "}
                             </div>
                             {i < 2 ? ":" : ""}
