@@ -117,6 +117,14 @@
       "invitedPpl": "Invited {{inviteNum}} ppl",
       "copySuccess": "Copy Success"
     },
+    "copyLink": {
+      "work": "Work",
+      "inviteCode": "Invite Code",
+      "inviteLink": "Invite Link",
+      "nameWithTitle": "\"{{name}}\" ",
+      "nameFallback": "{{work}} ",
+      "colon": ": "
+    },
     "invitedListDialog": {
       "title": "Invitation list",
       "wallet": "Wallet",
@@ -130,13 +138,14 @@
       "statusSelf": "Checked-in",
       "statusCompleted": "Completed",
       "statusRemind": "Remind to Check-in",
-      "remindCopySuccess": "Check-in link copied",
-      "remindCopyFailed": "Copy failed. Please try again."
+      "remindCopySuccess": "Copy the invitation link and invite your friends",
+      "remindCopyFailed": "Copy failed. Please try again.",
+      "checkInFailed": "Check-in failed. Please try again."
     },
     "checkInModal": {
-      "dailyCheckIn": "Daily Check-in +5 LGN",
-      "teamCheckIn": "3-Person Team Check-in +3 LGN",
-      "inviteOne": "Invite One User +5 LGN",
+      "dailyCheckIn": "Daily Check-in +5 {{tokenName}}",
+      "teamCheckIn": "3-Person Team Check-in +3 {{tokenName}}",
+      "inviteOne": "Invite One User +5 {{tokenName}}",
       "goTeamUp": "Go to Team Up",
       "goInvite": "Go to Invite",
       "completed": "Completed",

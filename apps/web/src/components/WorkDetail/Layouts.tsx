@@ -95,7 +95,7 @@ export function WorkDetailCheckInButton({
                 type="button"
                 className={`rounded-full px-4 py-1.5 text-[16px] font-semibold text-white ${
                     checked ? "" : "bg-linear-to-r from-[#f063cd] to-[#424afb]"
-                } ${disabled ? "cursor-not-allowed" : ""}`}
+                } ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
                 style={backgroundStyle ? { backgroundImage: backgroundStyle } : undefined}
                 onClick={onClick}
                 disabled={disabled}
@@ -214,7 +214,7 @@ export function WorkDetailAirdrop({
     workId: number;
     workData: WorkDetailResponseData;
 }) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { isLoggedIn, token } = useAuth();
     const [inviteCode, setInviteCode] = useState("");
     const [inviteUrl, setInviteUrl] = useState("");
@@ -300,22 +300,13 @@ export function WorkDetailAirdrop({
     const copyLink = () => {
         const link = inviteUrl;
         if (!link) return;
-        const language = i18n.resolvedLanguage ?? i18n.language ?? "en";
-        const isZh = language.startsWith("zh");
-        const isZhHant =
-            isZh &&
-            (language.includes("Hant") || language.includes("HK") || language.includes("TW"));
-        const workLabel = isZh ? "作品" : "Work";
-        const codeLabel = isZh ? (isZhHant ? "邀請碼" : "邀请码") : "Invite Code";
-        const linkLabel = isZh ? (isZhHant ? "邀請連結" : "邀请链接") : "Invite Link";
+        const workLabel = t("works.copyLink.work");
+        const codeLabel = t("works.copyLink.inviteCode");
+        const linkLabel = t("works.copyLink.inviteLink");
+        const colon = t("works.copyLink.colon");
         const nameSegment = workData.work_name
-            ? isZh
-                ? `《${workData.work_name}》`
-                : `"${workData.work_name}" `
-            : isZh
-              ? `《${workLabel}》`
-              : `${workLabel} `;
-        const colon = isZh ? "：" : ": ";
+            ? t("works.copyLink.nameWithTitle", { name: workData.work_name })
+            : t("works.copyLink.nameFallback", { work: workLabel });
         const text = `${nameSegment}${codeLabel}${colon}${inviteCode} ${linkLabel}${colon}${link}`;
         void navigator.clipboard.writeText(text);
         setIsCopied(true);

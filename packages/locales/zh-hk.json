@@ -117,6 +117,14 @@
       "invitedPpl": "已邀請 {{inviteNum}} 人",
       "copySuccess": "複製成功"
     },
+    "copyLink": {
+      "work": "作品",
+      "inviteCode": "邀請碼",
+      "inviteLink": "邀請連結",
+      "nameWithTitle": "《{{name}}》",
+      "nameFallback": "《{{work}}》",
+      "colon": "："
+    },
     "invitedListDialog": {
       "title": "邀請列表",
       "wallet": "錢包",
@@ -130,13 +138,14 @@
       "statusSelf": "完成簽到",
       "statusCompleted": "完成",
       "statusRemind": "提醒簽到",
-      "remindCopySuccess": "已複製作品簽到連結",
-      "remindCopyFailed": "複製失敗，請重試"
+      "remindCopySuccess": "複製邀請連結，去邀請你的好友吧",
+      "remindCopyFailed": "複製失敗，請重試",
+      "checkInFailed": "簽到失敗，請重試"
     },
     "checkInModal": {
-      "dailyCheckIn": "每日簽到 +5 LGN",
-      "teamCheckIn": "三人組隊簽到 +3 LGN",
-      "inviteOne": "邀請一位用戶 +5 LGN",
+      "dailyCheckIn": "每日簽到 +5 {{tokenName}}",
+      "teamCheckIn": "三人組隊簽到 +3 {{tokenName}}",
+      "inviteOne": "邀請一位用戶 +5 {{tokenName}}",
       "goTeamUp": "去組隊",
       "goInvite": "去邀請",
       "completed": "完成",

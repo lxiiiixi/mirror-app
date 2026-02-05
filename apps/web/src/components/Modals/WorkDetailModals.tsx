@@ -21,6 +21,7 @@ const ThreePersenTeamBox = ({
     address?: string;
 }) => {
     const { t } = useTranslation();
+    const showAlert = useAlertStore(s => s.show);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const isSelf = address && item.invite?.toLowerCase() === address.toLowerCase();
     const isDone = item.signed_in;
@@ -34,12 +35,17 @@ const ThreePersenTeamBox = ({
                 onCheckInSuccess?.();
             })
             .catch(() => {
-                // 失败时可由上层通过 alert 等提示
+                showAlert({
+                    message: t("invitedListDialog.checkInFailed", {
+                        defaultValue: "Check-in failed. Please try again.",
+                    }),
+                    variant: "error",
+                });
             })
             .finally(() => {
                 setIsSubmitting(false);
             });
-    }, [workId, isSubmitting, onCheckInSuccess]);
+    }, [workId, isSubmitting, onCheckInSuccess, showAlert, t]);
     return (
         <div className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]">
             <span className="truncate text-left" title={item.invite}>
@@ -190,18 +196,18 @@ export function InvitationListModal({
             });
     }, [inviteUrl, showAlert, t, workId]);
 
-    const title = t("invitedListDialog.title", { defaultValue: "Invitation List" });
-    const walletLabel = t("invitedListDialog.wallet", { defaultValue: "Wallet" });
-    const timeLabel = t("invitedListDialog.invitationTime", {
+    const title = t("works.invitedListDialog.title", { defaultValue: "Invitation List" });
+    const walletLabel = t("works.invitedListDialog.wallet", { defaultValue: "Wallet" });
+    const timeLabel = t("works.invitedListDialog.invitationTime", {
         defaultValue: "Invitation Time",
     });
-    const checkInLabel = t("invitedListDialog.checkIn", { defaultValue: "Check-in" });
-    const _teamLabel = t("invitedListDialog.teamLabel", { defaultValue: "Team Members" });
-    const otherLabel = t("invitedListDialog.otherLabel", { defaultValue: "3-Person Team" });
-    const loadingLabel = t("invitedListDialog.loading", { defaultValue: "Loading..." });
-    const errorLabel = t("invitedListDialog.error", { defaultValue: "Failed to load list" });
-    const emptyLabel = t("invitedListDialog.noData", { defaultValue: "No Team yet" });
-    const teamRewardLabel = t("invitedListDialog.teamReward", {
+    const checkInLabel = t("works.invitedListDialog.checkIn", { defaultValue: "Check-in" });
+    const _teamLabel = t("works.invitedListDialog.teamLabel", { defaultValue: "Team Members" });
+    const otherLabel = t("works.invitedListDialog.otherLabel", { defaultValue: "3-Person Team" });
+    const loadingLabel = t("works.invitedListDialog.loading", { defaultValue: "Loading..." });
+    const errorLabel = t("works.invitedListDialog.error", { defaultValue: "Failed to load list" });
+    const emptyLabel = t("works.invitedListDialog.noData", { defaultValue: "No Team yet" });
+    const teamRewardLabel = t("works.invitedListDialog.teamReward", {
         defaultValue: "If all team members check in, each member gets 3 tokens",
     });
 
@@ -322,6 +328,7 @@ const RowClass = "flex items-center justify-between text-[14px]";
 export function CheckInModal({
     open,
     onClose,
+    tokenName = "LGN",
     hasTeam = false,
     teamProgress,
     inviteCount = 0,
@@ -331,6 +338,7 @@ export function CheckInModal({
 }: {
     open: boolean;
     onClose?: () => void;
+    tokenName?: string;
     hasTeam?: boolean;
     teamProgress?: string;
     inviteCount?: number;
@@ -353,9 +361,9 @@ export function CheckInModal({
     const teamProgressInfo = useMemo(() => parseTeamProgress(teamProgress), [teamProgress]);
     const teamProgressLabel = useMemo(() => {
         if (teamProgressInfo.remaining <= 0) {
-            return t("checkInModal.completed", { defaultValue: "Completed" });
+            return t("works.checkInModal.completed", { defaultValue: "Completed" });
         }
-        return t("checkInModal.teamRemaining", {
+        return t("works.checkInModal.teamRemaining", {
             remaining: teamProgressInfo.remaining,
             total: teamProgressInfo.total,
             defaultValue: `${teamProgressInfo.remaining}/${teamProgressInfo.total} Remaining`,
@@ -363,16 +371,14 @@ export function CheckInModal({
     }, [t, teamProgressInfo.remaining, teamProgressInfo.total]);
 
     const showTeamUp = !hasTeam && inviteCount < 3 && canShowTeamBtn;
-    const teamUpLabel = t("checkInModal.goTeamUp", { defaultValue: "Go to Team Up" });
-    const inviteLabel = t("checkInModal.goInvite", { defaultValue: "Go to Invite" });
+    const teamUpLabel = t("works.checkInModal.goTeamUp", { defaultValue: "Go to Team Up" });
+    const inviteLabel = t("works.checkInModal.goInvite", { defaultValue: "Go to Invite" });
 
     const handleTeamUp = () => {
-        onClose?.();
         onTeamUp?.();
     };
 
     const handleInvite = () => {
-        onClose?.();
         onInvite?.();
     };
     /* 跟 Modal 框内容本身对其，使 2/3 露出、1/3 被面板遮住 */
@@ -399,18 +405,20 @@ export function CheckInModal({
                 {HeadingSrc}
                 <div className={RowClass}>
                     <span>
-                        {t("checkInModal.dailyCheckIn", {
-                            defaultValue: "Daily Check-in +5 LGN",
+                        {t("works.checkInModal.dailyCheckIn", {
+                            tokenName,
+                            defaultValue: `Daily Check-in +5 ${tokenName}`,
                         })}
                     </span>
                     <span className="text-right">
-                        {t("checkInModal.completed", { defaultValue: "Completed" })}
+                        {t("works.checkInModal.completed", { defaultValue: "Completed" })}
                     </span>
                 </div>
                 <div className={RowClass}>
                     <span>
-                        {t("checkInModal.teamCheckIn", {
-                            defaultValue: "3-Person Team Check-in +3 LGN",
+                        {t("works.checkInModal.teamCheckIn", {
+                            tokenName,
+                            defaultValue: `3-Person Team Check-in +3 ${tokenName}`,
                         })}
                     </span>
                     {/* 如果当前用户还没有组队（也就是他的邀请人数少于3），就在右边显示“去组队”。如果用户组队了，则展示签到完成进度，也就是三个人中有几个人没完成。 */}
@@ -426,14 +434,15 @@ export function CheckInModal({
                         <span className="text-right">{teamProgressLabel}</span>
                     ) : (
                         <span className="text-right text-white/70">
-                            {t("checkInModal.notAvailable", { defaultValue: "—" })}
+                            {t("works.checkInModal.notAvailable", { defaultValue: "—" })}
                         </span>
                     )}
                 </div>
                 <div className={RowClass}>
                     <span>
-                        {t("checkInModal.inviteOne", {
-                            defaultValue: "Invite One User +5 LGN",
+                        {t("works.checkInModal.inviteOne", {
+                            tokenName,
+                            defaultValue: `Invite One User +5 ${tokenName}`,
                         })}
                     </span>
                     <button
@@ -450,7 +459,7 @@ export function CheckInModal({
                         className="w-full rounded-xl bg-[#eb1484] py-3 text-[15px] font-bold text-white cursor-pointer"
                         onClick={onClose}
                     >
-                        {t("checkInModal.gotIt", { defaultValue: "Got it" })}
+                        {t("works.checkInModal.gotIt", { defaultValue: "Got it" })}
                     </Button>
                 </div>
             </div>

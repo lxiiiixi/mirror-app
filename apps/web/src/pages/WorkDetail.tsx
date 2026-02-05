@@ -17,6 +17,7 @@ import {
 import { CheckInModal } from "../components/Modals";
 import { WorkDetailResponseData } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
+import { useAlertStore } from "../store/useAlertStore";
 
 export default function WorkDetail() {
     const { t, i18n } = useTranslation();
@@ -59,12 +60,32 @@ export default function WorkDetail() {
             });
     }, [workId]);
 
+    const showAlert = useAlertStore(s => s.show);
+
     const handleGoInvite = useCallback(() => {
-        const target = document.getElementById("work_detail_airdrop_buttons");
-        if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-    }, []);
+        if (!data) return;
+        if (!data.signed_in) return;
+        const link = data.my_invite_url;
+        if (!link) return;
+        navigator.clipboard
+            .writeText(link)
+            .then(() => {
+                showAlert({
+                    message: t("works.invitedListDialog.remindCopySuccess", {
+                        defaultValue: "Copy the invitation link and invite your friends",
+                    }),
+                    variant: "success",
+                });
+            })
+            .catch(() => {
+                showAlert({
+                    message: t("works.invitedListDialog.remindCopyFailed", {
+                        defaultValue: "Copy failed. Please try again",
+                    }),
+                    variant: "error",
+                });
+            });
+    }, [data, showAlert, t]);
 
     useEffect(() => {
         if (!workId || Number.isNaN(workId)) {
@@ -195,6 +216,7 @@ export default function WorkDetail() {
             <CheckInModal
                 open={showCheckInModal}
                 onClose={() => setShowCheckInModal(false)}
+                tokenName={data.token_name}
                 hasTeam={data.signed_in === true ? data.has_team : false}
                 teamProgress={data.signed_in === true ? data.team_sign_in_progress : undefined}
                 inviteCount={data.signed_in === true ? data.my_invite_count : 0}
