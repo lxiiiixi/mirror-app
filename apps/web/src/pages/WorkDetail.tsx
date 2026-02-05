@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
@@ -16,9 +16,11 @@ import {
     WorkDetailProductionTeam,
 } from "../components/WorkDetail";
 import { WorkDetailResponseData } from "@mirror/api";
+import { useAuth } from "../hooks/useAuth";
 
 export default function WorkDetail() {
     const { t } = useTranslation();
+    const { token } = useAuth();
     const [searchParams] = useSearchParams();
     const workId = Number(searchParams.get("id") ?? "");
     const queryType = Number(searchParams.get("type") ?? "");
@@ -28,6 +30,7 @@ export default function WorkDetail() {
     const [chapterContent, setChapterContent] = useState<string | string[] | null>("");
     const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
     const [chapterLoading, setChapterLoading] = useState(false);
+    const dataRef = useRef<WorkDetailResponseData | null>(null);
 
     const [showCheckInModal, setShowCheckInModal] = useState(false);
 
@@ -38,7 +41,11 @@ export default function WorkDetail() {
         };
     }, []);
 
-    const fetchWorkDetail = useCallback(() => {
+    useEffect(() => {
+        dataRef.current = data;
+    }, [data]);
+
+    const handleRefreshAfterCheckIn = useCallback(() => {
         if (!workId || Number.isNaN(workId)) return;
         artsApiClient.work
             .detail({ work_id: workId })
@@ -58,8 +65,12 @@ export default function WorkDetail() {
             return;
         }
 
+        const hadData = Boolean(dataRef.current);
         let isMounted = true;
-        setStatus("loading");
+        if (!hadData) {
+            setStatus("loading");
+        }
+
         artsApiClient.work
             .detail({ work_id: workId })
             .then(response => {
@@ -69,13 +80,15 @@ export default function WorkDetail() {
             })
             .catch(() => {
                 if (!isMounted) return;
-                setStatus("error");
+                if (!hadData) {
+                    setStatus("error");
+                }
             });
 
         return () => {
             isMounted = false;
         };
-    }, [workId]);
+    }, [token, workId]);
 
     if (status === "loading") {
         return (
@@ -108,7 +121,7 @@ export default function WorkDetail() {
                 <WorkDetailHero
                     workId={workId}
                     workData={data}
-                    onCheckInSuccess={fetchWorkDetail}
+                    onCheckInSuccess={handleRefreshAfterCheckIn}
                     // coverUrl={data.work_cover_url}
                     // avatarUrl={data.token_cover_url ?? data.work_cover_url}
                     // title={`${data.token_name}s`}

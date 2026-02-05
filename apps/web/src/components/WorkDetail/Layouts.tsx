@@ -35,15 +35,21 @@ export function WorkDetailHeader({ workId }: { workId: number }) {
 
     useEffect(() => {
         if (!workId || Number.isNaN(workId)) return;
+        let isActive = true;
         artsApiClient.work
             .getExternalLinks({ work_id: workId })
             .then(response => {
+                if (!isActive) return;
                 setExternalLinks(response.data?.links ?? []);
                 console.log(response.data);
             })
             .catch(() => {
+                if (!isActive) return;
                 setExternalLinks([]);
             });
+        return () => {
+            isActive = false;
+        };
     }, [workId]);
 
     return (
@@ -193,7 +199,7 @@ export function WorkDetailAirdrop({
     workData: WorkDetailResponseData;
 }) {
     const { t, i18n } = useTranslation();
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, token } = useAuth();
     const [inviteCode, setInviteCode] = useState("");
     const [inviteUrl, setInviteUrl] = useState("");
     const [showInvitationListModal, setShowInvitationListModal] = useState(false);
@@ -273,7 +279,7 @@ export function WorkDetailAirdrop({
         return () => {
             isActive = false;
         };
-    }, [workId, isLoggedIn]);
+    }, [workId, isLoggedIn, token]);
 
     const copyLink = () => {
         const link = inviteUrl;
