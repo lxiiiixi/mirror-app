@@ -121,7 +121,28 @@
       "title": "Invitation list",
       "wallet": "Wallet",
       "invitationTime": "Invitation time",
-      "noData": "No Data"
+      "checkIn": "Check-in",
+      "loading": "Loading...",
+      "error": "Failed to load list",
+      "noData": "No Team yet",
+      "otherLabel": "3-Person Team",
+      "teamReward": "If all team members check in, each member gets 3 tokens",
+      "statusSelf": "Checked-in",
+      "statusCompleted": "Completed",
+      "statusRemind": "Remind to Check-in",
+      "remindCopySuccess": "Check-in link copied",
+      "remindCopyFailed": "Copy failed. Please try again."
+    },
+    "checkInModal": {
+      "dailyCheckIn": "Daily Check-in +5 LGN",
+      "teamCheckIn": "3-Person Team Check-in +3 LGN",
+      "inviteOne": "Invite One User +5 LGN",
+      "goTeamUp": "Go to Team Up",
+      "goInvite": "Go to Invite",
+      "completed": "Completed",
+      "teamRemaining": "{{remaining}}/{{total}} Remaining",
+      "gotIt": "Got it",
+      "notAvailable": "—"
     }
   },
   "ticket": {

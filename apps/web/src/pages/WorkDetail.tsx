@@ -47,8 +47,8 @@ export default function WorkDetail() {
     }, [data]);
 
     const handleRefreshAfterCheckIn = useCallback(() => {
-        if (!workId || Number.isNaN(workId)) return;
-        artsApiClient.work
+        if (!workId || Number.isNaN(workId)) return Promise.resolve();
+        return artsApiClient.work
             .detail({ work_id: workId })
             .then(response => {
                 setData(response.data);
@@ -58,6 +58,13 @@ export default function WorkDetail() {
                 setStatus("error");
             });
     }, [workId]);
+
+    const handleGoInvite = useCallback(() => {
+        const target = document.getElementById("work_detail_airdrop_buttons");
+        if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, []);
 
     useEffect(() => {
         if (!workId || Number.isNaN(workId)) {
@@ -147,8 +154,9 @@ export default function WorkDetail() {
                     workId={workId}
                     workData={data}
                     onCheckInSuccess={() => {
-                        handleRefreshAfterCheckIn();
-                        setShowCheckInModal(true);
+                        handleRefreshAfterCheckIn().finally(() => {
+                            setShowCheckInModal(true);
+                        });
                     }}
                     // coverUrl={data.work_cover_url}
                     // avatarUrl={data.token_cover_url ?? data.work_cover_url}
@@ -184,7 +192,16 @@ export default function WorkDetail() {
                 />
             </div>
 
-            <CheckInModal open={showCheckInModal} onClose={() => setShowCheckInModal(false)} />
+            <CheckInModal
+                open={showCheckInModal}
+                onClose={() => setShowCheckInModal(false)}
+                hasTeam={data.signed_in === true ? data.has_team : false}
+                teamProgress={data.signed_in === true ? data.team_sign_in_progress : undefined}
+                inviteCount={data.signed_in === true ? data.my_invite_count : 0}
+                canShowTeamBtn={data.signed_in === true ? data.can_show_team_btn : true}
+                onTeamUp={handleGoInvite}
+                onInvite={handleGoInvite}
+            />
         </WorkDetailLayout>
     );
 }

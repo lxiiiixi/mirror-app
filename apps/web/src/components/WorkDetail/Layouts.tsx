@@ -128,11 +128,25 @@ export function WorkDetailHero({
     }, [workData.signed_in]);
 
     const handleCheckIn = useCallback(() => {
-        if (isChecked || isSubmitting) return;
+        console.log("[WorkDetailHero] handleCheckIn", {
+            workId,
+            isChecked,
+            isSubmitting,
+            isLoggedIn,
+        });
+        if (isSubmitting) return;
         if (!isLoggedIn) {
             openLoginModal();
             return;
         }
+
+        // 如果已经签到了 => 展示签到成功弹窗
+        if (isChecked) {
+            console.log("[WorkDetailHero] handleCheckIn: show check in success modal");
+            onCheckInSuccess?.();
+            return;
+        }
+
         if (!workId || Number.isNaN(workId)) return;
         setIsSubmitting(true);
         artsApiClient.work
@@ -184,7 +198,7 @@ export function WorkDetailHero({
                 <WorkDetailCheckInButton
                     onClick={handleCheckIn}
                     text={checkInText}
-                    disabled={isChecked || isSubmitting}
+                    disabled={isSubmitting}
                     checked={isChecked}
                 />
             </div>
@@ -499,6 +513,8 @@ export function WorkDetailAirdrop({
                 workId={workId}
                 open={showInvitationListModal}
                 onClose={() => setShowInvitationListModal(false)}
+                inviteUrl={inviteUrl}
+                hasTeam={workData.signed_in === true ? workData.has_team : false}
             />
         </section>
     );

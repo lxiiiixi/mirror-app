@@ -121,7 +121,28 @@
       "title": "邀請列表",
       "wallet": "錢包",
       "invitationTime": "邀請時間",
-      "noData": "暫無數據"
+      "checkIn": "簽到",
+      "loading": "載入中...",
+      "error": "載入失敗",
+      "noData": "暫無組隊",
+      "otherLabel": "三人組隊",
+      "teamReward": "三人組隊全部簽到後，每人可獲得 3 枚代幣",
+      "statusSelf": "完成簽到",
+      "statusCompleted": "完成",
+      "statusRemind": "提醒簽到",
+      "remindCopySuccess": "已複製作品簽到連結",
+      "remindCopyFailed": "複製失敗，請重試"
+    },
+    "checkInModal": {
+      "dailyCheckIn": "每日簽到 +5 LGN",
+      "teamCheckIn": "三人組隊簽到 +3 LGN",
+      "inviteOne": "邀請一位用戶 +5 LGN",
+      "goTeamUp": "去組隊",
+      "goInvite": "去邀請",
+      "completed": "完成",
+      "teamRemaining": "{{remaining}}/{{total}} 未完成",
+      "gotIt": "知道了",
+      "notAvailable": "—"
     }
   },
   "ticket": {
