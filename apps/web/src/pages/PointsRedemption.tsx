@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { formatNumber } from "@mirror/utils";
-import { WorkDetailLayout } from "../components/WorkDetail";
 import { ProjectTabs, Spinner } from "../ui";
 import { RedeemItemCard } from "../components/PointsRedemption/RedeemItemCard";
 import {
@@ -17,6 +16,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import type { PointsOrderItem, PointsProductItem } from "@mirror/api";
+import { PointsRedemptionLayout } from "../components/PointsRedemption";
 
 /** 积分商城 Tab 索引 */
 const TAB_MALL = 0;
@@ -329,7 +329,7 @@ export default function PointsRedemption() {
         redeemablePoints == null ? "—" : formatNumber(Number(redeemablePoints) || 0);
 
     return (
-        <WorkDetailLayout>
+        <PointsRedemptionLayout>
             <div className="px-4 pb-8 pt-4">
                 <p className="text-base font-semibold text-white">
                     Redeemable Points: {balanceDisplay}
@@ -415,6 +415,6 @@ export default function PointsRedemption() {
                     <Spinner size="large" />
                 </div>
             ) : null}
-        </WorkDetailLayout>
+        </PointsRedemptionLayout>
     );
 }
