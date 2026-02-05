@@ -57,57 +57,53 @@ export function InvitationListModal({
             panelClassName="min-w-[320px] max-w-[calc(100vw-32px)] border-0 p-[2px] rounded-[14px] bg-[linear-gradient(139.96deg,#ED62CE_0.37%,#444AFB_99.63%)]"
             bodyClassName="p-0"
         >
-            <div className="rounded-[12px] bg-black/80 text-white">
-                <h3 className="py-4 text-center text-[18px] font-bold">Invitation List</h3>
-                <div className="p-4 pt-0">
-                    <div className="mb-2 flex items-center gap-2 text-[14px] font-medium text-white/90">
-                        <span className="flex-1">Wallet</span>
-                        <span className="text-center">Invitation Time</span>
-                        <span className="text-right">Check-in</span>
-                    </div>
-                    <div className="rounded-lg bg-[#1b1d23] px-3 py-3">
-                        {loading && (
-                            <p className="py-6 text-center text-[13px] text-white/70">
-                                Loading...
-                            </p>
-                        )}
-                        {error && (
-                            <p className="py-6 text-center text-[13px] text-red-400">
-                                Failed to load list
-                            </p>
-                        )}
-                        {!loading && !error && list.length === 0 && (
-                            <p className="py-6 text-center text-[13px] text-white/70">
-                                No invitations yet
-                            </p>
-                        )}
-                        {!loading && !error && list.length > 0 && (
-                            <>
-                                {list.length > 0 && (
-                                    <p className="px-4 text-center text-[13px] font-medium">
-                                        {total > 0 ? `${total}-Person Team` : "Team"}
-                                    </p>
-                                )}
-                                {list.map((item, index) => (
-                                    <div
-                                        key={`${item.wallet_display}-${item.invitation_time}-${index}`}
-                                        className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]"
-                                    >
-                                        <span className="flex-1 truncate" title={item.invite}>
-                                            {item.wallet_display || item.invite}
-                                        </span>
-                                        <span className="text-center">{item.invitation_time}</span>
-                                        <span className="text-right text-[#37ffc6]">
-                                            {getCheckInLabel(item)}
-                                        </span>
-                                    </div>
-                                ))}
-                                <p className="mt-2 px-4 text-center text-[12px] text-white/90">
-                                    If all team members check in, each member gets +3 points
+            <h3 className="text-center text-[18px] font-bold mb-4">Invitation List</h3>
+            <div className="">
+                <div className="mb-2 flex items-center gap-2 text-[14px] font-medium text-white/90">
+                    <span className="flex-1">Wallet</span>
+                    <span className="text-center">Invitation Time</span>
+                    <span className="text-right">Check-in</span>
+                </div>
+                <div className="rounded-lg bg-[#1b1d23] px-3 py-3">
+                    {loading && (
+                        <p className="py-6 text-center text-[13px] text-white/70">Loading...</p>
+                    )}
+                    {error && (
+                        <p className="py-6 text-center text-[13px] text-red-400">
+                            Failed to load list
+                        </p>
+                    )}
+                    {!loading && !error && list.length === 0 && (
+                        <p className="py-6 text-center text-[13px] text-white/70">
+                            No invitations yet
+                        </p>
+                    )}
+                    {!loading && !error && list.length > 0 && (
+                        <>
+                            {list.length > 0 && (
+                                <p className="px-4 text-center text-[13px] font-medium">
+                                    {total > 0 ? `${total}-Person Team` : "Team"}
                                 </p>
-                            </>
-                        )}
-                    </div>
+                            )}
+                            {list.map((item, index) => (
+                                <div
+                                    key={`${item.wallet_display}-${item.invitation_time}-${index}`}
+                                    className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]"
+                                >
+                                    <span className="flex-1 truncate" title={item.invite}>
+                                        {item.wallet_display || item.invite}
+                                    </span>
+                                    <span className="text-center">{item.invitation_time}</span>
+                                    <span className="text-right text-[#37ffc6]">
+                                        {getCheckInLabel(item)}
+                                    </span>
+                                </div>
+                            ))}
+                            <p className="mt-2 px-4 text-center text-[12px] text-white/90">
+                                If all team members check in, each member gets +3 points
+                            </p>
+                        </>
+                    )}
                 </div>
             </div>
         </Modal>

@@ -160,19 +160,6 @@ function VipPurchase() {
         }
     }, []);
 
-    const getUserCheck = useCallback(async () => {
-        if (!isLoggedIn) return;
-        try {
-            const response = await artsApiClient.user.checkUserWhitelist();
-            const data = response.data;
-            // 只有白名单用户和邀请用户可以购买
-            // TODO 确认需求是否正确
-            // setUserCanBuy(Boolean(data?.is_wallet_while ?? data?.is_invite ?? true));
-        } catch (error) {
-            console.error("[VipPurchase] user check failed", error);
-        }
-    }, [isLoggedIn]);
-
     useEffect(() => {
         const code = searchParams.get("club_invite") || localStorage.getItem("club_invite") || "";
         if (code) {
@@ -186,10 +173,7 @@ function VipPurchase() {
         void loadNodeInfo();
     }, [loadTierInfo, loadNodeInfo]);
 
-    // 用户白名单校验依赖登录状态，登录态变化时需重新请求
-    useEffect(() => {
-        void getUserCheck();
-    }, [getUserCheck]);
+    // 默认所有用户可购买
 
     useEffect(() => {
         if (tierInfo.remainingInTier > 0 && quantity > tierInfo.remainingInTier) {

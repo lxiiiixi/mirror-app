@@ -17,7 +17,6 @@ function Promotion() {
     const [today, setToday] = useState("0");
     const [total, setTotal] = useState("0");
     const [inviteCode, setInviteCode] = useState("");
-    const [isInWhitelist, setIsInWhitelist] = useState(false);
     const [isCanBind, setIsCanBind] = useState(false);
     const [inviteNum, setInviteNum] = useState({ direct_invites: "0/0", indirect_invites: "0/0" });
     const [inviteUrl, setInviteUrl] = useState("");
@@ -62,20 +61,9 @@ function Promotion() {
         }
     }, []);
 
-    const getUserCheck = useCallback(async () => {
+    const refreshInviteData = useCallback(async () => {
         if (!isLoggedIn) return;
-        try {
-            const response = await artsApiClient.user.checkUserWhitelist();
-            const data = response.data;
-            const isInWhitelist = Boolean(data?.is_wallet_while ?? true);
-            setIsInWhitelist(isInWhitelist);
-            setIsCanBind(Boolean(data?.is_invite === false));
-            if (isInWhitelist) {
-                await Promise.all([getInviteInfo(), getInviteNumbers()]);
-            }
-        } catch (error) {
-            console.error("[Promotion] user check failed", error);
-        }
+        await Promise.all([getInviteInfo(), getInviteNumbers()]);
     }, [getInviteInfo, getInviteNumbers, isLoggedIn]);
 
     const bindUser = useCallback(async () => {
@@ -88,20 +76,24 @@ function Promotion() {
             });
             showAlert({ message: t("promotion.bindSu"), variant: "success" });
             setIsCanBind(false);
-            void getUserCheck();
+            void refreshInviteData();
         } catch (error) {
             console.error("[Promotion] bind failed", error);
             showAlert({ message: t("assets.loadFailed"), variant: "error" });
         }
-    }, [getUserCheck, inviteCode, showAlert, t]);
+    }, [inviteCode, refreshInviteData, showAlert, t]);
 
     useEffect(() => {
         getInviteData();
     }, [getInviteData]);
 
     useEffect(() => {
-        void getUserCheck();
-    }, [getUserCheck]);
+        void refreshInviteData();
+    }, [refreshInviteData]);
+
+    useEffect(() => {
+        setIsCanBind(Boolean(isLoggedIn && inviteCode));
+    }, [inviteCode, isLoggedIn]);
 
     return (
         <div id="promotion-page" className="text-[12px]">
@@ -113,7 +105,7 @@ function Promotion() {
 
             <div className="sub-title text-[18px]">{t("promotion.subTitle")}</div>
 
-            {isInWhitelist ? <CommunityCard inviteUrl={inviteUrl} inviteNum={inviteNum} /> : null}
+            {isLoggedIn ? <CommunityCard inviteUrl={inviteUrl} inviteNum={inviteNum} /> : null}
 
             <CommissionCard today={today} total={total} />
 
