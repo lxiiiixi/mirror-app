@@ -913,10 +913,10 @@ export interface WorkFriendsListParams extends PaginationParams {
  * }
  */
 export interface WorkFriendItem {
-    invite: string;
-    invitation_time: string;
+    invite: string; // 被邀请人的钱包地址（用这个展示钱包）
+    invitation_time: string; // 邀请时间
     wallet_display: string;
-    signed_in: boolean;
+    signed_in: boolean; // 是否已签到
 }
 export interface WorkFriendsListResponseData {
     list: WorkFriendItem[];

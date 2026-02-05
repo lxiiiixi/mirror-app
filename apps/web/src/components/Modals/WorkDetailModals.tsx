@@ -67,6 +67,8 @@ export function InvitationListModal({
                     <span className="text-center">Invitation Time</span>
                     <span className="text-right">Check-in</span>
                 </div>
+                {/* 下面邀请列表展示的逻辑是：
+                如果 */}
                 <div className="rounded-lg bg-[#1b1d23] px-3 py-3">
                     {loading && (
                         <p className="py-6 text-center text-[13px] text-white/70">Loading...</p>
@@ -162,7 +164,7 @@ export function CheckInModal({ open, onClose }: { open: boolean; onClose?: () =>
 
     return (
         <Modal
-            open={true}
+            open={open}
             onClose={onClose}
             closeOnBackdrop
             hideHeader
@@ -179,6 +181,7 @@ export function CheckInModal({ open, onClose }: { open: boolean; onClose?: () =>
                 </div>
                 <div className={RowClass}>
                     <span>3-Person Team Check-in +3 LGN</span>
+                    {/* 如果当前用户还没有组队（也就是他的邀请人数少于3），就在右边显示“去组队”。如果用户组队了，则展示签到完成进度，也就是三个人中有几个人没完成。 */}
                     <span className="text-right text-[#d432f4]">Go to Team Up</span>
                 </div>
                 <div className={RowClass}>
