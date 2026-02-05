@@ -2,6 +2,7 @@ import { HTMLAttributes, forwardRef, MouseEvent } from "react";
 import { resolveImageUrl } from "@mirror/utils";
 import { Button } from "../../ui";
 import { PointsProductItem } from "@mirror/api";
+import { images } from "@mirror/assets";
 
 export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
     data: PointsProductItem;
@@ -35,21 +36,29 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
                 className={`relative flex gap-4 rounded-2xl border border-white/20 bg-linear-to-br from-white/5 to-white/20 p-4 pl-[130px] h-[130px] backdrop-blur-sm ${className}`}
                 {...props}
             >
-                <div className="absolute left-4 bottom-4 w-[100px] h-[140px] shrink-0 overflow-hidden rounded-xl bg-white/10">
-                    {data.image_url ? (
-                        <img
-                            src={resolveImageUrl(data.image_url)}
-                            alt={data.name}
-                            className="h-full w-full object-cover"
-                        />
-                    ) : (
-                        <div
-                            className="flex h-full w-full items-center justify-center text-white/30"
-                            aria-hidden
-                        >
-                            —
-                        </div>
-                    )}
+                <div
+                    className="absolute left-4 bottom-4 w-[100px] h-[140px] shrink-0 rounded-xl p-[2px]"
+                    style={{
+                        backgroundImage: `url(${images.images.imgWrapper})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                    }}
+                >
+                    {/* 商品图在底层，铺满容器 */}
+                    {/* <img
+                        // src={resolveImageUrl(data.image_url)}
+                        src={"https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"}
+                        alt={data.name}
+                        className="absolute inset-0 h-full w-full object-cover scale-[83%]"
+                    /> */}
+                    {/* Wrapper 相框叠在上方，透明区域露出商品图 */}
+                    {/* <img
+                        src={images.images.imgWrapper}
+                        alt=""
+                        aria-hidden
+                        className="pointer-events-none absolute h-auto inset-0 object-cover"
+                    /> */}
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
                     <h3 className="truncate text-base font-bold text-white">{data.name}</h3>

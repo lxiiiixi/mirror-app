@@ -122,6 +122,8 @@ import homeTokenTab1 from './images/home/token-tab-1.svg'
 import homeTokenTab2 from './images/home/token-tab-2.svg'
 import homeTokenTabFilter from './images/home/token-tab-filter.svg'
 
+import imgWrapper from './images/img-wrapper.png'
+
 // banner 相关：自动扫描目录，新增图片无需改此处
 const bannerGlob = import.meta.glob('./images/home/banner/*.png', { eager: true })
 const bannerImageMap = {}
@@ -209,7 +211,6 @@ export const images = {
   logo: logoImg,
   loginImg: loginImg,
   empty: emptyImg,
-
   icons,
 
   // 账户相关
@@ -389,5 +390,9 @@ export const images = {
     d1Cn: discoverD1Cn,
     d2Cn: discoverD2Cn,
     d3Cn: discoverD3Cn,
+  },
+
+  images: {
+    imgWrapper: imgWrapper,
   },
 }
