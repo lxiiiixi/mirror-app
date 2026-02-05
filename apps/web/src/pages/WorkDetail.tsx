@@ -89,7 +89,31 @@ export default function WorkDetail() {
         return () => {
             isMounted = false;
         };
-    }, [languageKey, token, workId]);
+    }, [languageKey, workId]);
+
+    const lastTokenRef = useRef<string | null>(null);
+    useEffect(() => {
+        if (!workId || Number.isNaN(workId)) return;
+        const currentToken = token ?? null;
+        const prevToken = lastTokenRef.current;
+        lastTokenRef.current = currentToken;
+        if (!prevToken && currentToken) {
+            let isMounted = true;
+            artsApiClient.work
+                .detail({ work_id: workId })
+                .then(response => {
+                    if (!isMounted) return;
+                    setData(response.data);
+                    setStatus("success");
+                })
+                .catch(() => {
+                    if (!isMounted) return;
+                });
+            return () => {
+                isMounted = false;
+            };
+        }
+    }, [token, workId]);
 
     if (status === "loading") {
         return (

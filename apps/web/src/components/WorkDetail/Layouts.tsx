@@ -12,6 +12,7 @@ import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
+import { getWorkNameInitials } from "../../utils/work";
 
 export function WorkDetailLayout({
     children,
@@ -122,7 +123,9 @@ export function WorkDetailHero({
     const [isChecked, setIsChecked] = useState(Boolean(workData.signed_in));
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    console.log(workData.signed_in);
+    useEffect(() => {
+        setIsChecked(Boolean(workData.signed_in));
+    }, [workData.signed_in]);
 
     const handleCheckIn = useCallback(() => {
         if (isChecked || isSubmitting) return;
@@ -176,8 +179,7 @@ export function WorkDetailHero({
                     imageSize={110}
                 />
                 <h2 className="text-2xl font-bold leading-none text-white text-center">
-                    {/* 默认取作品英文名字前三个首字母，作品名字不足三个英文单词取最大，作品积分名字在作品代币名字后面加“s” */}
-                    {workData.token_name + "s" || "—"}
+                    {getWorkNameInitials(workData.work_name_en) || "—"}
                 </h2>
                 <WorkDetailCheckInButton
                     onClick={handleCheckIn}

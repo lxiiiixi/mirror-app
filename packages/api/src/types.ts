@@ -352,9 +352,10 @@ export interface WorkDetailBase {
     token_status: number;
     unlocked_chapter_count: number;
     work_cover_url: string;
+    work_name_en: string; // 英文作品名称
     work_creator_name: string;
     work_description: string;
-    work_name: string;
+    work_name: string; // 根据请求语言返回不同的作品名称
     work_total_chapter: number;
     work_type: number;
     creative_team_block: {

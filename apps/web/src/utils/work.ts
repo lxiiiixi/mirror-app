@@ -144,3 +144,15 @@ export const isTokenWork = (work: WorkSummary) => {
     const tokenFlag = work.token_cover_url;
     return Boolean(tokenFlag) || shareCount > 0;
 };
+
+/** 根据英文作品名取首字母：1 词→1 字母，2 词→2 字母，3 词及以上→前 3 词首字母 */
+export const getWorkNameInitials = (workNameEn: string | undefined): string => {
+    const trimmed = (workNameEn ?? "").trim();
+    if (!trimmed) return "";
+    const words = trimmed.split(/\s+/).filter(Boolean);
+    const count = Math.min(words.length, 3);
+    return words
+        .slice(0, count)
+        .map(w => (w[0] ?? "").toUpperCase())
+        .join("");
+};
