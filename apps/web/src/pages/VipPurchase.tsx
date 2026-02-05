@@ -18,8 +18,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useAlertStore } from "../store/useAlertStore";
 import { useLegalRestrictionStore } from "../store/useLegalRestrictionStore";
-import { AgntDialog } from "../components/Mining/AgntDialog";
-import { PaySuccDialog } from "../components/Mining/PaySuccDialog";
+import { AgntDialog, PaySuccDialog } from "../components/Modals";
 
 interface TierInfo {
     totalNum: number;
@@ -168,7 +167,7 @@ function VipPurchase() {
             const data = response.data;
             // 只有白名单用户和邀请用户可以购买
             // TODO 确认需求是否正确
-            setUserCanBuy(Boolean(data?.is_wallet_while ?? data?.is_invite ?? true));
+            // setUserCanBuy(Boolean(data?.is_wallet_while ?? data?.is_invite ?? true));
         } catch (error) {
             console.error("[VipPurchase] user check failed", error);
         }
@@ -290,7 +289,9 @@ function VipPurchase() {
                 return;
             }
             // expected_raw_amount 为 1e6 精度（100000 = 0.1 USDT），需转为人类可读金额再传给构建交易
-            const expectedHumanAmount = (expectedRawAmount / NODE_QUOTE_RAW_AMOUNT_SCALE).toFixed(6);
+            const expectedHumanAmount = (expectedRawAmount / NODE_QUOTE_RAW_AMOUNT_SCALE).toFixed(
+                6,
+            );
 
             // 2. 获取平台收款地址（与充值流程一致）
             const addressRes = await artsApiClient.deposit.getAddress();
@@ -864,6 +865,7 @@ function VipPurchase() {
                     justify-content: center;
                     align-items: center;
                     border-radius: 999px;
+                    cursor: pointer;
                     background: linear-gradient(
                         146.07deg,
                         rgba(235, 20, 132, 1) 0%,

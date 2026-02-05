@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
-import { InvitationListModal } from "./Modals";
+import { InvitationListModal } from "../Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem } from "@mirror/api";
@@ -179,7 +179,7 @@ export function WorkDetailHero({
                     imageSize={110}
                 />
                 <h2 className="text-2xl font-bold leading-none text-white text-center">
-                    {getWorkNameInitials(workData.work_name_en) || "—"}
+                    {getWorkNameInitials(workData.work_name_en) + "s" || "—"}
                 </h2>
                 <WorkDetailCheckInButton
                     onClick={handleCheckIn}

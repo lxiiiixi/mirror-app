@@ -7,10 +7,7 @@ import {
     MyRedemptionItemCard,
     type MyRedemptionItemCardData,
 } from "../components/PointsRedemption/MyRedemptionItemCard";
-import {
-    RedeemFlowModal,
-    type RedeemFlowField,
-} from "../components/PointsRedemption/RedeemFlowModal";
+import { RedeemFlowModal, type RedeemFlowField } from "../components/Modals";
 import { artsApiClient } from "../api/artsClient";
 import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";

@@ -1,46 +1,9 @@
-.legal-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.legal-modal {
-  width: min(360px, 92vw);
-  overflow: hidden;
-  border-radius: 12px;
-  background: rgba(153, 153, 153, 0.04);
-  border: 1px solid #727272;
-  box-shadow: 0 4px 16px rgba(37, 32, 38, 1);
-  backdrop-filter: blur(40px);
-  color: #fff;
-}
-
-.legal-dialog-wrapper {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.legal-dialog-title {
-  font-size: 18px;
-  font-weight: 700;
-  text-align: center;
-}
-
 .legal-dialog-content {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
   color: rgba(238, 238, 238, 1);
   text-align: center;
-  padding: 0 10px;
 }
 
 .legal-dialog-btn {

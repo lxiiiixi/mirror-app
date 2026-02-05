@@ -5,7 +5,7 @@ import { artsApiClient } from "../api/artsClient";
 import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
 import { Spinner } from "../ui";
-import { RechargeWithdrawalDialog } from "../components/Account/RechargeWithdrawalDialog";
+import { RechargeWithdrawalDialog } from "../components/Modals";
 import { GlassButton, OverlapInfoCard, WithdrawButton } from "../components/Assets";
 import { displayNumber } from "@mirror/utils";
 import { UserAssetItem } from "@mirror/api";

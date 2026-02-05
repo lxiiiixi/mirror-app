@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { LegalRestrictionModal } from '../../ui'
+import { LegalRestrictionModal } from '../Modals'
 import { useLegalRestrictionStore } from '../../store/useLegalRestrictionStore'
 
 export function LegalRestrictionHost() {

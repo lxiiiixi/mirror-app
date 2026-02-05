@@ -1,4 +1,3 @@
-export { LoginModal } from "./Common/LoginModal";
 export { TokenAvatar } from "./Common/TokenAvatar";
 export { BackButton } from "./Common/BackButton";
 export { Banner as HomeBanner } from "./Home/HomeBanner";

@@ -6,7 +6,6 @@ import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
 import { MediaItem, parseMediaType, resolveImageUrl } from "@mirror/utils";
 import {
-    CheckInModal,
     Directory,
     ProductCover,
     WorkDetailAirdrop,
@@ -15,6 +14,7 @@ import {
     WorkDetailLayout,
     WorkDetailProductionTeam,
 } from "../components/WorkDetail";
+import { CheckInModal } from "../components/Modals";
 import { WorkDetailResponseData } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
 
