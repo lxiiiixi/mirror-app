@@ -10,29 +10,44 @@ import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "./Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check } from "lucide-react";
-import { WorkDetailResponseData } from "@mirror/api";
+import { WorkDetailResponseData, WorkExternalLinkItem } from "@mirror/api";
+import { ExternalLink } from "./ExternalLink";
 
 export function WorkDetailLayout({
     children,
-    pageTitle,
+    workId,
 }: {
     children: React.ReactNode;
-    pageTitle: string;
+    workId: number;
 }) {
     return (
         <div className="min-h-screen bg-[#030620] text-white w-dvw">
-            <WorkDetailHeader title={pageTitle} />
+            <WorkDetailHeader workId={workId} />
             {children}
         </div>
     );
 }
 
 /** 页面顶部导航：返回 + 标题 */
-export function WorkDetailHeader({ title }: { title: string }) {
+export function WorkDetailHeader({ workId }: { workId: number }) {
     const navigate = useNavigate();
+    const [externalLinks, setExternalLinks] = useState<Array<WorkExternalLinkItem>>([]);
+
+    useEffect(() => {
+        if (!workId || Number.isNaN(workId)) return;
+        artsApiClient.work
+            .getExternalLinks({ work_id: workId })
+            .then(response => {
+                setExternalLinks(response.data?.links ?? []);
+                console.log(response.data);
+            })
+            .catch(() => {
+                setExternalLinks([]);
+            });
+    }, [workId]);
 
     return (
-        <header className="relative z-10 flex h-[50px] items-center border-b border-white/10 bg-[#030620] px-[20px] shadow-[0_4px_26px_rgba(169,22,227,0.25)]">
+        <header className="absolute top-0 left-0 right-0 z-20 flex h-[50px] items-center justify-between px-[20px]">
             <button type="button" className={`w-[18px]`} onClick={() => navigate(-1)}>
                 <img
                     src={images.works.backBtn}
@@ -41,10 +56,15 @@ export function WorkDetailHeader({ title }: { title: string }) {
                     className="w-full h-full object-contain"
                 />
             </button>
-            <h1 className="flex-1 truncate text-center text-[18px] font-bold text-white px-4 mt-[2px]">
-                {title}
-            </h1>
-            <div className="h-[18px] w-[18px] shrink-0" aria-hidden />
+            <div className="">
+                <ExternalLink
+                    links={externalLinks.map(item => ({
+                        link_id: item.id,
+                        link_url: item.link_url,
+                        link_type: String(item.link_type),
+                    }))}
+                />
+            </div>
         </header>
     );
 }
@@ -125,7 +145,7 @@ export function WorkDetailHero({
         : t("workDetail.checkIn", { defaultValue: "Check in +5" });
 
     return (
-        <section className="relative h-[276px] overflow-hidden">
+        <section className="relative h-[310px] overflow-hidden">
             {workData.work_cover_url ? (
                 <img
                     src={resolveImageUrl(workData.work_cover_url)}
@@ -142,6 +162,7 @@ export function WorkDetailHero({
                 }}
             />
             <div className="absolute top-0 left-0 right-0 flex flex-col items-center h-[80%] gap-3 mt-4">
+                <div className="h-4" />
                 <TokenAvatar
                     src={workData.token_cover_url ?? ""}
                     showTokenBorder={workData.show_token_border}

@@ -8,7 +8,6 @@ import { MediaItem, parseMediaType, resolveImageUrl } from "@mirror/utils";
 import {
     CheckInModal,
     Directory,
-    ExternalLink,
     ProductCover,
     WorkDetailAirdrop,
     WorkDetailContent,
@@ -29,9 +28,6 @@ export default function WorkDetail() {
     const [chapterContent, setChapterContent] = useState<string | string[] | null>("");
     const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
     const [chapterLoading, setChapterLoading] = useState(false);
-    const [externalLinks, setExternalLinks] = useState<
-        Array<{ link_id: number; link_url: string; link_type: string }>
-    >([]);
 
     const [showCheckInModal, setShowCheckInModal] = useState(false);
 
@@ -81,26 +77,9 @@ export default function WorkDetail() {
         };
     }, [workId]);
 
-    useEffect(() => {
-        if (!workId || Number.isNaN(workId)) return;
-        artsApiClient.work
-            .getExternalLinks({ work_id: workId })
-            .then(response => {
-                setExternalLinks(response.data?.links ?? []);
-            })
-            .catch(() => {
-                setExternalLinks([]);
-            });
-    }, [workId]);
-
-    const resolvedType = Number(data?.work_type ?? queryType ?? 0);
-    const isMediaWork = useMemo(() => [1, 2, 5, 6, 7, 8, 9].includes(resolvedType), [resolvedType]);
-
-    const pageTitle = data?.work_name ?? "";
-
     if (status === "loading") {
         return (
-            <WorkDetailLayout pageTitle={pageTitle}>
+            <WorkDetailLayout workId={workId}>
                 <div className="flex justify-center py-20">
                     <Spinner size="large" />
                 </div>
@@ -110,7 +89,7 @@ export default function WorkDetail() {
 
     if (status === "error") {
         return (
-            <WorkDetailLayout pageTitle={t("ticket.empty", { defaultValue: "Detail" })}>
+            <WorkDetailLayout workId={workId}>
                 <div className="px-4 py-20 text-center text-[20px] text-[#c0c1c7]">
                     {t("ticket.empty")}
                 </div>
@@ -123,7 +102,7 @@ export default function WorkDetail() {
     }
 
     return (
-        <WorkDetailLayout pageTitle={pageTitle}>
+        <WorkDetailLayout workId={workId}>
             {/* 头部大图 + 圆形头像 + 标题 */}
             <div className="relative z-10">
                 <WorkDetailHero
@@ -149,8 +128,6 @@ export default function WorkDetail() {
                     author={data.work_creator_name}
                     description={data.work_description}
                 />
-
-                <ExternalLink links={externalLinks} />
 
                 {/* 制作团队 */}
                 {data.creative_team_members && data.creative_team_members.length > 0 && (

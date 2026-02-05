@@ -689,10 +689,10 @@ export interface WorkExternalLinkParams {
 }
 
 export interface WorkExternalLinkItem {
-    link_id: number;
+    id: number;
+    work_id: number;
+    link_type: number;
     link_url: string;
-    link_type: string;
-    create_time: ISODateTimeString;
 }
 
 export interface WorkExternalLinkResponseData {

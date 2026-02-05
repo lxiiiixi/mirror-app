@@ -329,7 +329,7 @@ export default function PointsRedemption() {
         redeemablePoints == null ? "—" : formatNumber(Number(redeemablePoints) || 0);
 
     return (
-        <WorkDetailLayout pageTitle="Points Redemption">
+        <WorkDetailLayout>
             <div className="px-4 pb-8 pt-4">
                 <p className="text-base font-semibold text-white">
                     Redeemable Points: {balanceDisplay}
