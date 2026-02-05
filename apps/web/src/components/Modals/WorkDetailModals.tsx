@@ -54,7 +54,8 @@ export function InvitationListModal({
             onClose={onClose}
             closeOnBackdrop
             hideHeader
-            panelClassName="min-w-[320px] max-w-[calc(100vw-32px)] border-0 p-[2px] rounded-[14px] bg-[linear-gradient(139.96deg,#ED62CE_0.37%,#444AFB_99.63%)]"
+            borderVariant="gradient"
+            panelClassName="min-w-[320px] max-w-[calc(100vw-32px)]"
             bodyClassName="p-0"
         >
             <h3 className="text-center text-[18px] font-bold mb-4">Invitation List</h3>

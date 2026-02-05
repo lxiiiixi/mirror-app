@@ -29,10 +29,22 @@
     backdrop-filter: blur(6px);
 }
 
+/* 渐变边框外层：2px 渐变环（与 Invitation List 等保持一致） */
+.modal-wrapper .modal-overlay .modal-gradient-ring {
+    padding: 2px;
+    border-radius: 1rem;
+    background: linear-gradient(139.96deg, #ed62ce 0.37%, #444afb 99.63%);
+}
+
+.modal-wrapper .modal-overlay .modal-gradient-ring-inner {
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+}
+
 /* 偏白的磨砂玻璃：半透明白底 + 背景模糊，才能显出磨砂感 */
 .modal-wrapper .modal-overlay .modal-panel {
     color: white;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     box-shadow:
