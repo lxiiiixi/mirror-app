@@ -173,6 +173,9 @@ import worksToX from './images/works/to-x.png'
 import worksTwLogo from './images/works/tw-logo.png'
 import worksUploadWorkBtn from './images/works/upload-work-btn.png'
 import worksYoutubeLogo from './images/works/youtube-logo.png'
+import worksWeiboLogo from './images/works/weibo.png'
+import worksDcLogo from './images/works/dc.png'
+
 
 // 作品类型图标
 import worksProductAnimate from './images/works/product/animate.svg'

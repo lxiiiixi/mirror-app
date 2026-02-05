@@ -26,6 +26,12 @@ const typeIconMap: Record<string, string> = {
 
     facebook: images.works.fbLogo,
     "4": images.works.fbLogo,
+
+    weibo: images.works.weiboLogo,
+    "5": images.works.weiboLogo,
+
+    dc: images.works.dcLogo,
+    "6": images.works.dcLogo,
 };
 
 export function ExternalLink({ links = [] }: ExternalLinkProps) {
