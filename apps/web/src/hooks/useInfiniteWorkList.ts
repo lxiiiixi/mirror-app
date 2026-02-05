@@ -17,6 +17,7 @@ export interface UseInfiniteWorkListOptions {
   autoLoad?: boolean
   scrollElement?: ScrollElement | null
   scrollThreshold?: number
+  retainOnRefresh?: boolean
   client?: Pick<ArtsApiClient, 'work'>
 }
 
@@ -70,6 +71,7 @@ export const useInfiniteWorkList = (
     autoLoad = true,
     scrollElement = null,
     scrollThreshold = 160,
+    retainOnRefresh = false,
     client = defaultClient,
   }: UseInfiniteWorkListOptions = {},
 ): UseInfiniteWorkListResult => {
@@ -153,12 +155,14 @@ export const useInfiniteWorkList = (
 
   const refresh = useCallback(() => {
     console.log('[useInfiniteWorkList] refresh')
-    setItems([])
-    setTotal(0)
-    setPage(initialPage)
-    setHasMore(true)
+    if (!retainOnRefresh) {
+      setItems([])
+      setTotal(0)
+      setPage(initialPage)
+      setHasMore(true)
+    }
     void fetchPage(initialPage, false)
-  }, [fetchPage, initialPage])
+  }, [fetchPage, initialPage, retainOnRefresh])
 
   const loadMore = useCallback(() => {
     if (!enabled || !hasMore || inFlightRef.current) {

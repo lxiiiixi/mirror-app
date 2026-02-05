@@ -24,9 +24,10 @@ const splitCreators = (author: string) =>
         .filter(Boolean);
 
 function Home() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [activeProject, setActiveProject] = useState(0);
     const navigate = useNavigate();
+    const languageKey = i18n.resolvedLanguage ?? i18n.language ?? "en";
 
     const {
         items: workList,
@@ -37,12 +38,13 @@ function Home() {
     } = useInfiniteWorkList({
         pageSize: 12,
         autoLoad: false,
+        retainOnRefresh: true,
     });
 
     useEffect(() => {
         if (typeof window === "undefined") return;
         refresh();
-    }, [refresh]);
+    }, [languageKey, refresh]);
 
     useEffect(() => {
         if (typeof window === "undefined") return;

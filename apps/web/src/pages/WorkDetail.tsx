@@ -19,11 +19,12 @@ import { WorkDetailResponseData } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
 
 export default function WorkDetail() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { token } = useAuth();
     const [searchParams] = useSearchParams();
     const workId = Number(searchParams.get("id") ?? "");
     const queryType = Number(searchParams.get("type") ?? "");
+    const languageKey = i18n.resolvedLanguage ?? i18n.language ?? "en";
 
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [data, setData] = useState<WorkDetailResponseData | null>(null);
@@ -88,7 +89,7 @@ export default function WorkDetail() {
         return () => {
             isMounted = false;
         };
-    }, [token, workId]);
+    }, [languageKey, token, workId]);
 
     if (status === "loading") {
         return (
