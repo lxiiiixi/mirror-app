@@ -153,7 +153,7 @@ export function VipMining() {
     }, [fetchVipLevel]);
 
     return (
-        <div className="vip-mining">
+        <div className="vip-mining mt-10">
             <div className="card hero">
                 <div className="hero-image">
                     <img src={images.account.channel} alt="" />

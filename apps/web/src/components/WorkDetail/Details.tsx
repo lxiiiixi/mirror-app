@@ -22,9 +22,9 @@ export function WorkDetailProductionTeam({
     return (
         <section id="production-team">
             <Heading title={t("workDetail.productionTeam", { defaultValue: "Production Team" })} />
-            <div className="flex flex-wrap justify-start gap-x-4 gap-y-4">
+            <div className="flex flex-nowrap justify-start gap-2 overflow-x-auto pb-2">
                 {members.map((person, index) => (
-                    <div key={index} className="flex flex-col items-center">
+                    <div key={index} className="flex w-[70px] shrink-0 flex-col items-center">
                         <div className="mb-2 h-[60px] w-[60px] overflow-hidden rounded-full bg-[#d9d9d9]">
                             {person.avatar_url ? (
                                 <img
@@ -271,8 +271,9 @@ function TrailersAndStills({ workId }: { workId: number }) {
                     const coverUrl = (item as { cover_url?: string }).cover_url;
                     const title = (item as { title?: string }).title;
                     const duration = (item as { duration_seconds?: number }).duration_seconds;
-                    const idValue =
-                        String((item as { id?: number }).id ?? videoUrl ?? coverUrl ?? title ?? "");
+                    const idValue = String(
+                        (item as { id?: number }).id ?? videoUrl ?? coverUrl ?? title ?? "",
+                    );
 
                     if (contentType === 1 || (videoUrl && contentType !== 2)) {
                         if (videoUrl) {

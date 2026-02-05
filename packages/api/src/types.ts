@@ -393,10 +393,12 @@ export interface WorkDetailAfterSignIn extends WorkDetailBase {
     my_invite_count: number;
     my_invite_url: string;
     points_mall_url: string;
-    team_sign_in_progress: string;
+    team_sign_in_progress: string; // 组队签到进度（格式："0/3"～"3/3"，三人今日签到人数；未组队时也返回，前端可用 has_team 判断是否展示）
     team_sign_in_reward_claimed: boolean;
     token_balance: number;
     tread_count: number;
+    has_team: boolean; // 是否已组队
+    points_balance: number;
 }
 
 /**
