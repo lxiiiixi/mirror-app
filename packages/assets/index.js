@@ -158,6 +158,10 @@ import vipX from './images/vip/x.png'
 import worksAvatarBorder from './images/works/avatar-border.svg'
 import worksBackBtn from './images/works/back-btn.png'
 import worksCheckIn from './images/works/check-in.png'
+import worksCheckInSuccess from './images/works/check-in-success.png'
+import worksCheckInSuccessHeadingEn from './images/works/check-in-success-heading-en.png'
+import worksCheckInSuccessHeadingZh from './images/works/check-in-success-heading-zh.png'
+import worksCheckInSuccessHeadingHk from './images/works/check-in-success-heading-hk.png'
 import worksDescTop from './images/works/desc-top.svg'
 import worksFbLogo from './images/works/fb-logo.png'
 import worksFilterIcon from './images/works/filter_icon.svg'
@@ -338,6 +342,10 @@ export const images = {
     avatarBorder: worksAvatarBorder,
     backBtn: worksBackBtn,
     checkIn: worksCheckIn,
+    checkInSuccess: worksCheckInSuccess,
+    checkInSuccessHeadingEn: worksCheckInSuccessHeadingEn,
+    checkInSuccessHeadingZh: worksCheckInSuccessHeadingZh,
+    checkInSuccessHeadingHk: worksCheckInSuccessHeadingHk,
     descTop: worksDescTop,
     fbLogo: worksFbLogo,
     filterIcon: worksFilterIcon,

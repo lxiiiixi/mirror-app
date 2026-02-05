@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button, Modal } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
 import type { WorkFriendItem } from "@mirror/api";
+import { images } from "@mirror/assets";
 
 /** 邀请列表弹窗：请求 getFriendsList 展示实际数据 */
 export function InvitationListModal({
@@ -111,39 +113,87 @@ export function InvitationListModal({
     );
 }
 
-/** 签到任务弹窗：任务列表 + Got it 按钮 */
+/** 按当前语言取签到成功标题图（en / zh-CN / zh-HK） */
+function useCheckInSuccessHeadingSrc() {
+    const { i18n } = useTranslation();
+    const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
+    return useMemo(() => {
+        if (lang === "zh-CN")
+            return (
+                <img
+                    src={images.works.checkInSuccessHeadingZh}
+                    alt=""
+                    className="w-[50%] h-auto mx-auto"
+                    aria-hidden
+                />
+            );
+        if (lang === "zh-HK")
+            return (
+                <img
+                    src={images.works.checkInSuccessHeadingHk}
+                    alt=""
+                    className="w-[50%] h-auto mx-auto"
+                    aria-hidden
+                />
+            );
+        return (
+            <img
+                src={images.works.checkInSuccessHeadingEn}
+                alt=""
+                className="w-[80%] h-auto mx-auto my-2 mb-6"
+                aria-hidden
+            />
+        );
+    }, [lang]);
+}
+
+const RowClass = "flex items-center justify-between text-[14px]";
+/** 签到任务弹窗：成功图+多语言标题在 overlay 与 panel 之间，任务列表 + Got it；签到完成后由父组件打开 */
 export function CheckInModal({ open, onClose }: { open: boolean; onClose?: () => void }) {
+    const HeadingSrc = useCheckInSuccessHeadingSrc();
+    /* 跟 Modal 框内容本身对其，使 2/3 露出、1/3 被面板遮住 */
+    // const illustration = (
+    //     <img
+    //         src={images.works.checkInSuccess}
+    //         className="w-full object-contain"
+    //         // aria-hidden={false}
+    //     />
+    // );
+
     return (
         <Modal
-            open={open}
+            open={true}
             onClose={onClose}
             closeOnBackdrop
             hideHeader
+            borderVariant="gradient"
             panelClassName="min-w-[320px] max-w-[calc(100vw-32px)]"
             bodyClassName="px-4 py-4"
+            // illustration={illustration}
         >
-            <div className="space-y-4 px-4 py-4">
-                <div className="flex items-center justify-between text-[14px]">
+            <div className="space-y-4">
+                {HeadingSrc}
+                <div className={RowClass}>
                     <span>Daily Check-in +5 LGN</span>
-                    <span>Completed</span>
+                    <span className="text-right">Completed</span>
                 </div>
-                <div className="flex items-center justify-between text-[14px]">
+                <div className={RowClass}>
                     <span>3-Person Team Check-in +3 LGN</span>
-                    <span className="text-[#d432f4]">Go to Team Up</span>
+                    <span className="text-right text-[#d432f4]">Go to Team Up</span>
                 </div>
-                <div className="flex items-center justify-between text-[14px]">
+                <div className={RowClass}>
                     <span>Invite One User +5 LGN</span>
-                    <span className="text-[#d432f4]">Go to Invite</span>
+                    <span className="text-right text-[#d432f4] cursor-pointer">Go to Invite</span>
                 </div>
-            </div>
-            <div className="px-4 pb-4">
-                <Button
-                    type="button"
-                    className="w-full rounded-xl bg-[#eb1484] py-3 text-[15px] font-bold text-white"
-                    onClick={onClose}
-                >
-                    Got it
-                </Button>
+                <div className="">
+                    <Button
+                        type="button"
+                        className="w-full rounded-xl bg-[#eb1484] py-3 text-[15px] font-bold text-white cursor-pointer"
+                        onClick={onClose}
+                    >
+                        Got it
+                    </Button>
+                </div>
             </div>
         </Modal>
     );

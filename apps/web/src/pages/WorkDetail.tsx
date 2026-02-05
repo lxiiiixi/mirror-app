@@ -146,7 +146,10 @@ export default function WorkDetail() {
                 <WorkDetailHero
                     workId={workId}
                     workData={data}
-                    onCheckInSuccess={handleRefreshAfterCheckIn}
+                    onCheckInSuccess={() => {
+                        handleRefreshAfterCheckIn();
+                        setShowCheckInModal(true);
+                    }}
                     // coverUrl={data.work_cover_url}
                     // avatarUrl={data.token_cover_url ?? data.work_cover_url}
                     // title={`${data.token_name}s`}
