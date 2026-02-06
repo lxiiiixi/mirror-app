@@ -20,19 +20,23 @@ export function ProductCover({
 }: ProductCoverProps) {
     const [expanded, setExpanded] = useState(false);
 
-    const coverClassName = `rounded-[6px] border border-white/80 object-contain bg-[#f5f5f5] ${
-        expanded ? "float-left w-[120px] mr-[12px] mb-[6px]" : "w-[120px] min-w-[120px]"
+    const wrapperClassName = expanded
+        ? "relative shrink-0 float-left w-[120px] mr-[12px] mb-[6px]"
+        : "relative shrink-0 w-[120px] min-w-[120px]";
+
+    const coverClassName = `rounded-[6px] border border-white/80 object-contain bg-[#f5f5f5] block ${
+        expanded ? "w-full h-auto" : "w-[120px] min-w-[120px]"
     }`;
 
     return (
         <div id="product-cover" className={expanded ? "" : "flex items-start gap-[12px]"}>
-            {/* 封面图区域：有视频/预告内容时在图片中间显示播放图标 */}
+            {/* 封面图区域：展开时由外层定宽高避免 float 导致塌陷，播放按钮才能正确叠在图上 */}
             {coverUrl ? (
-                <div className="relative shrink-0">
+                <div className={wrapperClassName}>
                     <img className={coverClassName} src={resolveImageUrl(coverUrl)} alt={title} />
                     {showPlayButton ? (
                         <div
-                            className="absolute inset-0 flex items-center justify-center rounded-[6px] bg-black/20"
+                            className="absolute inset-0 flex items-center justify-center rounded-[6px] bg-black/20 cursor-pointer"
                             aria-hidden
                         >
                             <img

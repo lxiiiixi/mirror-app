@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { useInfiniteWorkList } from "../hooks/useInfiniteWorkList";
-import { resolveImageUrl } from "@mirror/utils";
+import { resolveImageUrl, resolveLocalizedText } from "@mirror/utils";
 import {
     Notice,
     ProductCard,
@@ -76,8 +76,10 @@ function Home() {
 
     const tokenCards = useMemo(() => {
         return tokenItems.map(work => {
-            const name = work.name || "";
-            const coverUrl = resolveImageUrl(work.cover_url || "");
+            const name = resolveLocalizedText(work.name, languageKey) || "";
+            const coverUrl = resolveImageUrl(
+                resolveLocalizedText(work.cover_url, languageKey) || "",
+            );
             const shareCount = Number(work.share_count ?? 0) || 0;
             const progressPercent = Math.min(100, Math.max(0, (shareCount * 500) / 20000));
             const balanceLeft = Math.max(0, 20000 - shareCount * 5);
@@ -96,7 +98,7 @@ function Home() {
                 rawType: work.type,
             };
         });
-    }, [t, tokenItems]);
+    }, [t, tokenItems, languageKey]);
 
     const handleNavigateToDetail = (id: number | string, rawType?: number) => {
         goToWorkDetail(navigate, id, rawType);
@@ -107,15 +109,20 @@ function Home() {
             const rawWorkType = work.type ?? 4;
             const workTypeValue =
                 typeof rawWorkType === "string" ? Number(rawWorkType) : rawWorkType;
-            const coverUrl = resolveImageUrl(work.cover_url || "");
-            const name = work.name || "";
-            const description = work.description || "";
+            const name = resolveLocalizedText(work.name, languageKey) || "";
+            const description =
+                resolveLocalizedText(work.description, languageKey) || "";
+            const creatorName =
+                resolveLocalizedText(work.creator_name, languageKey) || "";
+            const coverUrl = resolveImageUrl(
+                resolveLocalizedText(work.cover_url, languageKey) || "",
+            );
             const shareCount = work.share_count || 0;
-            const names = work.name
+            const names = (creatorName || name)
                 .split(/[/|、,，]/g)
-                .map(name => name.trim())
+                .map(s => s.trim())
                 .filter(Boolean);
-            const creators = names.filter(Boolean).slice(0, 3);
+            const creators = names.slice(0, 3);
 
             return {
                 id: work.id,
@@ -129,7 +136,7 @@ function Home() {
                 shareLink: "",
             };
         });
-    }, [workList]);
+    }, [workList, languageKey]);
 
     return (
         <div className="">

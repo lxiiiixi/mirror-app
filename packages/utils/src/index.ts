@@ -1,4 +1,5 @@
 export * from "./resolveImageUrl";
+export * from "./resolveLocalizedText";
 export * from "./envConfigs";
 export * from "./parseMediaType";
 export * from "./display";

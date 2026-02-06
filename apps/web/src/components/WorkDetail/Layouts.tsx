@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { TokenAvatar } from "../Common/TokenAvatar";
-import { buildInviteShareText, resolveImageUrl, shareToX } from "@mirror/utils";
+import {
+    buildInviteShareText,
+    resolveImageUrl,
+    resolveLocalizedText,
+    shareToX,
+} from "@mirror/utils";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
@@ -117,7 +122,8 @@ export function WorkDetailHero({
     /** 签到成功后调用，用于刷新作品详情（如 signed_in、积分等） */
     onCheckInSuccess?: () => void;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const [isChecked, setIsChecked] = useState(Boolean(workData.signed_in));
@@ -169,9 +175,9 @@ export function WorkDetailHero({
 
     return (
         <section className="relative h-[310px] overflow-hidden">
-            {workData.work_cover_url ? (
+            {resolveLocalizedText(workData.work_cover_url, lang) ? (
                 <img
-                    src={resolveImageUrl(workData.work_cover_url)}
+                    src={resolveImageUrl(resolveLocalizedText(workData.work_cover_url, lang))}
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -196,7 +202,9 @@ export function WorkDetailHero({
                     imageSize={110}
                 />
                 <h2 className="text-2xl font-bold leading-none text-white text-center">
-                    {getWorkNameInitials(workData.work_name_en) + "s" || "—"}
+                    {workData.signed_in ? workData.token_balance : "0"}{" "}
+                    {getWorkNameInitials(resolveLocalizedText(workData.work_name, "en")) + "s" ||
+                        "—"}
                 </h2>
                 <WorkDetailCheckInButton
                     onClick={handleCheckIn}
@@ -217,7 +225,8 @@ export function WorkDetailAirdrop({
     workId: number;
     workData: WorkDetailResponseData;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const { isLoggedIn, token } = useAuth();
     const [inviteCode, setInviteCode] = useState("");
     const [inviteUrl, setInviteUrl] = useState("");
@@ -325,7 +334,7 @@ export function WorkDetailAirdrop({
         if (!link) return;
         const text = buildInviteShareText({
             t,
-            workName: workData.work_name,
+            workName: resolveLocalizedText(workData.work_name, lang),
             inviteCode,
             inviteUrl,
         });
@@ -348,10 +357,15 @@ export function WorkDetailAirdrop({
         if (!link) return;
         shareToX(
             link,
-            workData.work_name,
-            buildInviteShareText({ t, workName: workData.work_name, inviteCode, inviteUrl }),
+            resolveLocalizedText(workData.work_name, lang),
+            buildInviteShareText({
+                t,
+                workName: resolveLocalizedText(workData.work_name, lang),
+                inviteCode,
+                inviteUrl,
+            }),
         );
-    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal, inviteCode, t]);
+    }, [inviteUrl, workData.work_name, lang, isLoggedIn, openLoginModal, inviteCode, t]);
 
     const handleShowInvitationListModal = useCallback(() => {
         if (!isLoggedIn) {

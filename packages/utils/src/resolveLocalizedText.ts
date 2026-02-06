@@ -1,46 +1,68 @@
 /**
- * API 有时返回多语言对象 { en, ja, ko, zh, zh_hant }，不能直接作为 React 子节点渲染。
- * 根据当前语言取对应文案，若为字符串则直接返回。
+ * 多语言对象 key：与接口约定一致
  */
-export type LocalizedText = string | Record<string, string> | null | undefined;
+const LOCALE_KEYS = ['zh', 'zh_hant', 'en', 'ja', 'ko'] as const;
 
-const LANG_TO_KEYS: Record<string, string[]> = {
-  en: ['en', 'zh', 'zh_hant', 'ja', 'ko'],
-  'zh-CN': ['zh', 'en', 'zh_hant', 'ja', 'ko'],
-  'zh-HK': ['zh_hant', 'zh', 'en', 'ja', 'ko'],
-  'zh-TW': ['zh_hant', 'zh', 'en', 'ja', 'ko'],
-  ja: ['ja', 'en', 'zh', 'zh_hant', 'ko'],
-  ko: ['ko', 'en', 'zh', 'zh_hant', 'ja'],
-};
-
-function getKeysForLang(lang?: string): string[] {
-  if (!lang || typeof lang !== 'string') return ['en', 'zh', 'zh_hant', 'ja', 'ko'];
-  const normalized = lang.trim().toLowerCase();
-  if (normalized.startsWith('zh-hk') || normalized.startsWith('zh-tw')) {
-    return LANG_TO_KEYS['zh-HK'];
-  }
-  if (normalized.startsWith('zh-cn') || normalized === 'zh') {
-    return LANG_TO_KEYS['zh-CN'];
-  }
-  if (normalized === 'ja') return LANG_TO_KEYS.ja;
-  if (normalized === 'ko') return LANG_TO_KEYS.ko;
-  return LANG_TO_KEYS.en;
+/**
+ * 将 i18n 语言码映射为多语言对象的 key
+ * 例如 zh-CN -> zh, zh-HK -> zh_hant, en -> en
+ */
+function languageToKey(lang: string): (typeof LOCALE_KEYS)[number] {
+  const normalized = (lang || '').toLowerCase().replace(/-/g, '');
+  if (normalized === 'zhcn' || normalized === 'zh') return 'zh';
+  if (normalized === 'zhhk' || normalized === 'zhtw' || normalized === 'zh_hant' || normalized === 'zhhant') return 'zh_hant';
+  if (normalized === 'en') return 'en';
+  if (normalized === 'ja') return 'ja';
+  if (normalized === 'ko') return 'ko';
+  return 'en';
 }
 
 /**
- * 将 API 返回的「字符串或多语言对象」解析为当前语言下的单个字符串，避免把对象当 React 子节点渲染报错。
- * @param value work_name / work_creator_name / work_description / token_name 等
- * @param language 当前语言，如 i18n.resolvedLanguage（'en' | 'zh-CN' | 'zh-HK' 等）
+ * 从多语言对象中按优先级取第一个非空字符串
  */
-export function resolveLocalizedText(value: LocalizedText, language?: string): string {
-  if (value == null) return '';
-  if (typeof value === 'string') return value;
-  if (typeof value !== 'object') return String(value);
-  const keys = getKeysForLang(language);
-  for (const k of keys) {
-    const v = value[k];
-    if (v != null && typeof v === 'string' && v.trim() !== '') return v;
+function firstNonEmpty(obj: Record<string, unknown>): string {
+  for (const k of LOCALE_KEYS) {
+    const v = obj[k];
+    if (typeof v === 'string' && v.trim() !== '') return v.trim();
   }
-  const first = Object.values(value).find(v => typeof v === 'string' && (v as string).trim() !== '');
-  return typeof first === 'string' ? first : '';
+  for (const v of Object.values(obj)) {
+    if (typeof v === 'string' && v.trim() !== '') return v.trim();
+  }
+  return '';
+}
+
+/** 与 API LocalizedText 同构，用于入参类型（避免 utils 依赖 api） */
+export interface LocalizedTextLike {
+  zh?: string;
+  zh_hant?: string;
+  en?: string;
+  ja?: string;
+  ko?: string;
+}
+
+/**
+ * 解析多语言字段为当前语言的单字符串，用于展示。
+ * - 若值为 string，直接返回（兼容旧数据或单语言）。
+ * - 若值为对象 { zh, zh_hant, en, ja, ko }，按 lang 取对应 key；缺省则回退到 en -> zh -> zh_hant -> ja -> ko。
+ *
+ * @param value 接口返回的字段（可能是 string 或多语言对象，与 API LocalizedText 兼容）
+ * @param lang 当前语言，如 "zh-CN" | "en" | "zh-HK"
+ * @returns 用于展示的字符串
+ */
+export function resolveLocalizedText(
+  value: string | LocalizedTextLike | null | undefined,
+  lang?: string,
+): string {
+  if (value == null) return '';
+  if (typeof value === 'string') {
+    const t = value.trim();
+    return t;
+  }
+  if (typeof value !== 'object') return String(value);
+
+  const key = languageToKey(lang ?? 'en');
+  const preferred = value[key];
+  if (typeof preferred === 'string' && preferred.trim() !== '') return preferred.trim();
+
+  return firstNonEmpty(value);
 }

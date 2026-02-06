@@ -1,4 +1,9 @@
-import { MediaItem, parseMediaType, resolveImageUrl } from "@mirror/utils";
+import {
+    MediaItem,
+    parseMediaType,
+    resolveImageUrl,
+    resolveLocalizedText,
+} from "@mirror/utils";
 import { useTranslation } from "react-i18next";
 import { getWorkTypeByValue } from "../../utils/work";
 import { useEffect, useMemo, useState } from "react";
@@ -17,27 +22,35 @@ export function WorkDetailProductionTeam({
 }: {
     members?: CreativeTeamMembersItem[];
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
 
     return (
         <section id="production-team">
             <Heading title={t("workDetail.productionTeam", { defaultValue: "Production Team" })} />
             <div className="flex flex-nowrap justify-start gap-2 overflow-x-auto pb-2">
-                {members.map((person, index) => (
-                    <div key={index} className="flex w-[70px] shrink-0 flex-col items-center">
-                        <div className="mb-2 h-[60px] w-[60px] overflow-hidden rounded-full bg-[#d9d9d9]">
-                            {person.avatar_url ? (
-                                <img
-                                    src={resolveImageUrl(person.avatar_url)}
-                                    alt={person.name}
-                                    className="h-full w-full object-cover"
-                                />
-                            ) : null}
+                {members.map((person, index) => {
+                    const nameStr = resolveLocalizedText(person.name, lang);
+                    const roleStr = resolveLocalizedText(person.role, lang);
+                    return (
+                        <div
+                            key={index}
+                            className="flex w-[70px] shrink-0 flex-col items-center"
+                        >
+                            <div className="mb-2 h-[60px] w-[60px] overflow-hidden rounded-full bg-[#d9d9d9]">
+                                {person.avatar_url ? (
+                                    <img
+                                        src={resolveImageUrl(person.avatar_url)}
+                                        alt={nameStr}
+                                        className="h-full w-full object-cover"
+                                    />
+                                ) : null}
+                            </div>
+                            <p className="text-[16px] font-medium text-white">{nameStr}</p>
+                            <p className="text-[14px] text-[#aeb1ce]">{roleStr}</p>
                         </div>
-                        <p className="text-[16px] font-medium text-white">{person.name}</p>
-                        <p className="text-[14px] text-[#aeb1ce]">{person.role}</p>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </section>
     );

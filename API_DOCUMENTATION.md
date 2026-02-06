@@ -838,11 +838,12 @@ work_id=214
   "data": {
     "work_id": 214,
     "work_type": 1,
-    "work_name": "作品名称",
-    "work_creator_name": "创作者",
-    "work_cover_url": "upload/poster/xxx.png",
-    "work_description": "作品描述",
+    "work_name": { "zh": "作品名称", "zh_hant": "作品名稱", "en": "Work Title", "ja": "", "ko": "" },
+    "work_creator_name": { "zh": "创作者", "zh_hant": "創作者", "en": "", "ja": "", "ko": "" },
+    "work_cover_url": { "zh": "upload/poster/xxx.png", "zh_hant": "", "en": "", "ja": "dfdf/dfd", "ko": "" },
+    "work_description": { "zh": "作品描述", "zh_hant": "作品描述", "en": "", "ja": "", "ko": "" },
     "signed_in": false,
+    "sign_in_time": null,
     "ever_signed_in": true,
     "joined_community": true,
     "invite_count": 5,
@@ -853,6 +854,15 @@ work_id=214
   }
 }
 ```
+
+**多语言字段（对象形式，含简体与繁体）**  
+详情接口一次返回所有语言，以对象形式返回，便于前端按语言展示：`work_name`、`work_description`、`work_creator_name`、`work_cover_url` 均为 `{ zh, zh_hant, en, ja, ko }`。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| work_name / work_description / work_creator_name / work_cover_url | object | 多语言对象，key 为 `zh`（简体）、`zh_hant`（繁体）、`en`、`ja`、`ko`，缺段为空字符串。例：`work_cover_url: { "zh": "url1", "zh_hant": "", "en": "", "ja": "dfdf/dfd", "ko": "" }`。**列表、已完成列表、IDO 列表等作品相关接口**同样以多语言对象形式返回 name / cover_url / description / creator_name。 |
+
+存储格式约定：名称/创作者名使用 `" / "` 分隔，顺序为 zh → en → ja → ko；描述使用 `---EN---`、`---JA---`、`---KO---`、`---ZH-HANT---` 分段；封面多语言存 JSON，key 含 `zh`、`zh_hant`、`en`、`ja`、`ko`。**旧数据**：未做多语言的作品（单字段存一条内容）在返回时**默认当 en**，即仅 `en` 有值，其余 key 为空字符串，前端可按语言取 `work_name.en` 等展示。
 
 ---
 
@@ -871,14 +881,19 @@ Content-Type: application/json
 token: {用户token}
 ```
 
-**请求参数**
+**请求参数**  
+与详情返回格式一致，多语言字段统一为对象形式 `{ "zh", "zh_hant", "en", "ja", "ko" }` 或单字符串。
+
 ```json
 {
   "works": [
     {
-      "work_name": "作品名称",
-      "work_type": 1,
-      "work_introduction": "作品介绍"
+      "name": { "zh": "作品名称", "zh_hant": "作品名稱", "en": "Work Title", "ja": "", "ko": "" },
+      "description": { "zh": "作品介绍", "zh_hant": "作品介紹", "en": "Description", "ja": "", "ko": "" },
+      "creator_name": { "zh": "创作者", "zh_hant": "創作者", "en": "Creator", "ja": "", "ko": "" },
+      "cover_url": { "zh": "https://...", "zh_hant": "", "en": "", "ja": "", "ko": "" },
+      "release_time": 1,
+      "type": 1
     }
   ],
   "company_name": "公司名称",
@@ -891,9 +906,12 @@ token: {用户token}
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
 | works | array | 是 | 作品列表 |
-| works[].work_name | string | 是 | 作品名称 |
-| works[].work_type | int | 是 | 作品类型 |
-| works[].work_introduction | string | 否 | 作品介绍 |
+| works[].name | object 或 string | 是 | 多语言对象 `{ zh, zh_hant, en, ja, ko }` 或单字符串；至少一种语言名称非空 |
+| works[].description | object 或 string | 否 | 多语言对象或单字符串 |
+| works[].creator_name | object 或 string | 否 | 多语言对象或单字符串 |
+| works[].cover_url | object 或 string | 是 | 多语言对象或单字符串（至少一种非空） |
+| works[].release_time | int | 是 | 发布时间枚举 |
+| works[].type | int | 是 | 作品类型 |
 | company_name | string | 否 | 公司名称 |
 | region | string | 否 | 地区 |
 | email | string | 否 | 联系邮箱 |
@@ -927,14 +945,34 @@ Content-Type: application/json
 token: {用户token}
 ```
 
-**请求参数**
+**请求参数**  
+多语言字段与详情一致：对象 `{ zh, zh_hant, en, ja, ko }` 或单字符串。
+
 ```json
 {
-  "work_name": "作品名称",
-  "work_type": 1,
-  "work_introduction": "作品介绍"
+  "premiere_time": "",
+  "type": 1,
+  "name": { "zh": "作品名称", "zh_hant": "作品名稱", "en": "Work Name", "ja": "", "ko": "" },
+  "creator_name": { "zh": "创作者", "zh_hant": "創作者", "en": "Creator", "ja": "", "ko": "" },
+  "description": { "zh": "描述", "zh_hant": "描述", "en": "Description", "ja": "", "ko": "" },
+  "cover_url": { "zh": "https://...", "zh_hant": "", "en": "", "ja": "", "ko": "" },
+  "chapters": [],
+  "content_type": 0,
+  "link_type": 1,
+  "border_type": 0,
+  "token_url": "",
+  "token_name": "TOKEN"
 }
 ```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| name | object 或 string | 是 | 多语言对象或单字符串，至少一种语言名称非空 |
+| creator_name / description / cover_url | object 或 string | 是/否 | 多语言对象或单字符串 |
+| premiere_time | string | 是 | 发布时间 |
+| type | int | 是 | 作品类型 |
+| chapters | array | 是 | 章节列表 |
+| token_name | string | 是 | Token 名称 |
 
 **响应示例**
 ```json
@@ -2442,37 +2480,41 @@ work_id=214
   "msg": "success",
   "data": {
     "work_type": 1,
-    "work_name": "作品名称",
-    "work_creator_name": "创作者",
-    "work_cover_url": "upload/poster/xxx.png",
-    "work_description": "作品描述",
+    "work_name": { "zh": "作品名称", "zh_hant": "作品名稱", "en": "Work Title", "ja": "", "ko": "" },
+    "work_creator_name": { "zh": "创作者", "zh_hant": "創作者", "en": "", "ja": "", "ko": "" },
+    "work_cover_url": { "zh": "upload/poster/xxx.png", "zh_hant": "", "en": "", "ja": "dfdf/dfd", "ko": "" },
+    "work_description": { "zh": "作品描述", "zh_hant": "作品描述", "en": "", "ja": "", "ko": "" },
+    "premiere_time": "2026-03-01 12:00:00",
+    "airdrop_start_time": "2026-03-08T12:00:00+08:00",
     
     "creative_team_block": {
-      "title": "创作团队",
-      "image_url": "https://example.com/images/team-banner.jpg",
-      "description": "这是一支充满创意和激情的团队",
-      "link_url": "https://example.com/team/214"
+      "title": { "zh": "创作团队", "zh_hant": "創作團隊", "en": "Creative Team", "ja": "", "ko": "" },
+      "image_url": { "zh": "https://example.com/images/team-banner.jpg", "zh_hant": "", "en": "", "ja": "", "ko": "" },
+      "description": { "zh": "这是一支充满创意和激情的团队", "zh_hant": "這是一支充滿創意和激情的團隊", "en": "", "ja": "", "ko": "" },
+      "link_url": { "zh": "https://example.com/team/214", "zh_hant": "", "en": "", "ja": "", "ko": "" }
     },
     "creative_team_members": [
       {
         "avatar_url": "https://example.com/avatars/director.jpg",
-        "name": "张三",
-        "role": "导演"
+        "name": { "zh": "张三", "zh_hant": "張三", "en": "Zhang San", "ja": "", "ko": "" },
+        "role": { "zh": "导演", "zh_hant": "導演", "en": "Director", "ja": "", "ko": "" }
       },
       {
         "avatar_url": "https://example.com/avatars/producer.jpg",
-        "name": "李四",
-        "role": "制片人"
+        "name": { "zh": "李四", "zh_hant": "李四", "en": "Li Si", "ja": "", "ko": "" },
+        "role": { "zh": "制片人", "zh_hant": "製片人", "en": "Producer", "ja": "", "ko": "" }
       }
     ],
     
     "signed_in": false,
+    "sign_in_time": null,
     "ever_signed_in": true,
     "joined_community": true,
     "invite_count": 5,
     "token_balance": 100,
     "points_balance": 100,
     
+    "has_team": true,
     "team_sign_in_progress": "2/3",
     "team_sign_in_reward_claimed": false,
     "can_show_team_btn": true,
@@ -2488,11 +2530,15 @@ work_id=214
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
+| premiere_time | string | 作品上映/发布时间（非空投时间） |
+| airdrop_start_time | string\|null | **空投开始时间**（RFC3339），用于倒计时及「将于x月x日x时x分空投」展示；来自作品方配置，未配置为 null。**空投倒计时请用本字段，勿用 premiere_time** |
+| work_name / work_description / work_creator_name / work_cover_url | object | 多语言对象，key 为 zh（简体）、zh_hant（繁体）、en、ja、ko。例：work_cover_url: { "zh": "url", "zh_hant": "", "en": "", "ja": "dfdf/dfd", "ko": "" } |
 | token_balance | number | 该作品下用户代币余额（即作品积分） |
 | points_balance | number | 该作品下用户作品积分（与 token_balance 一致；商城入口由前端根据作品 id 跳转） |
-| creative_team_block | object\|null | 创作团队区块信息（标题、图片、描述、链接） |
-| creative_team_members | array | 创作团队成员列表（头像、姓名、角色，最多30人） |
-| team_sign_in_progress | string | 组队签到进度（格式："0/3"、"1/3"、"2/3"、"3/3"） |
+| creative_team_block | object\|null | 创作团队区块；title / image_url / description / link_url 均为多语言对象 `{ zh, zh_hant, en, ja, ko }`。可通过 **POST /arts/work/creativeTeam** 上传/更新。 |
+| creative_team_members | array | 创作团队成员列表（最多30人）；每项 avatar_url 为字符串，name / role 为多语言对象。同上，通过 **POST /arts/work/creativeTeam** 上传/更新。 |
+| has_team | bool | **是否已组队**：邀请人数≥2 时为 true（组队=邀请人+前2被邀请人共3人）；未组队时进度条仅表示「当前已签到人数/3」，可弱化展示 |
+| team_sign_in_progress | string | 组队签到进度（格式："0/3"～"3/3"，三人今日签到人数；未组队时也返回，前端可用 has_team 判断是否展示） |
 | team_sign_in_reward_claimed | bool | 组队签到奖励是否已领取（当日） |
 | can_show_team_btn | bool | 是否显示组队按钮（邀请人数<2 或 进度<3且未领取） |
 
@@ -2501,6 +2547,7 @@ work_id=214
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | signed_in | bool | 今日是否已签到 |
+| sign_in_time | string\|null | 今日签到时间（ISO8601/RFC3339）；未签到时为 null |
 | ever_signed_in | bool | **是否曾完成过首次签到**（用于判断是否显示邀请信息） |
 | joined_community | bool | 是否加入过社区 |
 | invite_count | int | 用户邀请总人数（来自任务记录） |
@@ -2513,6 +2560,64 @@ work_id=214
 2. **首次签到后**：`ever_signed_in = true`，永久返回邀请码信息
 3. **邀请码自动生成**：首次签到后访问详情页时自动生成（如果不存在则创建）
 4. **被邀请限制**：用户完成首次签到后，不能再被其他人邀请到该作品
+
+---
+
+### 2.23.11 创作团队上传
+
+上传或更新作品的创作团队区块与成员。**仅作品创建者可操作**。多语言字段与详情返回格式一致，为对象 `{ zh, zh_hant, en, ja, ko }` 或单字符串。
+
+**接口地址**
+```
+POST /arts/work/creativeTeam
+```
+
+**请求头**
+```
+Content-Type: application/json
+token: {用户token}
+```
+
+**请求参数**
+```json
+{
+  "work_id": 214,
+  "creative_team_block": {
+    "title": { "zh": "创作团队", "zh_hant": "創作團隊", "en": "Creative Team", "ja": "", "ko": "" },
+    "image_url": { "zh": "https://...", "zh_hant": "", "en": "", "ja": "", "ko": "" },
+    "description": { "zh": "描述", "zh_hant": "描述", "en": "Description", "ja": "", "ko": "" },
+    "link_url": { "zh": "https://...", "zh_hant": "", "en": "", "ja": "", "ko": "" }
+  },
+  "creative_team_members": [
+    {
+      "avatar_url": "https://...",
+      "name": { "zh": "张三", "zh_hant": "張三", "en": "Zhang San", "ja": "", "ko": "" },
+      "role": { "zh": "导演", "zh_hant": "導演", "en": "Director", "ja": "", "ko": "" },
+      "sort": 1
+    }
+  ]
+}
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| work_id | int | 是 | 作品ID |
+| creative_team_block | object | 否 | 创作团队区块；title / image_url / description / link_url 为多语言对象或单字符串。与 creative_team_members 至少传其一 |
+| creative_team_members | array | 否 | 成员列表（最多30人）；每项 avatar_url 字符串，name / role 多语言对象或单字符串，sort 排序（可选，默认按数组顺序） |
+
+**响应示例**
+```json
+{
+  "code": 0,
+  "msg": "success",
+  "data": {}
+}
+```
+
+**说明**
+- 仅作品创建者（work.user_id == 当前用户）可调用
+- 传 creative_team_block 则覆盖该作品的区块（有则更新，无则创建）
+- 传 creative_team_members 则先删除该作品下全部成员再按请求体顺序插入；传空数组即清空成员
 
 ---
 
@@ -2848,6 +2953,7 @@ work_id=214&page=1&page_size=10&status=1
         "image_url": "https://example.com/products/notebook.jpg",
         "points_price": 100,
         "stock": 50,
+        "product_type": 0,
         "status": 1,
         "sort": 1,
         "create_time": "2026-01-29T14:05:43+08:00",
@@ -2869,6 +2975,7 @@ work_id=214&page=1&page_size=10&status=1
 | image_url | string | 商品图片URL |
 | points_price | int | 所需积分 |
 | stock | int | 库存数量 |
+| product_type | int | 商品类型（0=实物，1=虚拟） |
 | status | int | 状态（1=上架，0=下架） |
 | sort | int | 排序值 |
 | create_time | string | 创建时间 |
@@ -2909,6 +3016,7 @@ token: {用户token}  // 可选（公开接口）
     "work_id": 214,
     "points_price": 100,
     "stock": 50,
+    "product_type": 0,
     "status": 1,
     "sort": 1,
     "create_time": "2026-01-29T14:05:43+08:00",
@@ -2916,6 +3024,8 @@ token: {用户token}  // 可选（公开接口）
   }
 }
 ```
+
+**product_type**：0=实物（需收货地址/发货），1=虚拟（无需发货）。前端可根据此字段决定是否展示收货信息表单。
 
 ---
 

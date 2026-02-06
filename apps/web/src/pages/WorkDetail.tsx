@@ -4,7 +4,12 @@ import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
 import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
-import { MediaItem, parseMediaType, resolveImageUrl } from "@mirror/utils";
+import {
+    MediaItem,
+    parseMediaType,
+    resolveImageUrl,
+    resolveLocalizedText,
+} from "@mirror/utils";
 import {
     Directory,
     ProductCover,
@@ -194,10 +199,12 @@ export default function WorkDetail() {
             <div className="p-6 space-y-6">
                 {/* 作品信息卡片：封面 + 标题/作者/简介 */}
                 <ProductCover
-                    coverUrl={data.work_cover_url}
-                    title={data.work_name}
-                    author={data.work_creator_name}
-                    description={data.work_description}
+                    coverUrl={resolveImageUrl(
+                        resolveLocalizedText(data.work_cover_url, languageKey),
+                    )}
+                    title={resolveLocalizedText(data.work_name, languageKey)}
+                    author={resolveLocalizedText(data.work_creator_name, languageKey)}
+                    description={resolveLocalizedText(data.work_description, languageKey)}
                     showPlayButton={
                         getWorkTypeByValue(data.work_type)?.isShowTrailersStills ?? false
                     }

@@ -304,20 +304,30 @@ export interface UserNodeCountsResponseData {
 }
 
 // Work module types
+
+/** 多语言对象：接口返回的名称、描述、封面等字段；缺语言为空字符串 "" */
+export interface LocalizedText {
+    zh?: string;
+    zh_hant?: string;
+    en?: string;
+    ja?: string;
+    ko?: string;
+}
+
 export interface WorkListParams extends PaginationParams {
     work_type?: number;
     status?: string;
 }
 
 export interface WorkSummary {
-    cover_url: string;
-    creator_name: string;
-    description: string;
+    cover_url: LocalizedText | string;
+    creator_name: LocalizedText | string;
+    description: LocalizedText | string;
     id: number;
     is_like: number;
     is_tread: number;
     like_count: number;
-    name: string;
+    name: LocalizedText | string;
     share_count: number;
     token_cover_url: string;
     tread_count: number;
@@ -334,8 +344,8 @@ export interface WorkDetailParams {
 }
 export interface CreativeTeamMembersItem {
     avatar_url: string;
-    name: string;
-    role: string;
+    name: LocalizedText | string;
+    role: LocalizedText | string;
 }
 
 /** 作品详情接口公共字段（未签到 / 已签到都会返回） */
@@ -352,18 +362,18 @@ export interface WorkDetailBase {
     token_name: string;
     token_status: number;
     unlocked_chapter_count: number;
-    work_cover_url: string;
-    work_name_en: string; // 英文作品名称
-    work_creator_name: string;
-    work_description: string;
-    work_name: string; // 根据请求语言返回不同的作品名称
+    work_cover_url: LocalizedText | string;
+    work_name_en?: string; // 兼容：英文作品名称（旧数据可能仅有 en）
+    work_creator_name: LocalizedText | string;
+    work_description: LocalizedText | string;
+    work_name: LocalizedText | string; // 多语言对象 { zh, zh_hant, en, ja, ko }
     work_total_chapter: number;
     work_type: number;
     creative_team_block: {
-        title: string;
-        image_url: string;
-        description: string;
-        link_url: string;
+        title: LocalizedText | string;
+        image_url: LocalizedText | string;
+        description: LocalizedText | string;
+        link_url: LocalizedText | string;
     } | null;
     creative_team_members: CreativeTeamMembersItem[];
 }

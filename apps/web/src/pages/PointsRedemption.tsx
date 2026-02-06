@@ -15,13 +15,15 @@ import { useLoginModalStore } from "../store/useLoginModalStore";
 import type { PointsOrderItem, PointsProductItem } from "@mirror/api";
 import { BlackBarHeader } from "../ui/Headers";
 import { useTranslation } from "react-i18next";
+import { resolveLocalizedText } from "@mirror/utils";
 
 /** 积分商城 Tab 索引 */
 const TAB_MALL = 0;
 const TAB_MY_REDEMPTIONS = 1;
 
 export default function PointsRedemption() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const [searchParams] = useSearchParams();
     const workIdParam = searchParams.get("work_id") ?? searchParams.get("workId");
     const workId = Number(workIdParam ?? "");
@@ -316,17 +318,19 @@ export default function PointsRedemption() {
         try {
             const response = await artsApiClient.work.detail({ work_id: workId });
             const payload = response.data;
+            const nameStr =
+                resolveLocalizedText(payload.work_name, lang) ||
+                t("pointsRedemption.workFallback", { id: String(workId) });
+            const coverStr = resolveLocalizedText(payload.work_cover_url, lang);
             setWorkInfo({
-                name:
-                    payload.work_name ||
-                    t("pointsRedemption.workFallback", { id: String(workId) }),
-                coverUrl: payload.work_cover_url,
+                name: nameStr,
+                coverUrl: coverStr || undefined,
             });
         } catch (error) {
             console.error("[PointsRedemption] work detail fetch failed", error);
             setWorkInfo({ name: t("pointsRedemption.workFallback", { id: String(workId) }) });
         }
-    }, [hasValidWorkId, t, workId]);
+    }, [hasValidWorkId, lang, t, workId]);
 
     useEffect(() => {
         void fetchWorkInfo();
