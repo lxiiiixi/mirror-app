@@ -182,7 +182,7 @@ function EmailLogin() {
                             />
                             <button
                                 type="button"
-                                className={`code-button text-[12px] ${countdown > 0 || !isEmailValid ? "disabled" : ""}`}
+                                className={`code-button flex items-center justify-center px-[12px] text-[12px] rounded-[8px] ${countdown > 0 || !isEmailValid ? "disabled" : ""}`}
                                 disabled={countdown > 0 || !isEmailValid || isSending}
                                 onClick={handleSendCode}
                             >
@@ -194,7 +194,9 @@ function EmailLogin() {
                     </label>
 
                     <label className="field">
-                        <span className="field-label text-[13px]">{t("emailLogin.inviteCode")}</span>
+                        <span className="field-label text-[13px]">
+                            {t("emailLogin.inviteCode")}
+                        </span>
                         <Input
                             value={inviteCode}
                             onChange={event => setInviteCode(event.target.value)}
@@ -269,26 +271,23 @@ function EmailLogin() {
                 }
 
                 .code-button {
-                    min-width: 110px;
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    background: rgba(255, 255, 255, 0.12);
+                    background: linear-gradient(
+                        146.07deg,
+                        rgba(235, 20, 132, 1) 0%,
+                        rgba(201, 28, 195, 1) 99.99%
+                    );
                     color: #fff;
-                    font-weight: 600;
-                    padding: 0 12px;
                     cursor: pointer;
-                    transition:
-                        background 0.2s ease,
-                        border 0.2s ease,
-                        opacity 0.2s ease;
+                    white-space: nowrap;
+                    font-weight: 600;
                 }
 
                 .code-button:hover {
-                    background: rgba(255, 255, 255, 0.18);
+                    opacity: 0.8;
                 }
 
                 .code-button.disabled {
-                    opacity: 0.5;
+                    background: rgba(126, 0, 245, 0.3);
                     cursor: not-allowed;
                 }
             `}</style>
