@@ -310,8 +310,8 @@ export interface LocalizedText {
     zh?: string;
     zh_hant?: string;
     en?: string;
-    ja?: string;
-    ko?: string;
+    // ja?: string;
+    // ko?: string;
 }
 
 export interface WorkListParams extends PaginationParams {

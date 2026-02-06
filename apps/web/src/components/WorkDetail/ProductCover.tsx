@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { resolveImageUrl } from "@mirror/utils";
 import { images } from "@mirror/assets";
 import { LanguageSelect } from "./LanguageSelect";
+import { i18nLanguageToSelectValue, languageSelectValueToI18n } from "./languageSelectUtils";
 
 export interface ProductCoverProps {
     coverUrl?: string;
@@ -19,7 +21,19 @@ export function ProductCover({
     description = "",
     showPlayButton = false,
 }: ProductCoverProps) {
+    const { i18n } = useTranslation();
     const [expanded, setExpanded] = useState(false);
+
+    const currentLang = i18n.resolvedLanguage ?? i18n.language ?? "zh-CN";
+    const selectValue = i18nLanguageToSelectValue(currentLang);
+
+    const handleLanguageChange = (value: Parameters<typeof languageSelectValueToI18n>[0]) => {
+        const i18nCode = languageSelectValueToI18n(value);
+        if (typeof window !== "undefined") {
+            window.localStorage.setItem("user-lang", i18nCode);
+        }
+        void i18n.changeLanguage(i18nCode);
+    };
 
     const wrapperClassName = expanded
         ? "relative shrink-0 float-left w-[120px] mr-[12px] mb-[6px]"
@@ -32,13 +46,17 @@ export function ProductCover({
     return (
         <div className="relative">
             <div className="absolute top-0 right-0 z-10">
-                <LanguageSelect />
+                <LanguageSelect value={selectValue} onValueChange={handleLanguageChange} />
             </div>
             <div id="product-cover" className={expanded ? "" : "flex items-start gap-[12px]"}>
                 {/* 封面图区域：展开时由外层定宽高避免 float 导致塌陷，播放按钮才能正确叠在图上 */}
                 {coverUrl ? (
                     <div className={wrapperClassName}>
-                        <img className={coverClassName} src={resolveImageUrl(coverUrl)} alt={title} />
+                        <img
+                            className={coverClassName}
+                            src={resolveImageUrl(coverUrl)}
+                            alt={title}
+                        />
                         {showPlayButton ? (
                             <div
                                 className="absolute inset-0 flex items-center justify-center rounded-[6px] bg-black/20 cursor-pointer"
@@ -55,7 +73,7 @@ export function ProductCover({
                 ) : null}
                 <div className={expanded ? "" : "flex flex-col gap-[6px]"}>
                     <div
-                        className={`text-[16px] font-semibold ${expanded ? "pb-[6px]" : "line-clamp-1"}`}
+                        className={`text-[16px] pr-[75px] font-semibold ${expanded ? "pb-[6px]" : "line-clamp-1"}`}
                     >
                         {title}
                     </div>

@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronUp, Check } from "lucide-react";
+import type { LanguageSelectValue } from "./languageSelectUtils";
 
-const LANGUAGE_OPTIONS = [
-    { value: "zh", label: "中文" },
+const LANGUAGE_OPTIONS: { value: LanguageSelectValue; label: string }[] = [
+    { value: "zh", label: "中文简体" },
     { value: "en", label: "English" },
-    { value: "ko", label: "한국어" },
-    { value: "ja", label: "にほんご" },
+    { value: "zh_hant", label: "中文繁体" },
 ] as const;
 
-export type LanguageSelectValue = (typeof LANGUAGE_OPTIONS)[number]["value"];
+export type { LanguageSelectValue } from "./languageSelectUtils";
 
 export interface LanguageSelectProps {
     value?: LanguageSelectValue;
