@@ -183,6 +183,7 @@
     "pointsMall": "积分商城",
     "checkIn": "签到 +5",
     "productionTeam": "制作团队",
+    "airdropStartsAt": "将于{{month}}月{{day}}日{{hour}}时{{minute}}分空投",
     "inviteShare": {
       "title": "《{{name}}》邀请您加入Web3文娱革命军",
       "titleFallback": "邀请您加入Web3文娱革命军",

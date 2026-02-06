@@ -183,6 +183,7 @@
     "pointsMall": "Points Mall",
     "checkIn": "Check in +5",
     "productionTeam": "Production Team",
+    "airdropStartsAt": "Airdrop starts on {{month}}/{{day}} {{hour}}:{{minute}}",
     "inviteShare": {
       "title": "\"{{name}}\" invites you to join the Web3 entertainment revolution",
       "titleFallback": "Join the Web3 entertainment revolution",

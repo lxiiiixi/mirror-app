@@ -236,7 +236,8 @@ export function WorkDetailAirdrop({
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const navigate = useNavigate();
 
-    const [countdown, setCountdown] = useState("00:00:00");
+    const [countdownParts, setCountdownParts] = useState(["00", "00", "00", "00"]);
+    const [airdropStartText, setAirdropStartText] = useState("");
     const [airdropInfo, setAirdropInfo] = useState<{
         total_amount: number;
         claimed_amount: number;
@@ -393,50 +394,60 @@ export function WorkDetailAirdrop({
         totalAmount >= 1000 ? `${(totalAmount / 1000).toFixed(0)}k` : totalAmount.toLocaleString();
 
     useEffect(() => {
-        const premiereTime = workData.premiere_time;
-        if (!premiereTime || typeof premiereTime !== "string") {
-            setCountdown("00:00:00");
+        const startTime = workData.airdrop_start_time;
+        // const startTime = "2026-03-06T16:00:00Z";
+        if (!startTime || typeof startTime !== "string") {
+            setCountdownParts(["00", "00", "00", "00"]);
+            setAirdropStartText("");
             return;
         }
-        const endTime = (() => {
-            const trimmed = premiereTime.trim();
-            const parts = trimmed.split(/[/-]/);
-            if (parts.length >= 3) {
-                const y = parseInt(parts[0], 10);
-                const m = parseInt(parts[1], 10) - 1;
-                const d = parseInt(parts[2], 10);
-                if (!Number.isNaN(y) && !Number.isNaN(m) && !Number.isNaN(d)) {
-                    return new Date(y, m, d, 0, 0, 0, 0).getTime();
-                }
-            }
-            const fallback = new Date(trimmed).getTime();
-            return Number.isNaN(fallback) ? 0 : fallback;
-        })();
-        if (!endTime) {
-            setCountdown("00:00:00");
+        const targetTime = Date.parse(startTime);
+        if (Number.isNaN(targetTime)) {
+            setCountdownParts(["00", "00", "00", "00"]);
+            setAirdropStartText("");
             return;
         }
+
+        const startDate = new Date(targetTime);
+        const month = String(startDate.getMonth() + 1);
+        const day = String(startDate.getDate());
+        const hour = String(startDate.getHours()).padStart(2, "0");
+        const minute = String(startDate.getMinutes()).padStart(2, "0");
+        setAirdropStartText(
+            t("workDetail.airdropStartsAt", {
+                month,
+                day,
+                hour,
+                minute,
+            }),
+        );
+
         const tick = () => {
             const now = Date.now();
-            const remain = Math.max(0, Math.floor((endTime - now) / 1000));
-            const h = Math.floor(remain / 3600);
-            const m = Math.floor((remain % 3600) / 60);
-            const s = remain % 60;
-            setCountdown([h, m, s].map(v => String(v).padStart(2, "0")).join(":"));
+            const remainSeconds = Math.max(0, Math.floor((targetTime - now) / 1000));
+            const days = Math.floor(remainSeconds / 86400);
+            const hours = Math.floor((remainSeconds % 86400) / 3600);
+            const minutes = Math.floor((remainSeconds % 3600) / 60);
+            const seconds = remainSeconds % 60;
+            setCountdownParts([days, hours, minutes, seconds].map(v => String(v).padStart(2, "0")));
         };
         tick();
         const id = setInterval(tick, 1000);
         return () => clearInterval(id);
-    }, [workData.premiere_time]);
+    }, [t, workData.airdrop_start_time]);
 
-    console.log("[WorkDetailAirdrop] countdown", countdown);
+    console.log(
+        "[WorkDetailAirdrop] countdown",
+        workData.airdrop_start_time,
+        countdownParts.join(":"),
+    );
 
     return (
         <section className="px-6">
             {/* 倒计时 */}
             <div className="flex items-center justify-center gap-2">
                 <div className="flex items-center gap-1 rounded-[20px]">
-                    {countdown.split(":").map((part, i) => (
+                    {countdownParts.map((part, i) => (
                         <div
                             key={i}
                             className="flex items-center justify-center text-[18px] font-bold text-white gap-1"
@@ -444,11 +455,14 @@ export function WorkDetailAirdrop({
                             <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[16px] py-[8px] rounded-lg border border-[#E358FF]">
                                 {part}{" "}
                             </div>
-                            {i < 2 ? ":" : ""}
+                            {i < countdownParts.length - 1 ? ":" : ""}
                         </div>
                     ))}
                 </div>
             </div>
+            {airdropStartText ? (
+                <div className="mt-2 text-center text-xs text-white/70">{airdropStartText}</div>
+            ) : null}
 
             <div className="my-4 space-y-1">
                 <div className="flex flex-row items-center justify-between text-[14px] font-medium leading-tight text-white">
