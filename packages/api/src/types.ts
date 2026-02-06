@@ -710,9 +710,7 @@ export interface WorkExternalLinkItem {
     link_url: string;
 }
 
-export interface WorkExternalLinkResponseData {
-    links: WorkExternalLinkItem[];
-}
+export type WorkExternalLinkResponseData = WorkExternalLinkItem[];
 
 export interface WorkTrackPromoParams {
     promo_code?: string;

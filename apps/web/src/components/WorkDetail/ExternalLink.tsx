@@ -8,10 +8,8 @@ export interface ExternalLinkItem {
 }
 
 export interface ExternalLinkProps {
-    links?: ExternalLinkItem[];
+    links: ExternalLinkItem[];
 }
-
-const normalizeType = (value: string) => value.trim().toLowerCase();
 
 const typeIconMap: Record<string, string> = {
     twitter: images.works.twLogo,
@@ -38,7 +36,7 @@ export function ExternalLink({ links = [] }: ExternalLinkProps) {
     const mapped = useMemo(() => {
         return links
             .map(item => {
-                const key = normalizeType(item.link_type);
+                const key = String(item.link_type);
                 const icon = typeIconMap[key];
                 return icon
                     ? {
@@ -47,24 +45,27 @@ export function ExternalLink({ links = [] }: ExternalLinkProps) {
                       }
                     : null;
             })
-            .filter(Boolean) as Array<ExternalLinkItem & { icon: string }>;
+            .filter(Boolean);
     }, [links]);
 
     if (mapped.length === 0) return null;
 
-    console.log(mapped);
-
     return (
-        <div className="flex justify-end gap-[6px] rounded-full bg-black/50 backdrop-blur-sm p-1 px-2">
-            {mapped.map(item => (
-                <div
-                    key={item.link_id}
-                    className="h-[18px] w-[18px]"
-                    onClick={() => window.open(item.link_url, "_blank", "noopener,noreferrer")}
-                >
-                    <img className="h-full w-full" src={item.icon} alt="" />
-                </div>
-            ))}
+        <div className="flex justify-end gap-[10px] rounded-full bg-black/50 backdrop-blur-sm p-1.5 px-3.5">
+            {mapped.map(
+                item =>
+                    item && (
+                        <div
+                            key={item.link_id}
+                            className="h-[16px] cursor-pointer"
+                            onClick={() =>
+                                window.open(item.link_url, "_blank", "noopener,noreferrer")
+                            }
+                        >
+                            <img className="h-full w-full" src={item.icon} alt="" />
+                        </div>
+                    ),
+            )}
         </div>
     );
 }

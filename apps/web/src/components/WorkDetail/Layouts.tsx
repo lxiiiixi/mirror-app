@@ -14,7 +14,7 @@ import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "../Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
-import { Check, Copy } from "lucide-react";
+import { Copy } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
 import { getWorkNameInitials } from "../../utils/work";
@@ -46,7 +46,7 @@ export function WorkDetailHeader({ workId }: { workId: number }) {
             .getExternalLinks({ work_id: workId })
             .then(response => {
                 if (!isActive) return;
-                setExternalLinks(response.data?.links ?? []);
+                setExternalLinks(response.data ?? []);
                 console.log(response.data);
             })
             .catch(() => {

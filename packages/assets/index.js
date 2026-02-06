@@ -347,6 +347,7 @@ export const images = {
     checkInSuccessHeadingEn: worksCheckInSuccessHeadingEn,
     checkInSuccessHeadingZh: worksCheckInSuccessHeadingZh,
     checkInSuccessHeadingHk: worksCheckInSuccessHeadingHk,
+    dcLogo: worksDcLogo,
     descTop: worksDescTop,
     fbLogo: worksFbLogo,
     filterIcon: worksFilterIcon,
@@ -361,6 +362,7 @@ export const images = {
     toX: worksToX,
     twLogo: worksTwLogo,
     uploadWorkBtn: worksUploadWorkBtn,
+    weiboLogo: worksWeiboLogo,
     youtubeLogo: worksYoutubeLogo,
     // 作品类型图标
     product: {

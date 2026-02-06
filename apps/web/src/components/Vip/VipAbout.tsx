@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { images } from "@mirror/assets";
@@ -18,7 +17,7 @@ const vipRulesData = [
 ];
 
 export function VipAbout() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const openLink = (url: string) => {
         window.open(url, "_blank", "noopener,noreferrer");
@@ -30,7 +29,13 @@ export function VipAbout() {
                 <button
                     type="button"
                     className="white-paper text-[14px]"
-                    onClick={() => openLink(MIRROR_EXTERNAL_LINKS.whitePaper)}
+                    onClick={() =>
+                        openLink(
+                            MIRROR_EXTERNAL_LINKS.whitePaper[
+                                i18n.language as keyof typeof MIRROR_EXTERNAL_LINKS.whitePaper
+                            ],
+                        )
+                    }
                 >
                     <img src={images.vip.whitePaperIcon} alt="" />
                     <span>{t("vipAbout.whitePaper")}</span>

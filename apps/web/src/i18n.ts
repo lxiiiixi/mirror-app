@@ -6,10 +6,16 @@ import en from "@mirror/locales/en.json";
 import zhHK from "@mirror/locales/zh-HK.json";
 import zhCN from "@mirror/locales/zh-CN.json";
 
+export enum SUPPORTED_LANGUAGES {
+    en = "en",
+    zh_hk = "zh-HK",
+    zh_cn = "zh-CN",
+}
+
 const resources = {
-    en: { common: en },
-    "zh-HK": { common: zhHK },
-    "zh-CN": { common: zhCN },
+    [SUPPORTED_LANGUAGES.en]: { common: en },
+    [SUPPORTED_LANGUAGES.zh_hk]: { common: zhHK },
+    [SUPPORTED_LANGUAGES.zh_cn]: { common: zhCN },
 };
 
 void i18n

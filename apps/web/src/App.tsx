@@ -41,8 +41,6 @@ function App() {
         if (normalized === "en") return "en";
         if (normalized === "zh" || normalized === "zh-cn") return "zh-CN";
         if (normalized === "zh-hk" || normalized === "zh-tw") return "zh-HK";
-        if (normalized === "ko") return "ko";
-        if (normalized === "ja") return "ja";
         return null;
     }, [location.search]);
 
