@@ -1,9 +1,4 @@
-import {
-    MediaItem,
-    parseMediaType,
-    resolveImageUrl,
-    resolveLocalizedText,
-} from "@mirror/utils";
+import { MediaItem, parseMediaType, resolveImageUrl, resolveLocalizedText } from "@mirror/utils";
 import { useTranslation } from "react-i18next";
 import { getWorkTypeByValue } from "../../utils/work";
 import { useEffect, useMemo, useState } from "react";
@@ -33,10 +28,7 @@ export function WorkDetailProductionTeam({
                     const nameStr = resolveLocalizedText(person.name, lang);
                     const roleStr = resolveLocalizedText(person.role, lang);
                     return (
-                        <div
-                            key={index}
-                            className="flex w-[70px] shrink-0 flex-col items-center"
-                        >
+                        <div key={index} className="flex w-[70px] shrink-0 flex-col items-center">
                             <div className="mb-2 h-[60px] w-[60px] overflow-hidden rounded-full bg-[#d9d9d9]">
                                 {person.avatar_url ? (
                                     <img
@@ -82,14 +74,12 @@ function Tab({
 
 function MediaItems({ mediaItems }: { mediaItems: MediaItem[] }) {
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col">
             {mediaItems.map((item, index) => {
                 const url = resolveImageUrl(item.url);
                 console.log("[MediaItems] item", url);
                 if (item.kind === "image") {
-                    return (
-                        <img key={`img-${index}`} src={url} alt="" className="w-full rounded-lg" />
-                    );
+                    return <img key={`img-${index}`} src={url} alt="" className="w-full" />;
                 }
                 if (item.kind === "audio") {
                     return (

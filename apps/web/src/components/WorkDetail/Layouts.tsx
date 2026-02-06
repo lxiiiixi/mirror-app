@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { TokenAvatar } from "../Common/TokenAvatar";
 import {
     buildInviteShareText,
+    getInviteLink,
     resolveImageUrl,
     resolveLocalizedText,
     shareToX,
@@ -267,8 +268,9 @@ export function WorkDetailAirdrop({
             .then(response => {
                 if (!isActive) return;
                 const data = response.data;
+                console.log("[WorkDetailAirdrop] generateInviteCode", data);
                 const nextCode = String(data?.invite_code ?? "");
-                const nextUrl = String(data?.invite_url ?? "");
+                const nextUrl = getInviteLink(workId, nextCode);
                 if (nextCode) {
                     setInviteCode(nextCode);
                 }

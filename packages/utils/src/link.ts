@@ -36,3 +36,7 @@ export const buildInviteShareText = ({
     });
     return [title, codeLine, linkLine].join("\n");
 };
+
+export const getInviteLink = (workId: number, inviteCode: string) => {
+    return `${window.location.origin}/work/${workId}?invite_code=${inviteCode}`;
+};
