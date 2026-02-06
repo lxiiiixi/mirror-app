@@ -14,19 +14,14 @@ import { useAlertStore } from "../store/useAlertStore";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import type { PointsOrderItem, PointsProductItem } from "@mirror/api";
 import { BlackBarHeader } from "../ui/Headers";
+import { useTranslation } from "react-i18next";
 
 /** 积分商城 Tab 索引 */
 const TAB_MALL = 0;
 const TAB_MY_REDEMPTIONS = 1;
 
-const statusTextMap: Record<number, string> = {
-    0: "待发货",
-    1: "已发货",
-    2: "已完成",
-    3: "已取消",
-};
-
 export default function PointsRedemption() {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const workIdParam = searchParams.get("work_id") ?? searchParams.get("workId");
     const workId = Number(workIdParam ?? "");
@@ -55,24 +50,34 @@ export default function PointsRedemption() {
 
     const tabs = useMemo(
         () => [
-            { key: "mall", label: "积分商城" },
-            { key: "my", label: "我的兑换" },
+            { key: "mall", label: t("pointsRedemption.tabs.mall") },
+            { key: "my", label: t("pointsRedemption.tabs.my") },
         ],
-        [],
+        [t],
+    );
+
+    const statusTextMap = useMemo(
+        () => ({
+            0: t("pointsRedemption.status.pending"),
+            1: t("pointsRedemption.status.shipped"),
+            2: t("pointsRedemption.status.completed"),
+            3: t("pointsRedemption.status.cancelled"),
+        }),
+        [t],
     );
 
     const handleRedeem = (item: PointsProductItem) => {
         if (!isLoggedIn) {
             openLoginModal();
-            showAlert({ message: "Please login to redeem points.", variant: "info" });
+            showAlert({ message: t("pointsRedemption.alerts.loginToRedeem"), variant: "info" });
             return;
         }
         if (pointsLoading) {
-            showAlert({ message: "Loading points balance, please wait.", variant: "info" });
+            showAlert({ message: t("pointsRedemption.alerts.loadingBalance"), variant: "info" });
             return;
         }
         if (item.stock <= 0 || item.status !== 1) {
-            showAlert({ message: "This item is out of stock.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.outOfStock"), variant: "error" });
             return;
         }
         setSelectedItem(item);
@@ -86,11 +91,11 @@ export default function PointsRedemption() {
         const requiredPoints = Number(selectedItem.points_price ?? 0);
         const insufficient = currentBalance < requiredPoints;
         if (insufficient) {
-            showAlert({ message: "Insufficient points.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.insufficientPoints"), variant: "error" });
             return;
         }
         if (selectedItem.stock <= 0) {
-            showAlert({ message: "This item is out of stock.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.outOfStock"), variant: "error" });
             return;
         }
         setRedeemStep(2);
@@ -100,23 +105,23 @@ export default function PointsRedemption() {
     const giftReceiptFields: RedeemFlowField[] = useMemo(() => {
         const fields: RedeemFlowField[] = [
             {
-                label: "Enter Recipient Name",
+                label: t("pointsRedemption.form.recipientName"),
                 value: recipientName,
                 onChange: setRecipientName,
             },
         ];
         if (!isVirtualProduct) {
             fields.push(
-                { label: "Enter Phone Number", value: phone, onChange: setPhone },
+                { label: t("pointsRedemption.form.phone"), value: phone, onChange: setPhone },
                 {
-                    label: "Enter Shipping Address",
+                    label: t("pointsRedemption.form.address"),
                     value: shippingAddress,
                     onChange: setShippingAddress,
                 },
             );
         }
         return fields;
-    }, [isVirtualProduct, phone, recipientName, shippingAddress]);
+    }, [isVirtualProduct, phone, recipientName, shippingAddress, t]);
 
     const fetchBalance = useCallback(async () => {
         if (!hasValidWorkId) return;
@@ -132,11 +137,11 @@ export default function PointsRedemption() {
         } catch (error) {
             console.error("[PointsRedemption] balance fetch failed", error);
             setRedeemablePoints(0);
-            showAlert({ message: "Failed to load points balance.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.balanceFailed"), variant: "error" });
         } finally {
             setPointsLoading(false);
         }
-    }, [hasValidWorkId, isLoggedIn, showAlert, workId]);
+    }, [hasValidWorkId, isLoggedIn, showAlert, t, workId]);
 
     const fetchProducts = useCallback(async () => {
         if (!hasValidWorkId) return;
@@ -152,44 +157,50 @@ export default function PointsRedemption() {
         } catch (error) {
             console.error("[PointsRedemption] products fetch failed", error);
             setProducts([]);
-            showAlert({ message: "Failed to load redemption items.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.itemsFailed"), variant: "error" });
         } finally {
             setProductsLoading(false);
         }
-    }, [hasValidWorkId, showAlert, workId]);
+    }, [hasValidWorkId, showAlert, t, workId]);
 
     const handleGiftRedeem = async () => {
         if (!selectedItem || redeemLoading) return;
         if (!hasValidWorkId) {
-            showAlert({ message: "Missing work id for redemption.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.missingWorkId"), variant: "error" });
             return;
         }
         if (!isLoggedIn) {
             openLoginModal();
-            showAlert({ message: "Please login to redeem points.", variant: "info" });
+            showAlert({ message: t("pointsRedemption.alerts.loginToRedeem"), variant: "info" });
             return;
         }
         const currentBalance = Number(redeemablePoints ?? 0);
         const requiredPoints = Number(selectedItem.points_price ?? 0);
         if (currentBalance < requiredPoints) {
-            showAlert({ message: "Insufficient points.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.insufficientPoints"), variant: "error" });
             return;
         }
         if (selectedItem.stock <= 0) {
-            showAlert({ message: "This item is out of stock.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.outOfStock"), variant: "error" });
             return;
         }
         if (!recipientName.trim()) {
-            showAlert({ message: "Please enter recipient name.", variant: "error" });
+            showAlert({
+                message: t("pointsRedemption.alerts.enterRecipientName"),
+                variant: "error",
+            });
             return;
         }
         if (!isVirtualProduct) {
             if (!phone.trim()) {
-                showAlert({ message: "Please enter phone number.", variant: "error" });
+                showAlert({ message: t("pointsRedemption.alerts.enterPhone"), variant: "error" });
                 return;
             }
             if (!shippingAddress.trim()) {
-                showAlert({ message: "Please enter shipping address.", variant: "error" });
+                showAlert({
+                    message: t("pointsRedemption.alerts.enterAddress"),
+                    variant: "error",
+                });
                 return;
             }
         }
@@ -207,7 +218,7 @@ export default function PointsRedemption() {
                     : shippingAddress.trim() || undefined,
             };
             await artsApiClient.points.redeem(payload);
-            showAlert({ message: "Redeemed successfully!", variant: "success" });
+            showAlert({ message: t("pointsRedemption.alerts.redeemSuccess"), variant: "success" });
             setRedeemModalOpen(false);
             setRedeemStep(1);
             setSelectedItem(null);
@@ -219,7 +230,7 @@ export default function PointsRedemption() {
             void fetchOrders();
         } catch (error) {
             console.error("[PointsRedemption] redeem failed", error);
-            showAlert({ message: "Redeem failed. Please try again.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.redeemFailed"), variant: "error" });
         } finally {
             setRedeemLoading(false);
         }
@@ -238,9 +249,15 @@ export default function PointsRedemption() {
     const myRedemptions: MyRedemptionItemCardData[] = useMemo(() => {
         return orders.map(order => {
             const product = products.find(item => item.id === order.product_id);
-            const name = product?.name ?? `商品 #${order.product_id}`;
-            const statusLabel = statusTextMap[order.status] ?? "未知状态";
-            const status = `${statusLabel} · x${order.quantity}`;
+            const name =
+                product?.name ??
+                t("pointsRedemption.productFallback", { id: String(order.product_id) });
+            const statusLabel =
+                statusTextMap[order.status] ?? t("pointsRedemption.status.unknown");
+            const status = t("pointsRedemption.statusWithQty", {
+                status: statusLabel,
+                quantity: String(order.quantity),
+            });
             return {
                 id: String(order.id),
                 name,
@@ -248,7 +265,7 @@ export default function PointsRedemption() {
                 status,
             };
         });
-    }, [orders, products]);
+    }, [orders, products, statusTextMap, t]);
 
     const handleSave = (item: MyRedemptionItemCardData) => {
         // TODO: 保存/提交凭证等
@@ -259,7 +276,10 @@ export default function PointsRedemption() {
 
     useEffect(() => {
         if (!hasValidWorkId) {
-            showAlert({ message: "Missing work id for points redemption.", variant: "error" });
+            showAlert({
+                message: t("pointsRedemption.alerts.missingWorkIdForPage"),
+                variant: "error",
+            });
             return;
         }
         if (lastProductsWorkIdRef.current !== workId) {
@@ -267,7 +287,7 @@ export default function PointsRedemption() {
             void fetchProducts();
         }
         void fetchBalance();
-    }, [fetchBalance, fetchProducts, hasValidWorkId, showAlert, workId]);
+    }, [fetchBalance, fetchProducts, hasValidWorkId, showAlert, t, workId]);
 
     const fetchOrders = useCallback(async () => {
         if (!hasValidWorkId || !isLoggedIn) {
@@ -285,11 +305,11 @@ export default function PointsRedemption() {
         } catch (error) {
             console.error("[PointsRedemption] orders fetch failed", error);
             setOrders([]);
-            showAlert({ message: "Failed to load redemption history.", variant: "error" });
+            showAlert({ message: t("pointsRedemption.alerts.historyFailed"), variant: "error" });
         } finally {
             setOrdersLoading(false);
         }
-    }, [hasValidWorkId, isLoggedIn, showAlert, workId]);
+    }, [hasValidWorkId, isLoggedIn, showAlert, t, workId]);
 
     const fetchWorkInfo = useCallback(async () => {
         if (!hasValidWorkId) return;
@@ -297,14 +317,16 @@ export default function PointsRedemption() {
             const response = await artsApiClient.work.detail({ work_id: workId });
             const payload = response.data;
             setWorkInfo({
-                name: payload.work_name || `Work #${workId}`,
+                name:
+                    payload.work_name ||
+                    t("pointsRedemption.workFallback", { id: String(workId) }),
                 coverUrl: payload.work_cover_url,
             });
         } catch (error) {
             console.error("[PointsRedemption] work detail fetch failed", error);
-            setWorkInfo({ name: `Work #${workId}` });
+            setWorkInfo({ name: t("pointsRedemption.workFallback", { id: String(workId) }) });
         }
-    }, [hasValidWorkId, workId]);
+    }, [hasValidWorkId, t, workId]);
 
     useEffect(() => {
         void fetchWorkInfo();
@@ -327,10 +349,10 @@ export default function PointsRedemption() {
 
     return (
         <div className="min-h-screen bg-[#030620] text-white w-dvw" role="presentation">
-            <BlackBarHeader title="Points Redemption" />
+            <BlackBarHeader title={t("pointsRedemption.title")} />
             <div className="px-4 pb-8 pt-4">
                 <p className="text-base font-semibold text-white">
-                    Redeemable Points: {balanceDisplay}
+                    {t("pointsRedemption.redeemablePoints", { balance: balanceDisplay })}
                 </p>
 
                 <ProjectTabs
@@ -348,7 +370,7 @@ export default function PointsRedemption() {
                             </li>
                         ) : products.length === 0 ? (
                             <li className="py-8 text-center text-sm text-white/60">
-                                暂无可兑换商品
+                                {t("pointsRedemption.emptyProducts")}
                             </li>
                         ) : (
                             products.map(item => {
@@ -373,13 +395,15 @@ export default function PointsRedemption() {
                                 <Spinner size="medium" />
                             </li>
                         ) : myRedemptions.length === 0 ? (
-                            <li className="py-8 text-center text-sm text-white/60">暂无兑换记录</li>
+                            <li className="py-8 text-center text-sm text-white/60">
+                                {t("pointsRedemption.emptyOrders")}
+                            </li>
                         ) : (
                             myRedemptions.map(item => (
                                 <li key={item.id}>
                                     <MyRedemptionItemCard
                                         data={item}
-                                        actionText="SAVE"
+                                        actionText={t("pointsRedemption.save")}
                                         onAction={() => handleSave(item)}
                                     />
                                 </li>

@@ -1,4 +1,5 @@
 import { Button, Input, Modal } from "../../ui";
+import { useTranslation } from "react-i18next";
 
 export interface GiftReceiptField {
     /** 表单项标签，如 "Enter Recipient Name" 或动态 "Enter **** (Dynamic Configuration)" */
@@ -44,10 +45,11 @@ export function GiftReceiptModal({
     onRedeem,
     onFillLater,
 }: GiftReceiptModalProps) {
+    const { t } = useTranslation();
     return (
         <Modal
             open={open}
-            title="Gift Receipt Information"
+            title={t("giftReceipt.title")}
             onClose={onClose}
             panelClassName="max-w-[min(584px,calc(100vw-32px))]"
             bodyClassName="px-6 py-4"
@@ -55,7 +57,7 @@ export function GiftReceiptModal({
             actions={
                 <div className="flex gap-4">
                     <Button variant="primary" size="large" rounded fullWidth onClick={onRedeem}>
-                        Redeem
+                        {t("giftReceipt.redeem")}
                     </Button>
                     <Button
                         variant="secondary"
@@ -65,7 +67,7 @@ export function GiftReceiptModal({
                         className="border-2 border-transparent bg-linear-to-r from-[#ed63ce] to-[#434afb] bg-clip-padding text-white"
                         onClick={onFillLater}
                     >
-                        Fill Later
+                        {t("giftReceipt.fillLater")}
                     </Button>
                 </div>
             }
@@ -73,8 +75,10 @@ export function GiftReceiptModal({
             <div className="pb-2">
                 <p className="text-lg font-semibold text-white">{name}</p>
                 <div className="mt-1 flex flex-wrap gap-x-4 gap-y-0 text-base font-medium text-white/90">
-                    {stock != null && <span>Stock {stock}</span>}
-                    <span>Points {points.toLocaleString()}</span>
+                    {stock != null && (
+                        <span>{t("giftReceipt.stock", { value: stock })}</span>
+                    )}
+                    <span>{t("giftReceipt.points", { value: points.toLocaleString() })}</span>
                 </div>
             </div>
 

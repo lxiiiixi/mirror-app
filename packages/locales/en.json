@@ -130,6 +130,7 @@
       "wallet": "Wallet",
       "invitationTime": "Invitation time",
       "checkIn": "Check-in",
+      "teamLabel": "Team Members",
       "loading": "Loading...",
       "error": "Failed to load list",
       "noData": "No Team yet",
@@ -154,13 +155,128 @@
       "notAvailable": "—"
     }
   },
+  "productShare": {
+    "checked": "Checked"
+  },
+  "invitedListDialog": {
+    "checkIn": "Check-in",
+    "checkInFailed": "Check-in failed. Please try again.",
+    "loading": "Loading...",
+    "remindCopyFailed": "Copy failed. Please try again.",
+    "remindCopySuccess": "Copy the invitation link and invite your friends",
+    "statusCompleted": "Completed",
+    "statusRemind": "Remind to Check-in"
+  },
   "workDetail": {
+    "chapters": "Chapters",
+    "trailersStills": "Trailers & Stills",
+    "trailersEmpty": "No trailers or stills yet",
+    "durationUnknown": "--",
+    "more": "More",
+    "airdropAmount": "Airdrop Amount",
+    "visits": "Participants",
+    "progress": "Progress",
+    "invitationCode": "Invitation Code",
+    "invitationLink": "Invitation Link",
+    "shareOnX": "Share on X",
+    "invited": "Invited",
+    "pointsMall": "Points Mall",
+    "checkIn": "Check in +5",
+    "productionTeam": "Production Team",
     "inviteShare": {
       "title": "\"{{name}}\" invites you to join the Web3 entertainment revolution",
       "titleFallback": "Join the Web3 entertainment revolution",
       "code": "Invite Code: {{code}}",
       "link": "Invite Link: {{link}}"
     }
+  },
+  "billingHistory": {
+    "noData": "No data"
+  },
+  "mobileOnly": {
+    "eyebrow": "Mobile Only",
+    "title": "Open on your phone",
+    "description": "This page is optimized for mobile devices. Please open it on your phone."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for doesn’t exist or has been moved.",
+    "back": "Back to home"
+  },
+  "common": {
+    "xIconAlt": "X icon",
+    "xIconWhiteAlt": "X icon (white)",
+    "goToSlide": "Go to slide {{index}}"
+  },
+  "redeemItemCard": {
+    "unavailable": "Unavailable",
+    "insufficientPoints": "Insufficient Points",
+    "redeem": "Redeem",
+    "points": "Points {{value}}",
+    "stock": "Stock {{value}}"
+  },
+  "pointsRedemption": {
+    "title": "Points Redemption",
+    "redeemablePoints": "Redeemable Points: {{balance}}",
+    "tabs": {
+      "mall": "Points Mall",
+      "my": "My Redemptions"
+    },
+    "status": {
+      "pending": "Pending Shipment",
+      "shipped": "Shipped",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown status"
+    },
+    "statusWithQty": "{{status}} · x{{quantity}}",
+    "productFallback": "Item #{{id}}",
+    "workFallback": "Work #{{id}}",
+    "alerts": {
+      "loginToRedeem": "Please login to redeem points.",
+      "loadingBalance": "Loading points balance, please wait.",
+      "outOfStock": "This item is out of stock.",
+      "insufficientPoints": "Insufficient points.",
+      "balanceFailed": "Failed to load points balance.",
+      "itemsFailed": "Failed to load redemption items.",
+      "missingWorkId": "Missing work id for redemption.",
+      "enterRecipientName": "Please enter recipient name.",
+      "enterPhone": "Please enter phone number.",
+      "enterAddress": "Please enter shipping address.",
+      "redeemSuccess": "Redeemed successfully!",
+      "redeemFailed": "Redeem failed. Please try again.",
+      "missingWorkIdForPage": "Missing work id for points redemption.",
+      "historyFailed": "Failed to load redemption history."
+    },
+    "emptyProducts": "No items available for redemption.",
+    "emptyOrders": "No redemption records yet.",
+    "save": "Save",
+    "points": "{{value}} Points",
+    "form": {
+      "recipientName": "Enter Recipient Name",
+      "phone": "Enter Phone Number",
+      "address": "Enter Shipping Address"
+    }
+  },
+  "redeemFlow": {
+    "step1Title": "Confirm Redemption",
+    "step2Title": "Gift Receipt Information",
+    "insufficientPoints": "Insufficient Points",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "submitting": "Submitting...",
+    "redeem": "Redeem",
+    "back": "Back",
+    "points": "Points {{value}}",
+    "stock": "Stock {{value}}"
+  },
+  "giftReceipt": {
+    "title": "Gift Receipt Information",
+    "redeem": "Redeem",
+    "fillLater": "Fill Later",
+    "stock": "Stock {{value}}",
+    "points": "Points {{value}}"
   },
   "ticket": {
     "tabs": {

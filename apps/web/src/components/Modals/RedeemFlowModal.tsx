@@ -1,4 +1,5 @@
 import { Button, Input, Modal } from "../../ui";
+import { useTranslation } from "react-i18next";
 
 export interface RedeemFlowField {
     label: string;
@@ -39,10 +40,15 @@ export function RedeemFlowModal({
     onBack,
     onClose,
 }: RedeemFlowModalProps) {
+    const { t } = useTranslation();
+    const title =
+        step === 1
+            ? t("redeemFlow.step1Title")
+            : t("redeemFlow.step2Title");
     return (
         <Modal
             open={open}
-            title={step === 1 ? "Confirm Redemption" : "Gift Receipt Information"}
+            title={title}
             onClose={onClose}
             panelClassName="max-w-[min(584px,calc(100vw-32px))]"
             bodyClassName="px-6 py-4"
@@ -63,10 +69,12 @@ export function RedeemFlowModal({
                                 }
                                 onClick={onConfirmStep1}
                             >
-                                {insufficientPoints ? "Insufficient Points" : "Confirm"}
+                                {insufficientPoints
+                                    ? t("redeemFlow.insufficientPoints")
+                                    : t("redeemFlow.confirm")}
                             </Button>
                             <Button variant="secondary" size="medium" fullWidth onClick={onClose}>
-                                Cancel
+                                {t("redeemFlow.cancel")}
                             </Button>
                         </>
                     ) : (
@@ -78,10 +86,12 @@ export function RedeemFlowModal({
                                 disabled={isSubmitting}
                                 onClick={onConfirmStep2}
                             >
-                                {isSubmitting ? "Submitting..." : "Redeem"}
+                                {isSubmitting
+                                    ? t("redeemFlow.submitting")
+                                    : t("redeemFlow.redeem")}
                             </Button>
                             <Button variant="secondary" size="medium" fullWidth onClick={onBack}>
-                                Back
+                                {t("redeemFlow.back")}
                             </Button>
                         </>
                     )}
@@ -92,15 +102,17 @@ export function RedeemFlowModal({
                 <div>
                     <p className="text-base font-semibold text-white">{productName}</p>
                     <p className="mt-1 text-sm text-white/80">
-                        Points {points.toLocaleString()}
+                        {t("redeemFlow.points", { value: points.toLocaleString() })}
                     </p>
                 </div>
             ) : (
                 <div>
                     <p className="text-lg font-semibold text-white">{productName}</p>
                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-0 text-base font-medium text-white/90">
-                        {stock != null ? <span>Stock {stock}</span> : null}
-                        <span>Points {points.toLocaleString()}</span>
+                        {stock != null ? (
+                            <span>{t("redeemFlow.stock", { value: String(stock) })}</span>
+                        ) : null}
+                        <span>{t("redeemFlow.points", { value: points.toLocaleString() })}</span>
                     </div>
                     <div className="mt-4">
                         {fields.map((field, index) => (

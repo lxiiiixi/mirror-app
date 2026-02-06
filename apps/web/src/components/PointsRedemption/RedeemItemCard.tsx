@@ -1,4 +1,5 @@
 import { HTMLAttributes, forwardRef, MouseEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { resolveImageUrl } from "@mirror/utils";
 import { Button } from "../../ui";
 import { PointsProductItem } from "@mirror/api";
@@ -15,14 +16,15 @@ export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
  */
 export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
     ({ data, redeemablePoints, onAction, className = "", ...props }, ref) => {
+        const { t } = useTranslation();
         const isUnavailable = data.status !== 1 || data.stock <= 0;
         const isInsufficient =
             redeemablePoints != null && Number(redeemablePoints) < Number(data.points_price);
         const actionText = isUnavailable
-            ? "Unavailable"
+            ? t("redeemItemCard.unavailable")
             : isInsufficient
-              ? "Insufficient Points"
-              : "Redeem";
+              ? t("redeemItemCard.insufficientPoints")
+              : t("redeemItemCard.redeem");
         const actionDisabled = isUnavailable || isInsufficient;
 
         const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
@@ -63,10 +65,12 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
                 <div className="flex min-w-0 flex-1 flex-col">
                     <h3 className="truncate text-base font-bold text-white">{data.name}</h3>
                     <div className="mt-1 text-sm font-medium text-white/80">
-                        Points {data.points_price.toLocaleString()}
+                        {t("redeemItemCard.points", {
+                            value: data.points_price.toLocaleString(),
+                        })}
                     </div>
                     <div className="mt-1 text-sm font-medium text-white/80">
-                        Stock {data.stock.toLocaleString()}
+                        {t("redeemItemCard.stock", { value: data.stock.toLocaleString() })}
                     </div>
                     <div className="absolute right-4 bottom-4">
                         <Button

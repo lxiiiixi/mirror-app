@@ -6,6 +6,7 @@ import { getWorkTypeInfo, goToWorkDetail } from "../utils/work";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
+import { useTranslation } from "react-i18next";
 
 export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement> {
     /**
@@ -30,6 +31,7 @@ export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement>
  */
 export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouselProps>(
     ({ products, autoplayInterval = 5000, autoplay = true, className = "", ...props }, ref) => {
+        const { t } = useTranslation();
         const [currentIndex, setCurrentIndex] = useState(0);
         const [expandedDesc, setExpandedDesc] = useState(false);
         const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -139,12 +141,12 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     >
                                         <img
                                             src={images.works.toX}
-                                            alt="X icon"
+                                            alt={t("common.xIconAlt")}
                                             className="w-[21.67%] h-[60%] mr-[8.33%]"
                                         />
                                         <img
                                             src={images.works.toXWhite}
-                                            alt="X white icon"
+                                            alt={t("common.xIconWhiteAlt")}
                                             className="w-[21.67%] h-[60%]"
                                         />
                                         {product.shareCount ? (
@@ -231,7 +233,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     appearance: "none",
                                     WebkitAppearance: "none",
                                 }}
-                                aria-label={`Go to slide ${index + 1}`}
+                                aria-label={t("common.goToSlide", { index: String(index + 1) })}
                             />
                         ))}
                     </div>

@@ -130,6 +130,7 @@
       "wallet": "錢包",
       "invitationTime": "邀請時間",
       "checkIn": "簽到",
+      "teamLabel": "隊員",
       "loading": "載入中...",
       "error": "載入失敗",
       "noData": "暫無組隊",
@@ -154,13 +155,128 @@
       "notAvailable": "—"
     }
   },
+  "productShare": {
+    "checked": "已簽到"
+  },
+  "invitedListDialog": {
+    "checkIn": "簽到",
+    "checkInFailed": "簽到失敗，請重試",
+    "loading": "載入中...",
+    "remindCopyFailed": "複製失敗，請重試",
+    "remindCopySuccess": "複製邀請連結，去邀請你的好友吧",
+    "statusCompleted": "完成",
+    "statusRemind": "提醒簽到"
+  },
   "workDetail": {
+    "chapters": "章節",
+    "trailersStills": "預告與劇照",
+    "trailersEmpty": "暫無預告或劇照",
+    "durationUnknown": "--",
+    "more": "更多",
+    "airdropAmount": "空投數量",
+    "visits": "參與人數",
+    "progress": "進度",
+    "invitationCode": "邀請碼",
+    "invitationLink": "邀請連結",
+    "shareOnX": "分享到 X",
+    "invited": "已邀請",
+    "pointsMall": "積分商城",
+    "checkIn": "簽到 +5",
+    "productionTeam": "製作團隊",
     "inviteShare": {
       "title": "《{{name}}》邀請您加入Web3文娛革命軍",
       "titleFallback": "邀請您加入Web3文娛革命軍",
       "code": "邀請碼：{{code}}",
       "link": "邀請連結：{{link}}"
     }
+  },
+  "billingHistory": {
+    "noData": "暫無數據"
+  },
+  "mobileOnly": {
+    "eyebrow": "僅限行動裝置",
+    "title": "請在手機上開啟",
+    "description": "此頁面僅針對行動裝置最佳化，請使用手機瀏覽。"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "找不到頁面",
+    "description": "你要找的頁面不存在或已被移動。",
+    "back": "返回首頁"
+  },
+  "common": {
+    "xIconAlt": "X 圖標",
+    "xIconWhiteAlt": "X 圖標（白色）",
+    "goToSlide": "跳到第 {{index}} 張"
+  },
+  "redeemItemCard": {
+    "unavailable": "不可用",
+    "insufficientPoints": "積分不足",
+    "redeem": "兌換",
+    "points": "積分 {{value}}",
+    "stock": "庫存 {{value}}"
+  },
+  "pointsRedemption": {
+    "title": "積分商城",
+    "redeemablePoints": "可用積分：{{balance}}",
+    "tabs": {
+      "mall": "積分商城",
+      "my": "我的兌換"
+    },
+    "status": {
+      "pending": "待發貨",
+      "shipped": "已發貨",
+      "completed": "已完成",
+      "cancelled": "已取消",
+      "unknown": "未知狀態"
+    },
+    "statusWithQty": "{{status}} · x{{quantity}}",
+    "productFallback": "商品 #{{id}}",
+    "workFallback": "作品 #{{id}}",
+    "alerts": {
+      "loginToRedeem": "請先登入後兌換積分。",
+      "loadingBalance": "正在載入積分餘額，請稍候。",
+      "outOfStock": "商品已售罄。",
+      "insufficientPoints": "積分不足。",
+      "balanceFailed": "積分餘額載入失敗。",
+      "itemsFailed": "兌換商品載入失敗。",
+      "missingWorkId": "缺少作品ID，無法兌換。",
+      "enterRecipientName": "請輸入收件人姓名。",
+      "enterPhone": "請輸入聯絡電話。",
+      "enterAddress": "請輸入收貨地址。",
+      "redeemSuccess": "兌換成功！",
+      "redeemFailed": "兌換失敗，請重試。",
+      "missingWorkIdForPage": "缺少作品ID，無法進入積分商城。",
+      "historyFailed": "兌換記錄載入失敗。"
+    },
+    "emptyProducts": "暫無可兌換商品",
+    "emptyOrders": "暫無兌換記錄",
+    "save": "儲存",
+    "points": "{{value}} 積分",
+    "form": {
+      "recipientName": "請輸入收件人姓名",
+      "phone": "請輸入聯絡電話",
+      "address": "請輸入收貨地址"
+    }
+  },
+  "redeemFlow": {
+    "step1Title": "確認兌換",
+    "step2Title": "收貨資訊",
+    "insufficientPoints": "積分不足",
+    "confirm": "確認",
+    "cancel": "取消",
+    "submitting": "提交中...",
+    "redeem": "兌換",
+    "back": "返回",
+    "points": "積分 {{value}}",
+    "stock": "庫存 {{value}}"
+  },
+  "giftReceipt": {
+    "title": "收貨資訊",
+    "redeem": "兌換",
+    "fillLater": "稍後填寫",
+    "stock": "庫存 {{value}}",
+    "points": "積分 {{value}}"
   },
   "ticket": {
     "tabs": {

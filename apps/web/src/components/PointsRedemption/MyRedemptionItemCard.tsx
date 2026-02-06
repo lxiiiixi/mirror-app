@@ -1,4 +1,5 @@
 import { HTMLAttributes, forwardRef, MouseEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../ui";
 
 export interface MyRedemptionItemCardData {
@@ -18,7 +19,9 @@ export interface MyRedemptionItemCardProps extends HTMLAttributes<HTMLDivElement
  * 我的兑换记录卡片：商品名、积分、状态、SAVE 按钮
  */
 export const MyRedemptionItemCard = forwardRef<HTMLDivElement, MyRedemptionItemCardProps>(
-    ({ data, actionText = "SAVE", onAction, className = "", ...props }, ref) => {
+    ({ data, actionText, onAction, className = "", ...props }, ref) => {
+        const { t } = useTranslation();
+        const resolvedActionText = actionText ?? t("pointsRedemption.save");
         const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onAction?.();
@@ -34,12 +37,14 @@ export const MyRedemptionItemCard = forwardRef<HTMLDivElement, MyRedemptionItemC
                     <div className="min-w-0 flex-1">
                         <h3 className="truncate text-base font-bold text-white">{data.name}</h3>
                         <p className="mt-0.5 text-sm font-medium text-white/80">
-                            {data.points.toLocaleString()} Points
+                            {t("pointsRedemption.points", {
+                                value: data.points.toLocaleString(),
+                            })}
                         </p>
                         <p className="mt-1 text-xs text-white/60">{data.status}</p>
                     </div>
                     <Button variant="primary" size="small" rounded onClick={handleAction}>
-                        {actionText}
+                        {resolvedActionText}
                     </Button>
                 </div>
             </div>

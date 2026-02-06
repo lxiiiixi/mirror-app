@@ -3,7 +3,6 @@ import { type TFunction } from "i18next";
 import { images } from "@mirror/assets";
 import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
-import UIShowcase from "../pages/UIShowcase";
 import WorkDetail from "../pages/WorkDetail";
 import EmailLogin from "../pages/EmailLogin";
 import Assets from "../pages/Assets";
@@ -54,17 +53,6 @@ export const routeConfigs: RouteConfig[] = [
             type: "walletBar",
             showFooter: true,
             activeFooterIndex: 0,
-        },
-        showLoginModal: true,
-        showAlertHost: true,
-    },
-    {
-        path: "/ui",
-        component: UIShowcase,
-        layout: {
-            type: "walletBar",
-            showFooter: true,
-            activeFooterIndex: 1,
         },
         showLoginModal: true,
         showAlertHost: true,

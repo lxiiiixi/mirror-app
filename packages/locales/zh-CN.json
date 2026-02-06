@@ -130,6 +130,7 @@
       "wallet": "钱包",
       "invitationTime": "邀请时间",
       "checkIn": "签到",
+      "teamLabel": "队员",
       "loading": "加载中...",
       "error": "加载失败",
       "noData": "暂无组队",
@@ -150,16 +151,132 @@
       "goInvite": "去邀请",
       "completed": "完成",
       "teamRemaining": "{{remaining}}/{{total}} 未完成",
-      "gotIt": "知道了"
+      "gotIt": "知道了",
+      "notAvailable": "—"
     }
   },
+  "productShare": {
+    "checked": "已签到"
+  },
+  "invitedListDialog": {
+    "checkIn": "签到",
+    "checkInFailed": "签到失败，请重试",
+    "loading": "加载中...",
+    "remindCopyFailed": "复制失败，请重试",
+    "remindCopySuccess": "复制邀请链接，去邀请你的好友吧",
+    "statusCompleted": "完成",
+    "statusRemind": "提醒签到"
+  },
   "workDetail": {
+    "chapters": "章节",
+    "trailersStills": "预告与剧照",
+    "trailersEmpty": "暂无预告或剧照",
+    "durationUnknown": "--",
+    "more": "更多",
+    "airdropAmount": "空投数量",
+    "visits": "参与人数",
+    "progress": "进度",
+    "invitationCode": "邀请码",
+    "invitationLink": "邀请链接",
+    "shareOnX": "分享到 X",
+    "invited": "已邀请",
+    "pointsMall": "积分商城",
+    "checkIn": "签到 +5",
+    "productionTeam": "制作团队",
     "inviteShare": {
       "title": "《{{name}}》邀请您加入Web3文娱革命军",
       "titleFallback": "邀请您加入Web3文娱革命军",
       "code": "邀请码：{{code}}",
       "link": "邀请链接：{{link}}"
     }
+  },
+  "billingHistory": {
+    "noData": "暂无数据"
+  },
+  "mobileOnly": {
+    "eyebrow": "仅限移动端",
+    "title": "请在手机上打开",
+    "description": "该页面仅针对移动端优化，请使用手机访问。"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "页面不存在",
+    "description": "你访问的页面不存在或已被移动。",
+    "back": "返回首页"
+  },
+  "common": {
+    "xIconAlt": "X 图标",
+    "xIconWhiteAlt": "X 图标（白色）",
+    "goToSlide": "跳到第 {{index}} 张"
+  },
+  "redeemItemCard": {
+    "unavailable": "不可用",
+    "insufficientPoints": "积分不足",
+    "redeem": "兑换",
+    "points": "积分 {{value}}",
+    "stock": "库存 {{value}}"
+  },
+  "pointsRedemption": {
+    "title": "积分商城",
+    "redeemablePoints": "可用积分：{{balance}}",
+    "tabs": {
+      "mall": "积分商城",
+      "my": "我的兑换"
+    },
+    "status": {
+      "pending": "待发货",
+      "shipped": "已发货",
+      "completed": "已完成",
+      "cancelled": "已取消",
+      "unknown": "未知状态"
+    },
+    "statusWithQty": "{{status}} · x{{quantity}}",
+    "productFallback": "商品 #{{id}}",
+    "workFallback": "作品 #{{id}}",
+    "alerts": {
+      "loginToRedeem": "请先登录后兑换积分。",
+      "loadingBalance": "正在加载积分余额，请稍候。",
+      "outOfStock": "商品已售罄。",
+      "insufficientPoints": "积分不足。",
+      "balanceFailed": "积分余额加载失败。",
+      "itemsFailed": "兑换商品加载失败。",
+      "missingWorkId": "缺少作品ID，无法兑换。",
+      "enterRecipientName": "请输入收件人姓名。",
+      "enterPhone": "请输入联系电话。",
+      "enterAddress": "请输入收货地址。",
+      "redeemSuccess": "兑换成功！",
+      "redeemFailed": "兑换失败，请重试。",
+      "missingWorkIdForPage": "缺少作品ID，无法进入积分商城。",
+      "historyFailed": "兑换记录加载失败。"
+    },
+    "emptyProducts": "暂无可兑换商品",
+    "emptyOrders": "暂无兑换记录",
+    "save": "保存",
+    "points": "{{value}} 积分",
+    "form": {
+      "recipientName": "请输入收件人姓名",
+      "phone": "请输入联系电话",
+      "address": "请输入收货地址"
+    }
+  },
+  "redeemFlow": {
+    "step1Title": "确认兑换",
+    "step2Title": "收货信息",
+    "insufficientPoints": "积分不足",
+    "confirm": "确认",
+    "cancel": "取消",
+    "submitting": "提交中...",
+    "redeem": "兑换",
+    "back": "返回",
+    "points": "积分 {{value}}",
+    "stock": "库存 {{value}}"
+  },
+  "giftReceipt": {
+    "title": "收货信息",
+    "redeem": "兑换",
+    "fillLater": "稍后填写",
+    "stock": "库存 {{value}}",
+    "points": "积分 {{value}}"
   },
   "ticket": {
     "tabs": {

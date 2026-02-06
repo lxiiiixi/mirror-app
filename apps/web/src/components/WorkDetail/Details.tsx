@@ -228,6 +228,7 @@ type StillItem = {
 };
 
 function TrailersAndStills({ workId }: { workId: number }) {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [trailers, setTrailers] = useState<TrailerItem[]>([]);
     const [stills, setStills] = useState<StillItem[]>([]);
@@ -316,7 +317,9 @@ function TrailersAndStills({ workId }: { workId: number }) {
     if (!hasContent) {
         return (
             <section>
-                <div className="py-8 text-center text-sm text-white/60">暂无预告或剧照</div>
+                <div className="py-8 text-center text-sm text-white/60">
+                    {t("workDetail.trailersEmpty")}
+                </div>
             </section>
         );
     }
@@ -340,7 +343,9 @@ function TrailersAndStills({ workId }: { workId: number }) {
                                 {item.duration ? (
                                     <span className="text-xs text-white/50">{item.duration}s</span>
                                 ) : (
-                                    <span className="text-xs text-white/50">--</span>
+                                    <span className="text-xs text-white/50">
+                                        {t("workDetail.durationUnknown")}
+                                    </span>
                                 )}
                                 {showMore ? null : (
                                     <span
@@ -349,7 +354,7 @@ function TrailersAndStills({ workId }: { workId: number }) {
                                             setShowMore(true);
                                         }}
                                     >
-                                        更多
+                                        {t("workDetail.more")}
                                     </span>
                                 )}
                             </div>
@@ -373,6 +378,8 @@ function TrailersAndStills({ workId }: { workId: number }) {
     );
 }
 
+type TabKey = "chapters" | "trailersStills";
+
 /** 预告与剧照：视频占位或列表 */
 export function WorkDetailContent({
     workId,
@@ -385,23 +392,28 @@ export function WorkDetailContent({
     work_total_chapter: number;
     unlocked_chapter_count: number;
 }) {
+    const { t } = useTranslation();
     const [active, setActive] = useState(0);
     const workInfo = getWorkTypeByValue(work_type);
     if (!workInfo) return null;
     const isShowChapter = workInfo.isShowChapter;
     const isShowTrailersStills = workInfo.isShowTrailersStills;
 
-    const lableList = [
-        isShowChapter ? "Chapters" : "",
-        isShowTrailersStills ? "Trailers&Stills" : "",
-    ].filter(Boolean);
+    const tabKeys = [
+        isShowChapter ? ("chapters" as TabKey) : null,
+        isShowTrailersStills ? ("trailersStills" as TabKey) : null,
+    ].filter((k): k is TabKey => k != null);
+
+    const labelList = tabKeys.map(key =>
+        t(`workDetail.${key}`, {
+            defaultValue: key === "chapters" ? "Chapters" : "Trailers & Stills",
+        }),
+    );
 
     return (
         <section id="work-detail-content">
-            {/* 这里首先显示的是一个可以切换的 Tab，用于切换内容类型，目前支持：Chapters、Trailers&Stills */}
-            {/* 如果这个作品只有章节的内容就展示章节，如果只有剧照就展示剧照 */}
-            <Tab labels={lableList} activeIndex={active} onClick={index => setActive(index)} />
-            {lableList[active] === "Chapters" && (
+            <Tab labels={labelList} activeIndex={active} onClick={index => setActive(index)} />
+            {tabKeys[active] === "chapters" && (
                 <Chapters
                     workId={workId}
                     work_total_chapter={work_total_chapter}
@@ -409,7 +421,7 @@ export function WorkDetailContent({
                     work_type={work_type}
                 />
             )}
-            {lableList[active] === "Trailers&Stills" && <TrailersAndStills workId={workId} />}
+            {tabKeys[active] === "trailersStills" && <TrailersAndStills workId={workId} />}
         </section>
     );
 }

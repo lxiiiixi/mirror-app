@@ -5,6 +5,7 @@ import { getWorkTypeInfo, goToWorkDetail, WorkType } from "../utils/work";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
+import { useTranslation } from "react-i18next";
 
 /**
  * 产品数据接口
@@ -39,6 +40,7 @@ export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "
  */
 export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     ({ product, onLike, className = "", ...props }, ref) => {
+        const { t } = useTranslation();
         const workInfo = getWorkTypeInfo(product.type, true);
         const creators = product.creators || [];
         const creatorText = creators.slice(0, 3).join("/");
@@ -96,12 +98,12 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 >
                     <img
                         src={images.works.toX}
-                        alt="X icon"
+                        alt={t("common.xIconAlt")}
                         className="w-[23.61%] h-[66.67%] mr-[13.89%]"
                     />
                     <img
                         src={images.works.toXWhite}
-                        alt="X white icon"
+                        alt={t("common.xIconWhiteAlt")}
                         className="w-[23.61%] h-[66.67%]"
                     />
                     {product.shareCount ? (
