@@ -5,6 +5,7 @@ import { images } from "@mirror/assets";
 import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
 import {
+    getInviteLink,
     MediaItem,
     parseMediaType,
     resolveImageUrl,
@@ -71,7 +72,8 @@ export default function WorkDetail() {
     const handleGoInvite = useCallback(() => {
         if (!data) return;
         if (!data.signed_in) return;
-        const link = data.my_invite_url;
+        // const link = data.my_invite_url;
+        const link = getInviteLink(workId, data.my_invite_code);
         if (!link) return;
         navigator.clipboard
             .writeText(link)

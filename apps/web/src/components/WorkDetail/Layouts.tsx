@@ -557,7 +557,10 @@ export function WorkDetailAirdrop({
                 workId={workId}
                 open={showInvitationListModal}
                 onClose={() => setShowInvitationListModal(false)}
-                inviteUrl={inviteUrl}
+                inviteCode={inviteCode}
+                sign_in_time={
+                    workData.signed_in === true ? (workData.sign_in_time ?? undefined) : undefined
+                }
                 hasTeam={workData.signed_in === true ? workData.has_team : false}
             />
         </section>

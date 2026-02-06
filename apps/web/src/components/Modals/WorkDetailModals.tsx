@@ -6,6 +6,7 @@ import type { WorkFriendItem } from "@mirror/api";
 import { images } from "@mirror/assets";
 import { useAlertStore } from "../../store/useAlertStore";
 import { useWalletStore } from "../../store/useWalletStore";
+import { getInviteLink } from "@mirror/utils";
 
 const ThreePersenTeamBox = ({
     item,
@@ -109,13 +110,15 @@ export function InvitationListModal({
     open,
     onClose,
     workId,
-    inviteUrl,
+    inviteCode,
+    sign_in_time,
     hasTeam = false,
 }: {
     open: boolean;
     onClose?: () => void;
     workId: number;
-    inviteUrl?: string;
+    inviteCode?: string;
+    sign_in_time?: string;
     hasTeam?: boolean;
 }) {
     const [list, setList] = useState<WorkFriendItem[]>([]);
@@ -147,34 +150,33 @@ export function InvitationListModal({
         if (open && workId) fetchList();
     }, [open, workId, fetchList]);
 
-    // const teamMembers = useMemo(() => {
-    //     if (!hasTeam) return [];
-    //     return list.slice(0, 3);
-    // }, [hasTeam, list]);
-
-    // const otherMembers = useMemo(() => {
-    //     if (!hasTeam) return list;
-    //     return list.slice(teamMembers.length);
-    // }, [hasTeam, list, teamMembers.length]);
-
     const teamMembers = useMemo(() => {
         // 展示逻辑
         if (!hasTeam) return []; // 如果没有组队，就展示空
-        // TODO 如何获取自己的签到时间
-        // const self =
+        // const self = sign_in_time ? new Date(sign_in_time).toLocaleDateString() : "";
+        // 显示 日/月/年 格式
+        const selfDate = new Date(sign_in_time ?? "");
+        const selfDateString = selfDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
         // 如果组队了，展示三个人，第一个是自己的信息，其他两个人是另外的信息
-        return list.slice(0, 3);
-    }, [hasTeam, list]);
+        return [
+            {
+                invite: address ?? "",
+                invitation_time: selfDateString,
+                wallet_display: address ?? "",
+                signed_in: sign_in_time ? true : false,
+            },
+            ...list.slice(0, 2),
+        ];
+    }, [hasTeam, list, sign_in_time, address]);
 
     // console.log("[InvitationListModal] state", { teamMembers });
 
     const handleRemind = useCallback(() => {
-        // TODO 确认这里提醒队友签到的复制链接
-        const link = inviteUrl
-            ? inviteUrl
-            : typeof window === "undefined"
-              ? ""
-              : `${window.location.origin}/works/detail?id=${encodeURIComponent(String(workId))}`;
+        const link = getInviteLink(workId, inviteCode ?? "");
         if (!link) return;
         navigator.clipboard
             .writeText(link)
@@ -194,7 +196,7 @@ export function InvitationListModal({
                     variant: "error",
                 });
             });
-    }, [inviteUrl, showAlert, t, workId]);
+    }, [inviteCode, showAlert, t, workId]);
 
     const title = t("works.invitedListDialog.title", { defaultValue: "Invitation List" });
     const walletLabel = t("works.invitedListDialog.wallet", { defaultValue: "Wallet" });
