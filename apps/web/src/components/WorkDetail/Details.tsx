@@ -72,6 +72,7 @@ function MediaItems({ mediaItems }: { mediaItems: MediaItem[] }) {
         <div className="flex flex-col gap-3">
             {mediaItems.map((item, index) => {
                 const url = resolveImageUrl(item.url);
+                console.log("[MediaItems] item", url);
                 if (item.kind === "image") {
                     return (
                         <img key={`img-${index}`} src={url} alt="" className="w-full rounded-lg" />
@@ -226,26 +227,11 @@ type StillItem = {
     imageUrl: string;
 };
 
-const normalizeLinkList = (data: unknown): WorkLinkListItem[] => {
-    if (Array.isArray(data)) {
-        return data as WorkLinkListItem[];
-    }
-    if (data && typeof data === "object") {
-        const record = data as { list?: unknown; links?: unknown };
-        if (Array.isArray(record.list)) {
-            return record.list as WorkLinkListItem[];
-        }
-        if (Array.isArray(record.links)) {
-            return record.links as WorkLinkListItem[];
-        }
-    }
-    return [];
-};
-
 function TrailersAndStills({ workId }: { workId: number }) {
     const [loading, setLoading] = useState(false);
     const [trailers, setTrailers] = useState<TrailerItem[]>([]);
     const [stills, setStills] = useState<StillItem[]>([]);
+    const [showMore, setShowMore] = useState(false);
 
     useEffect(() => {
         if (!workId || Number.isNaN(workId)) {
@@ -254,38 +240,42 @@ function TrailersAndStills({ workId }: { workId: number }) {
             return;
         }
 
-        let mounted = true;
         setLoading(true);
 
         artsApiClient.work
             .getLinkList({ work_id: workId })
             .then(response => {
-                if (!mounted) return;
-                const list = normalizeLinkList(response.data);
+                console.log("[TrailersAndStills] response", response.data);
+                const list: WorkLinkListItem[] = response.data;
                 const nextTrailers: TrailerItem[] = [];
                 const nextStills: StillItem[] = [];
 
                 list.forEach(item => {
-                    const contentType = Number((item as { content_type?: unknown }).content_type);
-                    const videoUrl = (item as { video_url?: string }).video_url;
-                    const coverUrl = (item as { cover_url?: string }).cover_url;
-                    const title = (item as { title?: string }).title;
-                    const duration = (item as { duration_seconds?: number }).duration_seconds;
-                    const idValue = String(
-                        (item as { id?: number }).id ?? videoUrl ?? coverUrl ?? title ?? "",
-                    );
-
-                    if (contentType === 1 || (videoUrl && contentType !== 2)) {
-                        if (videoUrl) {
-                            nextTrailers.push({
+                    const contentType = Number(item.content_type);
+                    const videoUrl = item.video_url;
+                    const coverUrl = item.cover_url;
+                    const title = item.title;
+                    const duration = item.duration_seconds;
+                    const idValue = String(item.id ?? videoUrl ?? coverUrl ?? title ?? "");
+                    const contentLinks = item.content.split(",");
+                    contentLinks.forEach(link => {
+                        if (link.startsWith("http")) {
+                            nextStills.push({
                                 id: idValue,
                                 title,
-                                videoUrl,
-                                coverUrl,
-                                duration,
+                                imageUrl: link,
                             });
                         }
-                        return;
+                    });
+
+                    if (videoUrl) {
+                        nextTrailers.push({
+                            id: idValue,
+                            title,
+                            videoUrl,
+                            coverUrl,
+                            duration,
+                        });
                     }
 
                     if (contentType === 2 || coverUrl) {
@@ -303,18 +293,12 @@ function TrailersAndStills({ workId }: { workId: number }) {
                 setStills(nextStills);
             })
             .catch(() => {
-                if (!mounted) return;
                 setTrailers([]);
                 setStills([]);
             })
             .finally(() => {
-                if (!mounted) return;
                 setLoading(false);
             });
-
-        return () => {
-            mounted = false;
-        };
     }, [workId]);
 
     const hasContent = useMemo(() => trailers.length > 0 || stills.length > 0, [trailers, stills]);
@@ -352,26 +336,36 @@ function TrailersAndStills({ workId }: { workId: number }) {
                                 poster={item.coverUrl ? resolveImageUrl(item.coverUrl) : undefined}
                                 controls
                             />
-                            {item.duration ? (
-                                <p className="text-xs text-white/50">{item.duration}s</p>
-                            ) : null}
+                            <div className="flex justify-between items-center">
+                                {item.duration ? (
+                                    <span className="text-xs text-white/50">{item.duration}s</span>
+                                ) : (
+                                    <span className="text-xs text-white/50">--</span>
+                                )}
+                                {showMore ? null : (
+                                    <span
+                                        className="text-xs text-white/50 cursor-pointer"
+                                        onClick={() => {
+                                            setShowMore(true);
+                                        }}
+                                    >
+                                        更多
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>
             ) : null}
-            {stills.length > 0 ? (
-                <div className="grid grid-cols-2 gap-3">
+            {showMore && stills.length > 0 ? (
+                <div className="flex flex-wrap gap-3">
                     {stills.map(item => (
-                        <div key={item.id} className="space-y-1">
-                            <img
-                                src={resolveImageUrl(item.imageUrl)}
-                                alt={item.title ?? ""}
-                                className="w-full rounded-lg object-cover"
-                            />
-                            {item.title ? (
-                                <p className="text-xs text-white/70">{item.title}</p>
-                            ) : null}
-                        </div>
+                        <img
+                            key={item.id}
+                            src={resolveImageUrl(item.imageUrl)}
+                            alt=""
+                            className="w-full rounded-lg object-cover"
+                        />
                     ))}
                 </div>
             ) : null}

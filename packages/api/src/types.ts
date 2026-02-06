@@ -880,17 +880,20 @@ export interface WorkLinkListParams {
 }
 
 export interface WorkLinkListItem {
-    link_id?: number;
-    link_url?: string;
-    link_type?: string;
-    create_time?: ISODateTimeString;
-    [key: string]: unknown;
+    id: number; // 记录ID
+    chapter_id: number; // 章节ID
+    parent_id: number; // 作品ID
+    content_type: number; // 内容类型（电影：1=预告，2=剧照；其他类型：无此字段）
+    video_url: string; // 预告视频URL（仅预告类型）
+    duration_seconds: number; // 视频时长（秒，仅预告类型）
+    cover_url: string; // 封面/剧照图URL
+    title: string; // 标题
+    content: string; // 内容描述
+    create_time: ISODateTimeString; // 创建时间
+    update_time: ISODateTimeString; // 更新时间
 }
 
-export interface WorkLinkListResponseData {
-    links: WorkLinkListItem[];
-}
-
+export type WorkLinkListResponseData = WorkLinkListItem[];
 export interface WorkCommunityTaskRequest {
     work_id: number;
     task_type: string;

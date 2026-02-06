@@ -315,7 +315,7 @@ function createWorkModule<E>(client: ArtsApiClient<E>) {
             ),
         getLinkList: (params: Types.WorkLinkListParams) =>
             client.requestJson<Types.WorkLinkListResponseData>("GET", "/arts/work/linkList", {
-                auth: "required",
+                auth: "optional",
                 query: params,
             }),
         communityTask: (payload: Types.WorkCommunityTaskRequest) =>
