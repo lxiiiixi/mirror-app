@@ -343,7 +343,8 @@ export interface WorkDetailBase {
     can_start_tge: number;
     creator_id: number;
     number_of_participants: number;
-    premiere_time: string;
+    premiere_time: string; // 作品上映/发布时间（非空投时间）
+    airdrop_start_time: string | null; // 空投开始时间（RFC3339），用于倒计时及「将于x月x日x时x分空投」展示；来自作品方配置，未配置为 null。空投倒计时请用本字段.
     share_count: number;
     show_token_border: boolean;
     token_border_type: number;
@@ -384,6 +385,7 @@ export interface WorkDetailAfterSignIn extends WorkDetailBase {
     signed_in: true;
     can_show_team_btn: boolean;
     ever_signed_in: boolean;
+    sign_in_time: string | null; // 今日签到时间（ISO8601/RFC3339）；未签到时为 null
     invite_count: number;
     is_shared: boolean;
     is_tread: number;

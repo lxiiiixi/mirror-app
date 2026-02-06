@@ -25,9 +25,10 @@ export const resolveImageUrl = (
   rawUrl?: string | null,
   options?: { baseUrl?: string },
 ) => {
-  if (!rawUrl) return ''
+  const str = rawUrl == null ? '' : typeof rawUrl === 'string' ? rawUrl : String(rawUrl)
+  if (!str) return ''
 
-  const trimmed = rawUrl.trim()
+  const trimmed = str.trim()
   if (!trimmed) return ''
 
   if (/^(https?:)?\/\//i.test(trimmed) || /^data:|^blob:/i.test(trimmed)) {

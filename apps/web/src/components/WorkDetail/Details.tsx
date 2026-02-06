@@ -8,7 +8,7 @@ import { Spinner } from "../../ui";
 import type { CreativeTeamMembersItem, WorkLinkListItem } from "@mirror/api";
 
 function Heading({ title }: { title: string }) {
-    return <h3 className="mb-5 text-[18px] font-semibold text-white">{title}</h3>;
+    return <h3 className="mb-5 text-[20px] font-semibold text-white">{title}</h3>;
 }
 
 /** 制作团队：头像 + 姓名 + 角色 */
@@ -34,8 +34,8 @@ export function WorkDetailProductionTeam({
                                 />
                             ) : null}
                         </div>
-                        <p className="text-[14px] font-medium text-white">{person.name}</p>
-                        <p className="text-[12px] text-[#aeb1ce]">{person.role}</p>
+                        <p className="text-[16px] font-medium text-white">{person.name}</p>
+                        <p className="text-[14px] text-[#aeb1ce]">{person.role}</p>
                     </div>
                 ))}
             </div>
@@ -330,9 +330,9 @@ function TrailersAndStills({ workId }: { workId: number }) {
                 <div className="space-y-3">
                     {trailers.map(item => (
                         <div key={item.id} className="space-y-2">
-                            {item.title ? (
+                            {/* {item.title ? (
                                 <p className="text-sm font-medium text-white/80">{item.title}</p>
-                            ) : null}
+                            ) : null} */}
                             <video
                                 className="w-full rounded-lg"
                                 src={item.videoUrl}

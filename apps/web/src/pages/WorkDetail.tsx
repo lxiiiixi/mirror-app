@@ -18,6 +18,7 @@ import { CheckInModal } from "../components/Modals";
 import { WorkDetailResponseData } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
+import { getWorkTypeByValue } from "../utils/work";
 
 export default function WorkDetail() {
     const { t, i18n } = useTranslation();
@@ -197,6 +198,9 @@ export default function WorkDetail() {
                     title={data.work_name}
                     author={data.work_creator_name}
                     description={data.work_description}
+                    showPlayButton={
+                        getWorkTypeByValue(data.work_type)?.isShowTrailersStills ?? false
+                    }
                 />
 
                 {/* 制作团队 */}

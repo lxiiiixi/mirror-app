@@ -123,6 +123,7 @@ import homeTokenTab2 from './images/home/token-tab-2.svg'
 import homeTokenTabFilter from './images/home/token-tab-filter.svg'
 
 import imgWrapper from './images/img-wrapper.png'
+import playVideoIcon from './images/play-video.png'
 
 // banner 相关：自动扫描目录，新增图片无需改此处
 const bannerGlob = import.meta.glob('./images/home/banner/*.png', { eager: true })
@@ -405,5 +406,6 @@ export const images = {
 
   images: {
     imgWrapper: imgWrapper,
+    playVideoIcon: playVideoIcon,
   },
 }

@@ -9,7 +9,7 @@ import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "../Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
-import { Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
 import { getWorkNameInitials } from "../../utils/work";
@@ -178,10 +178,13 @@ export function WorkDetailHero({
             ) : (
                 <div className="absolute inset-0 bg-[#030620]" />
             )}
+
             <div
-                className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[#030620]"
+                id="work_detail_hero_gradient"
+                className="absolute inset-0"
                 style={{
-                    backgroundImage: "linear-gradient(180deg, transparent 60%, #030620 100%)",
+                    backgroundImage:
+                        "linear-gradient(0deg, #030620 10%, rgba(13, 25, 134, 0.1) 80%)",
                 }}
             />
             <div className="absolute top-0 left-0 right-0 flex flex-col items-center h-[80%] gap-3 mt-4">
@@ -480,11 +483,9 @@ export function WorkDetailAirdrop({
                             onClick={copyLink}
                             aria-label={isCopied ? "Copied" : "Copy link"}
                         >
-                            {isCopied ? (
-                                <Check className="h-6 w-6 text-white" />
-                            ) : (
-                                <img src={images.icons.copyIcon} alt="" className="h-6 w-6" />
-                            )}
+                            <Copy
+                                className={`h-6 w-6 ${!isCopied ? "text-(--color-primary)" : "text-white"}`}
+                            />
                         </button>
                     </div>
                 </div>
