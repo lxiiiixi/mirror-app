@@ -154,6 +154,14 @@
       "notAvailable": "—"
     }
   },
+  "workDetail": {
+    "inviteShare": {
+      "title": "《{{name}}》邀請您加入Web3文娛革命軍",
+      "titleFallback": "邀請您加入Web3文娛革命軍",
+      "code": "邀請碼：{{code}}",
+      "link": "邀請連結：{{link}}"
+    }
+  },
   "ticket": {
     "tabs": {
       "theFirst": "首次發售",

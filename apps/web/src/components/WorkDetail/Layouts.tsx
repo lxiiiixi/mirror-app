@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { TokenAvatar } from "../Common/TokenAvatar";
-import { resolveImageUrl, shareToX } from "@mirror/utils";
+import { buildInviteShareText, resolveImageUrl, shareToX } from "@mirror/utils";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
@@ -297,17 +297,35 @@ export function WorkDetailAirdrop({
         };
     }, [workId, isLoggedIn, token]);
 
+    // const buildInviteShareText = useCallback(() => {
+    //     const title = workData.work_name
+    //         ? t("workDetail.inviteShare.title", {
+    //               name: workData.work_name,
+    //               defaultValue: `《${workData.work_name}》 invites you to join the Web3 entertainment revolution`,
+    //           })
+    //         : t("workDetail.inviteShare.titleFallback", {
+    //               defaultValue: "Join the Web3 entertainment revolution",
+    //           });
+    //     const codeLine = t("workDetail.inviteShare.code", {
+    //         code: inviteCode,
+    //         defaultValue: `Invite Code: ${inviteCode}`,
+    //     });
+    //     const linkLine = t("workDetail.inviteShare.link", {
+    //         link: inviteUrl,
+    //         defaultValue: `Invite Link: ${inviteUrl}`,
+    //     });
+    //     return [title, codeLine, linkLine].join("\n");
+    // }, [t, workData.work_name, inviteCode, inviteUrl]);
+
     const copyLink = () => {
         const link = inviteUrl;
         if (!link) return;
-        const workLabel = t("works.copyLink.work");
-        const codeLabel = t("works.copyLink.inviteCode");
-        const linkLabel = t("works.copyLink.inviteLink");
-        const colon = t("works.copyLink.colon");
-        const nameSegment = workData.work_name
-            ? t("works.copyLink.nameWithTitle", { name: workData.work_name })
-            : t("works.copyLink.nameFallback", { work: workLabel });
-        const text = `${nameSegment}${codeLabel}${colon}${inviteCode} ${linkLabel}${colon}${link}`;
+        const text = buildInviteShareText({
+            t,
+            workName: workData.work_name,
+            inviteCode,
+            inviteUrl,
+        });
         void navigator.clipboard.writeText(text);
         setIsCopied(true);
         if (copyTimerRef.current) {
@@ -325,8 +343,12 @@ export function WorkDetailAirdrop({
         }
         const link = inviteUrl;
         if (!link) return;
-        shareToX(link, workData.work_name);
-    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal]);
+        shareToX(
+            link,
+            workData.work_name,
+            buildInviteShareText({ t, workName: workData.work_name, inviteCode, inviteUrl }),
+        );
+    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal, inviteCode, t]);
 
     const handleShowInvitationListModal = useCallback(() => {
         if (!isLoggedIn) {

@@ -153,6 +153,14 @@
       "gotIt": "知道了"
     }
   },
+  "workDetail": {
+    "inviteShare": {
+      "title": "《{{name}}》邀请您加入Web3文娱革命军",
+      "titleFallback": "邀请您加入Web3文娱革命军",
+      "code": "邀请码：{{code}}",
+      "link": "邀请链接：{{link}}"
+    }
+  },
   "ticket": {
     "tabs": {
       "theFirst": "首次发售",

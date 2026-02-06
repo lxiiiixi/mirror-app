@@ -154,6 +154,14 @@
       "notAvailable": "—"
     }
   },
+  "workDetail": {
+    "inviteShare": {
+      "title": "\"{{name}}\" invites you to join the Web3 entertainment revolution",
+      "titleFallback": "Join the Web3 entertainment revolution",
+      "code": "Invite Code: {{code}}",
+      "link": "Invite Link: {{link}}"
+    }
+  },
   "ticket": {
     "tabs": {
       "theFirst": "The First",
