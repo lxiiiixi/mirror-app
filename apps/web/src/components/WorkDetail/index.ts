@@ -1,3 +1,4 @@
+export * from "./LanguageSelect";
 export * from "./ProductCover";
 export * from "./ProductShare";
 export * from "./Directory";
