@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useTranslation } from "react-i18next";
+import { artsApiClient } from "../api/artsClient";
 
 /**
  * 产品数据接口
@@ -61,7 +62,13 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 openLoginModal();
                 return;
             }
-            shareToX(product.shareLink, true);
+            shareToX(product.shareLink, product.name, true);
+            const workId = Number(product.id);
+            if (Number.isFinite(workId) && workId > 0) {
+                void artsApiClient.work
+                    .share({ work_id: workId })
+                    .catch(error => console.error("[ProductCard] share failed", error));
+            }
         };
 
         const handleLikeClick = (e: React.MouseEvent) => {

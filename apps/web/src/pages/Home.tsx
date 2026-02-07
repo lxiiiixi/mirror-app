@@ -4,11 +4,10 @@ import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { useInfiniteWorkList } from "../hooks/useInfiniteWorkList";
 import {
-    getInviteLink,
+    buildInviteShareText,
     getXForwardLink,
     resolveImageUrl,
     resolveLocalizedText,
-    shareToX,
 } from "@mirror/utils";
 import {
     Notice,
@@ -140,7 +139,7 @@ function Home() {
                 creators,
                 description,
                 rawType: workTypeValue,
-                shareLink: getXForwardLink(work.id, userId, workTypeValue),
+                shareLink: getXForwardLink(work.id, userId, workTypeValue), // 首页的分享通过用户 id 生成分享链接
                 isShared: Boolean(work.is_shared),
             };
         });

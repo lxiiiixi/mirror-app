@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useTranslation } from "react-i18next";
+import { artsApiClient } from "../api/artsClient";
 
 export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement> {
     /**
@@ -70,7 +71,13 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                 openLoginModal();
                 return;
             }
-            shareToX(product.shareLink, true);
+            shareToX(product.shareLink, product.name, true);
+            const workId = Number(product.id);
+            if (Number.isFinite(workId) && workId > 0) {
+                void artsApiClient.work
+                    .share({ work_id: workId })
+                    .catch(error => console.error("[ProductCardCarousel] share failed", error));
+            }
         };
 
         const handleDotClick = (index: number) => {

@@ -1,4 +1,6 @@
-export const shareToX = (text: string, isShare: boolean = true) => {
+export const shareToX = (link: string, workName: string, isShare: boolean = true) => {
+    const titleSegment = workName ? `《${workName}》 ` : "";
+    const text = `Exciting news! Enjoy ${titleSegment} Airdrop by Daily Check event and Share Invite Links. ${link}`;
     const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
     if (isShare) {
         window.open(shareUrl, "_blank");

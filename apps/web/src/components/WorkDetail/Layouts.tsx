@@ -358,16 +358,13 @@ export function WorkDetailAirdrop({
         }
         const link = inviteUrl;
         if (!link) return;
-        shareToX(
-            buildInviteShareText({
-                t,
-                workName: resolveLocalizedText(workData.work_name, lang),
-                inviteCode,
-                inviteUrl,
-            }),
-            true,
-        );
-    }, [inviteUrl, workData.work_name, lang, isLoggedIn, openLoginModal, inviteCode, t]);
+        shareToX(inviteUrl, resolveLocalizedText(workData.work_name, "en"), true);
+        if (workId && !Number.isNaN(workId)) {
+            void artsApiClient.work
+                .share({ work_id: workId })
+                .catch(error => console.error("[WorkDetailAirdrop] share failed", error));
+        }
+    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal, workId]);
 
     const handleShowInvitationListModal = useCallback(() => {
         if (!isLoggedIn) {
