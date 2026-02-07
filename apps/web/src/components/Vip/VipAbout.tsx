@@ -85,14 +85,18 @@ export function VipAbout() {
                         },
                     ].map(item => (
                         <div key={item.title} className="privilege-item">
-                            <span className="privilege-title">{item.title}</span>
-                            <span className="privilege-desc text-[13px]">{item.desc}</span>
+                            <span className="privilege-title text-[12px] font-bold">
+                                {item.title}
+                            </span>
+                            <span className="privilege-desc text-[12px] font-semibold">
+                                {item.desc}
+                            </span>
                         </div>
                     ))}
                 </div>
 
                 <div className="join">
-                    <div className="join-title text-[16px]">{t("vipAbout.joinTitle")}</div>
+                    <div className="join-title text-[20px]">{t("vipAbout.joinTitle")}</div>
                     <button
                         type="button"
                         className="join-button"
@@ -106,10 +110,10 @@ export function VipAbout() {
             <div className="card gifted">
                 <h3 className="card-title text-[18px]">{t("vipAbout.giftedNodes")}</h3>
                 <div className="centered text-[13px]">{t("vipAbout.totalMiningCapacity")}</div>
-                <div className="ent-amount text-[22px]">6,000,000,000 ENT</div>
+                <div className="ent-amount text-[27px]">6,000,000,000 ENT</div>
                 <div className="centered text-[13px]">{t("vipAbout.currentLimit")}</div>
                 <div className="logo">
-                    <img src={images.logo} alt="" />
+                    <img src={images.logo} alt="" className="h-[53px]" />
                 </div>
                 <div className="release text-[12px]">
                     <span>{t("vipAbout.dailyOutputPerNode")}</span>
@@ -181,7 +185,7 @@ export function VipAbout() {
                 .card {
                     background: var(--gradient-card);
                     border-radius: 16px;
-                    padding: 20px;
+                    padding: 20px 16px;
                     border: 1px solid rgba(255, 255, 255, 0.12);
                 }
 
@@ -194,7 +198,7 @@ export function VipAbout() {
                 .privileges {
                     display: flex;
                     flex-direction: column;
-                    gap: 12px;
+                    gap: 14px;
                 }
 
                 .privilege-item {
@@ -243,8 +247,9 @@ export function VipAbout() {
                 }
 
                 .centered {
-                    color: rgba(255, 255, 255, 0.8);
+                    color: rgba(255, 255, 255, 0.9);
                     margin-bottom: 8px;
+                    font-weight: 600;
                 }
 
                 .ent-amount {
@@ -257,10 +262,6 @@ export function VipAbout() {
                     margin: 16px auto;
                     display: flex;
                     justify-content: center;
-                }
-
-                .logo img {
-                    height: 32px;
                 }
 
                 .release {
