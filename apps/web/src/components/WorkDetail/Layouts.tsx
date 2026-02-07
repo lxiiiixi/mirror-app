@@ -359,14 +359,13 @@ export function WorkDetailAirdrop({
         const link = inviteUrl;
         if (!link) return;
         shareToX(
-            link,
-            resolveLocalizedText(workData.work_name, lang),
             buildInviteShareText({
                 t,
                 workName: resolveLocalizedText(workData.work_name, lang),
                 inviteCode,
                 inviteUrl,
             }),
+            true,
         );
     }, [inviteUrl, workData.work_name, lang, isLoggedIn, openLoginModal, inviteCode, t]);
 

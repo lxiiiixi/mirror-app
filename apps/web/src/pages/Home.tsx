@@ -3,7 +3,13 @@ import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { useInfiniteWorkList } from "../hooks/useInfiniteWorkList";
-import { getInviteLink, resolveImageUrl, resolveLocalizedText, shareToX } from "@mirror/utils";
+import {
+    getInviteLink,
+    getXForwardLink,
+    resolveImageUrl,
+    resolveLocalizedText,
+    shareToX,
+} from "@mirror/utils";
 import {
     Notice,
     ProductCard,
@@ -16,6 +22,7 @@ import {
 } from "../ui";
 import { HomeBanner } from "../components";
 import { getWorkTypeByValue, goToWorkDetail, isTokenWork } from "../utils/work";
+import { useUserWalletsStore } from "../store/useUserWalletsStore";
 
 const splitCreators = (author: string) =>
     author
@@ -28,6 +35,8 @@ function Home() {
     const [activeProject, setActiveProject] = useState(0);
     const navigate = useNavigate();
     const languageKey = i18n.resolvedLanguage ?? i18n.language ?? "en";
+    const { primaryWallet } = useUserWalletsStore();
+    const userId = primaryWallet?.uid ?? "";
 
     const {
         items: workList,
@@ -131,11 +140,11 @@ function Home() {
                 creators,
                 description,
                 rawType: workTypeValue,
-                shareLink: shareToX(getInviteLink(work.id, work.my_invite_code), name),
+                shareLink: getXForwardLink(work.id, userId, workTypeValue),
                 isShared: Boolean(work.is_shared),
             };
         });
-    }, [workList, languageKey]);
+    }, [workList, languageKey, userId]);
 
     return (
         <div className="">

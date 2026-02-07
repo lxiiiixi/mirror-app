@@ -61,7 +61,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 openLoginModal();
                 return;
             }
-            shareToX(product.shareLink, product.name);
+            shareToX(product.shareLink, true);
         };
 
         const handleLikeClick = (e: React.MouseEvent) => {

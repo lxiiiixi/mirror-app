@@ -13,6 +13,7 @@ import { useAuth } from "./hooks/useAuth";
 import { useWallet } from "./hooks/useWallet";
 import { matchRoute, getLayoutConfig, routeConfigs, type RouteContext } from "./utils/routes";
 import { envConfigs } from "@mirror/utils";
+import { useUserWalletsStore } from "./store/useUserWalletsStore";
 
 function App() {
     const { t, i18n } = useTranslation();
@@ -20,8 +21,11 @@ function App() {
     const navigate = useNavigate();
     const location = useLocation();
     const openLoginModal = useLoginModalStore(state => state.openModal);
-    const { isLoggedIn, loginMethod, isEmailLogin } = useAuth();
+    const { token, isLoggedIn, loginMethod, isEmailLogin, hydrated } = useAuth();
     const { openWallet, address: reownWalletAddress } = useWallet();
+    const setWallets = useUserWalletsStore(state => state.setWallets);
+    const setWalletsLoading = useUserWalletsStore(state => state.setLoading);
+    const clearWallets = useUserWalletsStore(state => state.clear);
 
     console.log("[App] Login States", {
         isLoggedIn,
@@ -157,6 +161,34 @@ function App() {
             void i18n.changeLanguage(language);
         },
     });
+
+    useEffect(() => {
+        if (!hydrated) return;
+        if (!isLoggedIn || !token) {
+            clearWallets();
+            return;
+        }
+        let isActive = true;
+        setWalletsLoading(true);
+        artsApiClient.user
+            .getWallets()
+            .then(response => {
+                if (!isActive) return;
+                setWallets(response.data);
+            })
+            .catch(error => {
+                if (!isActive) return;
+                console.error("[App] getWallets failed", error);
+                setWallets(null);
+            })
+            .finally(() => {
+                if (!isActive) return;
+                setWalletsLoading(false);
+            });
+        return () => {
+            isActive = false;
+        };
+    }, [clearWallets, hydrated, isLoggedIn, setWallets, setWalletsLoading, token]);
 
     const handleLanguageToggle = () => {
         const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? "en";

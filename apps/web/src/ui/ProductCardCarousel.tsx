@@ -70,7 +70,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                 openLoginModal();
                 return;
             }
-            shareToX(product.shareLink, product.name);
+            shareToX(product.shareLink, true);
         };
 
         const handleDotClick = (index: number) => {
