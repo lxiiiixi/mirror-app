@@ -321,7 +321,6 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
                 <style jsx>{`
                     .banner-container {
                         overflow: hidden;
-                        padding: 10px 0;
                     }
 
                     /* 场景高度完全按视口宽度比例：卡片高 ≈ 68vw * (129/267)，取 50vw 留余量 */
@@ -409,7 +408,6 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        margin-top: 12px;
                         gap: 4px;
                     }
 

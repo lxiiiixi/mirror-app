@@ -40,7 +40,7 @@ export interface AppLayoutProps extends HTMLAttributes<HTMLDivElement> {
     showFooter?: boolean;
 }
 
-const HEADER_HEIGHT = 55;
+const HEADER_HEIGHT = 50;
 const FOOTER_HEIGHT = 86;
 
 export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
@@ -183,7 +183,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                                 <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                                             </svg>
                                         )}
-                                        <span className="lang text-[12px]">{languageLabel}</span>
+                                        <span className="lang text-[14px]">{languageLabel}</span>
                                     </button>
 
                                     <div className="nav-item-logo">
@@ -193,7 +193,12 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                                             onClick={onLogoClick}
                                             aria-label="Home"
                                         >
-                                            <img src={images.logo} alt="logo" aria-hidden="true" />
+                                            <img
+                                                src={images.logo}
+                                                alt="logo"
+                                                aria-hidden="true"
+                                                className="h-[28px] -mt-2 -ml-1"
+                                            />
                                         </button>
                                     </div>
 
@@ -369,21 +374,12 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
 
                     .logo {
                         cursor: pointer;
-                        width: 119px;
-                        height: 31px;
                         border: none;
                         background: transparent;
                         padding: 0;
                         display: inline-flex;
                         align-items: center;
                         justify-content: center;
-                    }
-
-                    .logo img {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: contain;
-                        display: block;
                     }
 
                     .logo-text {
