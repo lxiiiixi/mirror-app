@@ -332,6 +332,7 @@ export interface WorkSummary {
     token_cover_url: string;
     tread_count: number;
     type: number;
+    is_shared: boolean;
 }
 
 export interface WorkListResponseData {

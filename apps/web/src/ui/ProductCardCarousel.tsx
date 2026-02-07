@@ -49,7 +49,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
             if (!autoplay || displayProducts.length <= 1) return;
 
             autoplayTimerRef.current = setInterval(() => {
-                setCurrentIndex(prev => (prev + 1) % displayProducts.length);
+                // setCurrentIndex(prev => (prev + 1) % displayProducts.length);
             }, autoplayInterval);
 
             return () => {
@@ -99,11 +99,11 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
             <div
                 id="product_card_carousel"
                 ref={ref}
-                className={`relative z-5 w-full max-w-[380px] mx-auto aspect-320/470 pt-[4.26%] ${className}`}
+                className={`relative z-5 w-full max-w-[380px] mx-auto aspect-320/430 pt-[4.26%] ${className}`}
                 {...props}
             >
                 {/* 阴影背景 */}
-                <div className="absolute z-6 bottom-0 w-full h-[95.32%] rounded-[25px] border border-[#c81cc569] shadow-[0_0_8px_0_rgba(228,21,153,0.33)_inset] filter-[drop-shadow(0_0.6px_1.3px_rgba(0,0,0,0.41))]" />
+                <div className="absolute z-6 bottom-0 w-full h-[92.32%] rounded-[25px] border border-[#c81cc569] shadow-[0_0_8px_0_rgba(228,21,153,0.33)_inset] filter-[drop-shadow(0_0.6px_1.3px_rgba(0,0,0,0.41))]" />
 
                 {/* 产品图片区域：圆角与图片一致，滚动过程中裁剪出的可见区域也保持圆角 */}
                 <div className="relative z-7 w-[92.5%] h-full mx-auto overflow-hidden -mt-[4.26%] rounded-[26px]">
@@ -136,7 +136,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
 
                                     {/* 分享到X按钮 */}
                                     <div
-                                        className={`absolute z-8 top-[4.71%] left-[6.25%] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${"bg-[rgba(0,0,0,0.4)]"}`}
+                                        className={`absolute z-8 top-[15px] left-[15px] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"}`}
                                         onClick={e => handleShareClick(e, product)}
                                     >
                                         <img
@@ -157,7 +157,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     </div>
 
                                     {/* 作品类型 */}
-                                    <div className="absolute z-8 top-[4.71%] right-[6.25%] flex justify-center items-center">
+                                    <div className="absolute z-8 top-[15px] right-[15px] flex justify-center items-center">
                                         <img
                                             className="mr-[5px] mt-px w-[14px] h-[12px] invert brightness-100 filter-[drop-shadow(0_1px_1px_rgba(35,35,35,0.8))]"
                                             src={`${workInfo!.icon}`}
@@ -176,15 +176,15 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                                 : "overflow-hidden"
                                         }`}
                                     >
-                                        <div className="text-[15px] font-semibold mb-[5px] break-all overflow-hidden line-clamp-1">
+                                        <div className="text-[17px] font-semibold mb-[5px] break-all overflow-hidden line-clamp-1">
                                             《{product.name}》
                                         </div>
-                                        <div className="break-all overflow-hidden line-clamp-1 mb-[5px]">
+                                        <div className="break-all overflow-hidden line-clamp-1 mb-[5px] text-[13px]">
                                             {product.creators?.slice(0, 3).join("/") || ""}
                                         </div>
                                         {product.description && (
                                             <div
-                                                className={`relative z-10 pt-[12.5px] text-[10px] leading-[14px] break-all cursor-pointer ${
+                                                className={`relative z-10 pt-[12.5px] text-[11px] leading-[14px] break-all cursor-pointer ${
                                                     expandedDesc && index === currentIndex
                                                         ? ""
                                                         : "overflow-hidden line-clamp-2"

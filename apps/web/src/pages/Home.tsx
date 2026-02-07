@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { useInfiniteWorkList } from "../hooks/useInfiniteWorkList";
-import { resolveImageUrl, resolveLocalizedText } from "@mirror/utils";
+import { getInviteLink, resolveImageUrl, resolveLocalizedText, shareToX } from "@mirror/utils";
 import {
     Notice,
     ProductCard,
@@ -110,10 +110,8 @@ function Home() {
             const workTypeValue =
                 typeof rawWorkType === "string" ? Number(rawWorkType) : rawWorkType;
             const name = resolveLocalizedText(work.name, languageKey) || "";
-            const description =
-                resolveLocalizedText(work.description, languageKey) || "";
-            const creatorName =
-                resolveLocalizedText(work.creator_name, languageKey) || "";
+            const description = resolveLocalizedText(work.description, languageKey) || "";
+            const creatorName = resolveLocalizedText(work.creator_name, languageKey) || "";
             const coverUrl = resolveImageUrl(
                 resolveLocalizedText(work.cover_url, languageKey) || "",
             );
@@ -133,7 +131,8 @@ function Home() {
                 creators,
                 description,
                 rawType: workTypeValue,
-                shareLink: "",
+                shareLink: shareToX(getInviteLink(work.id, work.my_invite_code), name),
+                isShared: Boolean(work.is_shared),
             };
         });
     }, [workList, languageKey]);

@@ -52,7 +52,7 @@ export const ProjectTabs = forwardRef<HTMLDivElement, ProjectTabsProps>(
                             role="tab"
                             aria-selected={isActive}
                             aria-disabled={isDisabled || undefined}
-                            className={`tab-item text-[14px] ${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`}
+                            className={`tab-item text-[16px] h-[34px] ${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`}
                             onClick={() => {
                                 if (isDisabled) return;
                                 onTabChange?.(index, tab);
@@ -90,7 +90,6 @@ export const ProjectTabs = forwardRef<HTMLDivElement, ProjectTabsProps>(
                         flex-direction: row;
                         align-items: center;
                         justify-content: center;
-                        height: 30px;
                         border-radius: 4px;
                         font-weight: 700;
                         color: #ffffff;

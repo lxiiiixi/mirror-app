@@ -20,6 +20,7 @@ export interface ProductData {
     likeCount?: number;
     creators?: string[]; // 作者/创作者列表
     description?: string;
+    isShared?: boolean;
 }
 
 export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "onClick"> {
@@ -93,7 +94,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
 
                 {/* 分享到X按钮 */}
                 <div
-                    className={`absolute z-8 top-[9.38%] left-[9.09%] w-[32.73%] h-[7.5%] rounded-[20px] flex justify-center items-center bg-[rgba(0,0,0,0.4)]`}
+                    className={`absolute z-8 top-[9.38%] left-[9.09%] w-[32.73%] h-[7.5%] rounded-[20px] flex justify-center items-center ${product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"}`}
                     onClick={handleShareClick}
                 >
                     <img
