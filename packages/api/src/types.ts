@@ -320,14 +320,14 @@ export interface WorkListParams extends PaginationParams {
 }
 
 export interface WorkSummary {
-    cover_url: LocalizedText | string;
-    creator_name: LocalizedText | string;
-    description: LocalizedText | string;
+    cover_url: LocalizedText;
+    creator_name: LocalizedText;
+    description: LocalizedText;
     id: number;
     is_like: number;
     is_tread: number;
     like_count: number;
-    name: LocalizedText | string;
+    name: LocalizedText;
     share_count: number;
     token_cover_url: string;
     tread_count: number;
@@ -345,8 +345,8 @@ export interface WorkDetailParams {
 }
 export interface CreativeTeamMembersItem {
     avatar_url: string;
-    name: LocalizedText | string;
-    role: LocalizedText | string;
+    name: LocalizedText;
+    role: LocalizedText;
 }
 
 /** 作品详情接口公共字段（未签到 / 已签到都会返回） */
@@ -363,18 +363,18 @@ export interface WorkDetailBase {
     token_name: string;
     token_status: number;
     unlocked_chapter_count: number;
-    work_cover_url: LocalizedText | string;
+    work_cover_url: LocalizedText;
     work_name_en?: string; // 兼容：英文作品名称（旧数据可能仅有 en）
-    work_creator_name: LocalizedText | string;
-    work_description: LocalizedText | string;
-    work_name: LocalizedText | string; // 多语言对象 { zh, zh_hant, en, ja, ko }
+    work_creator_name: LocalizedText;
+    work_description: LocalizedText;
+    work_name: LocalizedText; // 多语言对象 { zh, zh_hant, en, ja, ko }
     work_total_chapter: number;
     work_type: number;
     creative_team_block: {
-        title: LocalizedText | string;
-        image_url: LocalizedText | string;
-        description: LocalizedText | string;
-        link_url: LocalizedText | string;
+        title: LocalizedText;
+        image_url: LocalizedText;
+        description: LocalizedText;
+        link_url: LocalizedText;
     } | null;
     creative_team_members: CreativeTeamMembersItem[];
 }

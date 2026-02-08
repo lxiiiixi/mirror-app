@@ -20,6 +20,11 @@ import {
     WorkDetailLayout,
     WorkDetailProductionTeam,
 } from "../components/WorkDetail";
+import {
+    getAvailableContentLanguages,
+    i18nLanguageToSelectValue,
+    languageSelectValueToI18n,
+} from "../components/WorkDetail/languageSelectUtils";
 import { CheckInModal } from "../components/Modals";
 import { WorkDetailResponseData } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
@@ -33,6 +38,10 @@ export default function WorkDetail() {
     const workId = Number(searchParams.get("id") ?? "");
     const queryType = Number(searchParams.get("type") ?? "");
     const languageKey = i18n.resolvedLanguage ?? i18n.language ?? "en";
+    /** 作品内容展示语言（仅影响封面/标题/作者/简介），默认与当前全局语言一致，切换不修改全局 i18n */
+    const [contentLang, setContentLang] = useState(() =>
+        i18nLanguageToSelectValue(i18n.resolvedLanguage ?? i18n.language ?? "zh-CN"),
+    );
 
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [data, setData] = useState<WorkDetailResponseData | null>(null);
@@ -52,6 +61,16 @@ export default function WorkDetail() {
 
     useEffect(() => {
         dataRef.current = data;
+    }, [data]);
+
+    useEffect(() => {
+        if (!data) return;
+        const available = getAvailableContentLanguages(data);
+        if (available.length > 0 && !available.includes(contentLang)) {
+            setContentLang(available[0]);
+        }
+        // 仅在校正「数据加载后当前选中不在可用列表」时更新，不把 contentLang 列入 deps 避免切换语言时被重置
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     const handleRefreshAfterCheckIn = useCallback(() => {
@@ -202,11 +221,26 @@ export default function WorkDetail() {
                 {/* 作品信息卡片：封面 + 标题/作者/简介 */}
                 <ProductCover
                     coverUrl={resolveImageUrl(
-                        resolveLocalizedText(data.work_cover_url, languageKey),
+                        resolveLocalizedText(
+                            data.work_cover_url,
+                            languageSelectValueToI18n(contentLang),
+                        ),
                     )}
-                    title={resolveLocalizedText(data.work_name, languageKey)}
-                    author={resolveLocalizedText(data.work_creator_name, languageKey)}
-                    description={resolveLocalizedText(data.work_description, languageKey)}
+                    title={resolveLocalizedText(
+                        data.work_name,
+                        languageSelectValueToI18n(contentLang),
+                    )}
+                    author={resolveLocalizedText(
+                        data.work_creator_name,
+                        languageSelectValueToI18n(contentLang),
+                    )}
+                    description={resolveLocalizedText(
+                        data.work_description,
+                        languageSelectValueToI18n(contentLang),
+                    )}
+                    contentLang={contentLang}
+                    onContentLangChange={setContentLang}
+                    availableLanguages={getAvailableContentLanguages(data)}
                     showPlayButton={
                         getWorkTypeByValue(data.work_type)?.isShowTrailersStills ?? false
                     }

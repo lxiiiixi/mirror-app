@@ -81,8 +81,11 @@ body {
     place-items: center;
     min-width: 320px;
     min-height: 100vh;
-    background: var(--gradient-page);
+    background-color: var(--color-bg);
+    background-image: var(--gradient-page);
     color: var(--color-text);
+    position: relative;
+    overflow-x: hidden;
 
     /* H5 移动端优化 */
     -webkit-tap-highlight-color: transparent;
@@ -90,7 +93,44 @@ body {
     overscroll-behavior-y: contain;
 }
 
+/* 背景中两个渐变圆球：左上 #03254c，右上 #4e18f045 */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+}
+body::before {
+    width: min(70vmax, 420px);
+    height: min(70vmax, 420px);
+    top: -15%;
+    left: -20%;
+    background: radial-gradient(
+        circle at 30% 30%,
+        #03254c 0%,
+        rgba(3, 37, 76, 0.4) 50%,
+        transparent 75%
+    );
+}
+body::after {
+    width: min(60vmax, 360px);
+    height: min(60vmax, 360px);
+    top: -10%;
+    right: -15%;
+    background: radial-gradient(
+        circle at 70% 30%,
+        #4e18f045 0%,
+        rgba(78, 24, 240, 0.15) 55%,
+        transparent 80%
+    );
+}
+
 #root {
+    position: relative;
+    z-index: 1;
     width: 100%;
 }
 

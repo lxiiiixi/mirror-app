@@ -51,18 +51,18 @@ export function ExternalLink({ links = [] }: ExternalLinkProps) {
     if (mapped.length === 0) return null;
 
     return (
-        <div className="flex justify-end gap-[10px] rounded-full bg-black/50 backdrop-blur-sm p-1.5 px-3.5">
+        <div className="flex justify-end gap-[12px] rounded-full bg-black/50 backdrop-blur-sm p-1.5 px-3.5">
             {mapped.map(
                 item =>
                     item && (
                         <div
                             key={item.link_id}
-                            className="h-[16px] cursor-pointer"
+                            className="size-[16px] shrink-0 cursor-pointer"
                             onClick={() =>
                                 window.open(item.link_url, "_blank", "noopener,noreferrer")
                             }
                         >
-                            <img className="h-full w-full" src={item.icon} alt="" />
+                            <img className="size-full object-contain" src={item.icon} alt="" />
                         </div>
                     ),
             )}

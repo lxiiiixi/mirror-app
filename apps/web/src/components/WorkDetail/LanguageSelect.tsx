@@ -1,30 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronUp, Check } from "lucide-react";
-import type { LanguageSelectValue } from "./languageSelectUtils";
-
-const LANGUAGE_OPTIONS: { value: LanguageSelectValue; label: string }[] = [
-    { value: "zh", label: "中文简体" },
-    { value: "en", label: "English" },
-    { value: "zh_hant", label: "中文繁体" },
-] as const;
+import {
+    getLanguageOptions,
+    type LanguageSelectValue,
+} from "./languageSelectUtils";
 
 export type { LanguageSelectValue } from "./languageSelectUtils";
 
 export interface LanguageSelectProps {
     value?: LanguageSelectValue;
     onValueChange?: (value: LanguageSelectValue) => void;
+    /** 仅展示有内容的语言；不传则展示 zh / en / zh_hant */
+    availableLanguages?: LanguageSelectValue[];
     className?: string;
 }
 
 export function LanguageSelect({
     value: controlledValue,
     onValueChange,
+    availableLanguages,
     className = "",
 }: LanguageSelectProps) {
     const [open, setOpen] = useState(false);
     const [internalValue, setInternalValue] = useState<LanguageSelectValue>("zh");
     const ref = useRef<HTMLDivElement>(null);
 
+    const options = getLanguageOptions(availableLanguages);
     const value = controlledValue ?? internalValue;
     const setValue = (v: LanguageSelectValue) => {
         if (controlledValue === undefined) setInternalValue(v);
@@ -40,10 +41,10 @@ export function LanguageSelect({
         return () => window.removeEventListener("mousedown", handleClickOutside);
     }, [open]);
 
-    const selectedLabel = LANGUAGE_OPTIONS.find(o => o.value === value)?.label ?? "中文";
+    const selectedLabel = options.find(o => o.value === value)?.label ?? "中文";
 
     return (
-        <div ref={ref} className={`relative ${className}`.trim()}>
+        <div id="language-select" ref={ref} className={`relative ${className}`.trim()}>
             <button
                 type="button"
                 onClick={() => setOpen(prev => !prev)}
@@ -57,7 +58,7 @@ export function LanguageSelect({
             </button>
             {open ? (
                 <div className="absolute right-0 top-full z-10 mt-0.5 min-w-[90px] rounded-md border border-white/30 bg-white/20 py-1 shadow-lg backdrop-blur-[20px]">
-                    {LANGUAGE_OPTIONS.map(opt => {
+                    {options.map(opt => {
                         const isSelected = opt.value === value;
                         return (
                             <button

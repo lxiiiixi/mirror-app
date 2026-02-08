@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { resolveImageUrl } from "@mirror/utils";
 import { images } from "@mirror/assets";
 import { LanguageSelect } from "./LanguageSelect";
-import { i18nLanguageToSelectValue, languageSelectValueToI18n } from "./languageSelectUtils";
+import type { LanguageSelectValue } from "./languageSelectUtils";
 
 export interface ProductCoverProps {
     coverUrl?: string;
     title?: string;
     author?: string;
     description?: string;
+    /** 当前选中的作品内容语言（仅切换展示，不修改全局 i18n） */
+    contentLang: LanguageSelectValue;
+    onContentLangChange: (value: LanguageSelectValue) => void;
+    /** 仅展示有内容的语言选项；不传则展示全部 */
+    availableLanguages?: LanguageSelectValue[];
     /** 是否显示封面上的播放按钮（由父组件根据作品是否包含视频/预告内容传入） */
     showPlayButton?: boolean;
 }
@@ -19,21 +23,12 @@ export function ProductCover({
     title = "",
     author = "",
     description = "",
+    contentLang,
+    onContentLangChange,
+    availableLanguages,
     showPlayButton = false,
 }: ProductCoverProps) {
-    const { i18n } = useTranslation();
     const [expanded, setExpanded] = useState(false);
-
-    const currentLang = i18n.resolvedLanguage ?? i18n.language ?? "zh-CN";
-    const selectValue = i18nLanguageToSelectValue(currentLang);
-
-    const handleLanguageChange = (value: Parameters<typeof languageSelectValueToI18n>[0]) => {
-        const i18nCode = languageSelectValueToI18n(value);
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem("user-lang", i18nCode);
-        }
-        void i18n.changeLanguage(i18nCode);
-    };
 
     const wrapperClassName = expanded
         ? "relative shrink-0 float-left w-[120px] mr-[12px] mb-[6px]"
@@ -46,7 +41,11 @@ export function ProductCover({
     return (
         <div className="relative">
             <div className="absolute top-0 right-0 z-10">
-                <LanguageSelect value={selectValue} onValueChange={handleLanguageChange} />
+                <LanguageSelect
+                    value={contentLang}
+                    onValueChange={onContentLangChange}
+                    availableLanguages={availableLanguages}
+                />
             </div>
             <div id="product-cover" className={expanded ? "" : "flex items-start gap-[12px]"}>
                 {/* 封面图区域：展开时由外层定宽高避免 float 导致塌陷，播放按钮才能正确叠在图上 */}
