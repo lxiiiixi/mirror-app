@@ -1,10 +1,57 @@
+const isMobile = () =>
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+/**
+ * 分享到 X/Twitter：
+ * - 移动端：先尝试用 app scheme 调起 X/Twitter APP（不跳转当前窗口），若无 APP 则在新标签打开网页
+ * - 桌面端：直接在新标签打开 x.com 发推页
+ */
 export const shareToX = (link: string, workName: string, isShare: boolean = true) => {
     const titleSegment = workName ? `《${workName}》 ` : "";
     const text = `Exciting news! Enjoy ${titleSegment} Airdrop by Daily Check event and Share Invite Links. ${link}`;
     const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-    if (isShare) {
+
+    if (!isShare) return shareUrl;
+
+    if (!isMobile()) {
         window.open(shareUrl, "_blank");
+        return shareUrl;
     }
+
+    // 移动端：先尝试调起 APP（twitter:///post?message= 或 x://），不导致当前窗口跳转
+    const encodedText = encodeURIComponent(text);
+    const appScheme =
+        typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent)
+            ? `intent://twitter.com/intent/tweet?text=${encodedText}#Intent;package=com.twitter.android;scheme=https;end;`
+            : `twitter://post?message=${encodedText}`;
+
+    let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+    const openWebFallback = () => {
+        if (fallbackTimer != null) clearTimeout(fallbackTimer);
+        window.open(shareUrl, "_blank");
+    };
+
+    const onVisibilityChange = () => {
+        if (document.hidden && fallbackTimer != null) {
+            clearTimeout(fallbackTimer);
+            fallbackTimer = null;
+            document.removeEventListener("visibilitychange", onVisibilityChange);
+        }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    fallbackTimer = setTimeout(() => {
+        fallbackTimer = null;
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        openWebFallback();
+    }, 2000);
+
+    try {
+        window.location.href = appScheme;
+    } catch {
+        openWebFallback();
+    }
+
     return shareUrl;
 };
 
