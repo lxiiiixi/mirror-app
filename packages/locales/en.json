@@ -178,6 +178,7 @@
     "progress": "Progress",
     "invitationCode": "Invitation Code",
     "invitationLink": "Invitation Link",
+    "loginToShowInviteLink": "Log in to generate invitation link",
     "shareOnX": "Share on X",
     "invited": "Invited",
     "pointsMall": "Points Mall",

@@ -490,9 +490,9 @@ export function WorkDetailAirdrop({
                 </div>
             </div>
 
-            {/* 邀请码 + 邀请链接 */}
-            {isLoggedIn && (
-                <div className="mb-6 rounded-lg bg-[#40063f] px-4 py-2 text-[14px] font-semibold text-white">
+            {/* 邀请码 + 邀请链接：已登录显示内容，未登录显示提示 */}
+            <div className="mb-6 rounded-lg bg-[#40063f] px-4 py-2 text-[14px] font-semibold text-white">
+                {isLoggedIn ? (
                     <div className="flex items-center gap-2">
                         <span className="">
                             {t("workDetail.invitationCode", { defaultValue: "Invitation Code" })}:{" "}
@@ -514,8 +514,18 @@ export function WorkDetailAirdrop({
                             />
                         </button>
                     </div>
-                </div>
-            )}
+                ) : (
+                    <button
+                        type="button"
+                        onClick={openLoginModal}
+                        className="block w-full text-center cursor-pointer hover:opacity-90 transition-opacity"
+                    >
+                        {t("workDetail.loginToShowInviteLink", {
+                            defaultValue: "Log in to view invitation link",
+                        })}
+                    </button>
+                )}
+            </div>
 
             {/* 三个操作按钮 */}
             <div id="work_detail_airdrop_buttons" className="flex justify-between gap-2">

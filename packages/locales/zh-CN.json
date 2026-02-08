@@ -178,6 +178,7 @@
     "progress": "进度",
     "invitationCode": "邀请码",
     "invitationLink": "邀请链接",
+    "loginToShowInviteLink": "登录后显示邀请链接",
     "shareOnX": "分享到 X",
     "invited": "已邀请",
     "pointsMall": "积分商城",
