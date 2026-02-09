@@ -714,6 +714,7 @@ export interface WorkExternalLinkItem {
 export type WorkExternalLinkResponseData = WorkExternalLinkItem[];
 
 export interface WorkTrackPromoParams {
+    /** 推广码，与 invite_code 二选一或并存（兼容不同端） */
     promo_code?: string;
 }
 
