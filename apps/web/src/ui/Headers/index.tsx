@@ -1,12 +1,12 @@
 import { images } from "@mirror/assets";
-import { useNavigate } from "react-router-dom";
+import { useSafeBack } from "../../hooks/useSafeBack";
 
 export const BlackBarHeader = ({ title }: { title: string }) => {
-    const navigate = useNavigate();
+    const handleSafeBack = useSafeBack();
 
     return (
         <header className="flex h-[50px] items-center gap-4 px-[20px] bg-black shadow-[0px_10px_40px_0px_#A916E340]">
-            <button type="button" className={`w-[18px]`} onClick={() => navigate(-1)}>
+            <button type="button" className={`w-[18px]`} onClick={handleSafeBack}>
                 <img
                     src={images.works.backBtn}
                     alt=""

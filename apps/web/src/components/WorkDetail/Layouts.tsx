@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
+import { useSafeBack } from "../../hooks/useSafeBack";
 import { TokenAvatar } from "../Common/TokenAvatar";
 import {
     buildInviteShareText,
@@ -37,7 +38,7 @@ export function WorkDetailLayout({
 
 /** 页面顶部导航：返回 + 标题 */
 export function WorkDetailHeader({ workId }: { workId: number }) {
-    const navigate = useNavigate();
+    const handleSafeBack = useSafeBack();
     const [externalLinks, setExternalLinks] = useState<Array<WorkExternalLinkItem>>([]);
 
     useEffect(() => {
@@ -61,7 +62,7 @@ export function WorkDetailHeader({ workId }: { workId: number }) {
 
     return (
         <header className="absolute top-0 left-0 right-0 z-20 flex h-[50px] items-center justify-between px-[20px]">
-            <button type="button" className={`w-[18px]`} onClick={() => navigate(-1)}>
+            <button type="button" className={`w-[18px]`} onClick={handleSafeBack}>
                 <img
                     src={images.works.backBtn}
                     alt=""

@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import useMediaQuery from "./hooks/useMediaQuery";
+import { useSafeBack } from "./hooks/useSafeBack";
 import { AppLayout } from "./ui";
 import { images } from "@mirror/assets";
 import { AlertHost, LegalRestrictionHost } from "./components";
@@ -23,6 +24,7 @@ function App() {
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const { token, isLoggedIn, loginMethod, isEmailLogin, hydrated } = useAuth();
     const { openWallet, address: reownWalletAddress } = useWallet();
+    const handleSafeBack = useSafeBack();
     const setWallets = useUserWalletsStore(state => state.setWallets);
     const setWalletsLoading = useUserWalletsStore(state => state.setLoading);
     const clearWallets = useUserWalletsStore(state => state.clear);
@@ -265,7 +267,7 @@ function App() {
             isLoggedIn={isLoggedIn}
             pageTitle={layoutConfig?.pageTitle}
             headerRight={layoutConfig?.headerRight ? <layoutConfig.headerRight /> : undefined}
-            onBack={showPageNav ? () => navigate(-1) : undefined}
+            onBack={showPageNav ? handleSafeBack : undefined}
             onLanguageClick={handleLanguageToggle}
             onLogoClick={() => navigate("/")}
             onWalletClick={handleWalletClick}

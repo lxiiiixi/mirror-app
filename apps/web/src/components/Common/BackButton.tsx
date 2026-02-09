@@ -1,16 +1,16 @@
 import { images } from "@mirror/assets";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useSafeBack } from "../../hooks/useSafeBack";
 
 export function BackButton({ className }: { className?: string }) {
-    const navigate = useNavigate();
+    const handleSafeBack = useSafeBack();
     const { t } = useTranslation();
 
     return (
         <button
             type="button"
             className={`w-[20px] h-[20px] fixed top-[15px] left-[15px] z-50 ${className}`}
-            onClick={() => navigate(-1)}
+            onClick={handleSafeBack}
             aria-label={t("ticket.ticketItemCard.back", { defaultValue: "Back" })}
         >
             <img
