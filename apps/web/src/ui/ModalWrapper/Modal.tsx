@@ -204,7 +204,7 @@ export function Modal({
                     ) : (
                         <div
                             className={[
-                                "modal-panel relative z-10 w-full max-w-lg min-w-[320px] overflow-hidden rounded-xl border border-white/20",
+                                "modal-panel relative z-10 w-full max-w-lg min-w-[320px] overflow-hidden rounded-xl border-2 border-[#727272]",
                                 panelClassName,
                             ]
                                 .filter(Boolean)
