@@ -1,13 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
 import { useNavigate } from "react-router-dom";
 import { useInfiniteWorkList } from "../hooks/useInfiniteWorkList";
 import {
     buildInviteShareText,
+    getInviteLink,
     getXForwardLink,
     resolveImageUrl,
     resolveLocalizedText,
+    shareToX,
 } from "@mirror/utils";
 import {
     Notice,
@@ -22,12 +24,10 @@ import {
 import { HomeBanner } from "../components";
 import { getWorkTypeByValue, goToWorkDetail, isTokenWork } from "../utils/work";
 import { useUserWalletsStore } from "../store/useUserWalletsStore";
-
-const splitCreators = (author: string) =>
-    author
-        .split(/[/|、,，]/g)
-        .map(name => name.trim())
-        .filter(Boolean);
+import { useLoginModalStore } from "../store/useLoginModalStore";
+import { useAuth } from "../hooks/useAuth";
+import { artsApiClient } from "../api/artsClient";
+import { useAlertStore } from "../store/useAlertStore";
 
 function Home() {
     const { t, i18n } = useTranslation();
@@ -36,6 +36,9 @@ function Home() {
     const languageKey = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const { primaryWallet } = useUserWalletsStore();
     const userId = primaryWallet?.uid ?? "";
+    const { isLoggedIn } = useAuth();
+    const openLoginModal = useLoginModalStore(state => state.openModal);
+    const showAlert = useAlertStore(s => s.show);
 
     const {
         items: workList,
@@ -112,6 +115,55 @@ function Home() {
         goToWorkDetail(navigate, id, rawType);
     };
 
+    const handleShareClick = useCallback(
+        (e: React.MouseEvent, product: ProductData) => {
+            e.stopPropagation();
+            if (!product.name || !product.id || Number.isNaN(Number(product.id))) return;
+            if (!isLoggedIn) {
+                openLoginModal();
+                return;
+            }
+
+            // 生成邀请码
+            artsApiClient.work
+                .generateInviteCode({ work_id: Number(product.id) })
+                .then(response => {
+                    const data = response.data;
+                    console.log("[WorkDetailAirdrop] generateInviteCode", data);
+                    const code = String(data?.invite_code ?? "");
+                    const url = getInviteLink(Number(product.id), code);
+
+                    const shareText = buildInviteShareText({
+                        t,
+                        workName: resolveLocalizedText(product.name, languageKey),
+                        inviteCode: code,
+                        inviteUrl: url,
+                    });
+
+                    shareToX(shareText, product.name, true);
+
+                    const workId = Number(product.id);
+                    if (Number.isFinite(workId) && workId > 0) {
+                        void artsApiClient.work
+                            .share({ work_id: workId })
+                            .catch(error =>
+                                console.error("[ProductCardCarousel] share failed", error),
+                            );
+                    }
+                })
+                .catch(error => {
+                    console.error("[WorkDetailAirdrop] generateInviteCode failed", error);
+                    showAlert({
+                        message: t("works.productShare.generateInviteCodeFailed", {
+                            defaultValue: "Generate invite code failed. Please try again",
+                        }),
+                        variant: "error",
+                    });
+                });
+        },
+        [t, languageKey, showAlert, isLoggedIn, openLoginModal],
+    );
+
     const products = useMemo<Array<ProductData & { rawType?: number }>>(() => {
         return workList.map(work => {
             const rawWorkType = work.type ?? 4;
@@ -129,6 +181,12 @@ function Home() {
                 .map(s => s.trim())
                 .filter(Boolean);
             const creators = names.slice(0, 3);
+            // const shareText = buildInviteShareText({
+            //     t,
+            //     workName: resolveLocalizedText(work.name, languageKey),
+            //     inviteCode: invite_code,
+            //     inviteUrl: work.invite_url,
+            // });
 
             return {
                 id: work.id,
@@ -137,13 +195,14 @@ function Home() {
                 type: getWorkTypeByValue(workTypeValue)?.type ?? "comic",
                 shareCount,
                 creators,
+                handleShareClick,
                 description,
                 rawType: workTypeValue,
-                shareLink: getXForwardLink(work.id, userId, workTypeValue), // 首页的分享通过用户 id 生成分享链接
+                // shareText, // 首页的分享通过用户 id 生成分享链接
                 isShared: Boolean(work.is_shared),
             };
         });
-    }, [workList, languageKey, userId]);
+    }, [workList, languageKey, handleShareClick]);
 
     return (
         <div className="">

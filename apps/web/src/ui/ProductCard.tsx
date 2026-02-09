@@ -16,7 +16,7 @@ export interface ProductData {
     name: string;
     coverUrl: string;
     type: WorkType;
-    shareLink: string;
+    handleShareClick: (e: React.MouseEvent, product: ProductData) => void;
     shareCount?: number;
     likeCount?: number;
     creators?: string[]; // 作者/创作者列表
@@ -48,28 +48,28 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
         const creatorText = creators.slice(0, 3).join("/");
 
         const navigate = useNavigate();
-        const { isLoggedIn } = useAuth();
-        const openLoginModal = useLoginModalStore(state => state.openModal);
+        // const { isLoggedIn } = useAuth();
+        // const openLoginModal = useLoginModalStore(state => state.openModal);
 
         const handleCardClick = () => {
             goToWorkDetail(navigate, product.id);
         };
 
-        const handleShareClick = (e: React.MouseEvent) => {
-            e.stopPropagation();
-            if (!product.shareLink || !product.name) return;
-            if (!isLoggedIn) {
-                openLoginModal();
-                return;
-            }
-            shareToX(product.shareLink, product.name, true);
-            const workId = Number(product.id);
-            if (Number.isFinite(workId) && workId > 0) {
-                void artsApiClient.work
-                    .share({ work_id: workId })
-                    .catch(error => console.error("[ProductCard] share failed", error));
-            }
-        };
+        // const handleShareClick = (e: React.MouseEvent) => {
+        //     e.stopPropagation();
+        //     if ( !product.name) return;
+        //     if (!isLoggedIn) {
+        //         openLoginModal();
+        //         return;
+        //     }
+        //     shareToX(product.shareText, product.name, true);
+        //     const workId = Number(product.id);
+        //     if (Number.isFinite(workId) && workId > 0) {
+        //         void artsApiClient.work
+        //             .share({ work_id: workId })
+        //             .catch(error => console.error("[ProductCard] share failed", error));
+        //     }
+        // };
 
         const handleLikeClick = (e: React.MouseEvent) => {
             e.stopPropagation();
@@ -102,7 +102,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 {/* 分享到X按钮 */}
                 <div
                     className={`absolute z-8 top-[9.38%] left-[9.09%] w-[32.73%] h-[7.5%] rounded-[20px] flex justify-center items-center ${product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"}`}
-                    onClick={handleShareClick}
+                    onClick={e => product.handleShareClick(e, product)}
                 >
                     <img
                         src={images.works.toX}

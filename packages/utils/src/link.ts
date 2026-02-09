@@ -6,9 +6,9 @@ const isMobile = () =>
  * - 移动端：先尝试用 app scheme 调起 X/Twitter APP（不跳转当前窗口），若无 APP 则在新标签打开网页
  * - 桌面端：直接在新标签打开 x.com 发推页
  */
-export const shareToX = (link: string, workName: string, isShare: boolean = true) => {
+export const shareToX = (text: string, workName: string, isShare: boolean = true) => {
     const titleSegment = workName ? `《${workName}》 ` : "";
-    const text = `Exciting news! Enjoy ${titleSegment} Airdrop by Daily Check event and Share Invite Links. ${link}`;
+    // const text = `Exciting news! Enjoy ${titleSegment} Airdrop by Daily Check event and Share Invite Links. ${link}`;
     const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
 
     if (!isShare) return shareUrl;

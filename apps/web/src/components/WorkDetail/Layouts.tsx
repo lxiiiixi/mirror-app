@@ -312,26 +312,6 @@ export function WorkDetailAirdrop({
         };
     }, [workId, isLoggedIn, token]);
 
-    // const buildInviteShareText = useCallback(() => {
-    //     const title = workData.work_name
-    //         ? t("workDetail.inviteShare.title", {
-    //               name: workData.work_name,
-    //               defaultValue: `《${workData.work_name}》 invites you to join the Web3 entertainment revolution`,
-    //           })
-    //         : t("workDetail.inviteShare.titleFallback", {
-    //               defaultValue: "Join the Web3 entertainment revolution",
-    //           });
-    //     const codeLine = t("workDetail.inviteShare.code", {
-    //         code: inviteCode,
-    //         defaultValue: `Invite Code: ${inviteCode}`,
-    //     });
-    //     const linkLine = t("workDetail.inviteShare.link", {
-    //         link: inviteUrl,
-    //         defaultValue: `Invite Link: ${inviteUrl}`,
-    //     });
-    //     return [title, codeLine, linkLine].join("\n");
-    // }, [t, workData.work_name, inviteCode, inviteUrl]);
-
     const copyLink = () => {
         const link = inviteUrl;
         if (!link) return;
@@ -358,13 +338,19 @@ export function WorkDetailAirdrop({
         }
         const link = inviteUrl;
         if (!link) return;
-        shareToX(inviteUrl, resolveLocalizedText(workData.work_name, "en"), true);
+        const text = buildInviteShareText({
+            t,
+            workName: resolveLocalizedText(workData.work_name, lang),
+            inviteCode,
+            inviteUrl,
+        });
+        shareToX(text, resolveLocalizedText(workData.work_name, "en"), true);
         if (workId && !Number.isNaN(workId)) {
             void artsApiClient.work
                 .share({ work_id: workId })
                 .catch(error => console.error("[WorkDetailAirdrop] share failed", error));
         }
-    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal, workId]);
+    }, [inviteUrl, workData.work_name, isLoggedIn, openLoginModal, workId, t, lang, inviteCode]);
 
     const handleShowInvitationListModal = useCallback(() => {
         if (!isLoggedIn) {

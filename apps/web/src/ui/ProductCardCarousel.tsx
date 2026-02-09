@@ -38,8 +38,6 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
         const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
         const navigate = useNavigate();
-        const { isLoggedIn } = useAuth();
-        const openLoginModal = useLoginModalStore(state => state.openModal);
 
         // 限制最多6个产品
         const displayProducts = products.slice(0, 6);
@@ -64,21 +62,21 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
             goToWorkDetail(navigate, product.id);
         };
 
-        const handleShareClick = (e: React.MouseEvent, product: ProductData) => {
-            e.stopPropagation();
-            if (!product.shareLink || !product.name) return;
-            if (!isLoggedIn) {
-                openLoginModal();
-                return;
-            }
-            shareToX(product.shareLink, product.name, true);
-            const workId = Number(product.id);
-            if (Number.isFinite(workId) && workId > 0) {
-                void artsApiClient.work
-                    .share({ work_id: workId })
-                    .catch(error => console.error("[ProductCardCarousel] share failed", error));
-            }
-        };
+        // const handleShareClick = (e: React.MouseEvent, product: ProductData) => {
+        //     e.stopPropagation();
+        //     if (!product.shareText || !product.name) return;
+        //     if (!isLoggedIn) {
+        //         openLoginModal();
+        //         return;
+        //     }
+        //     shareToX(product.shareText, product.name, true);
+        //     const workId = Number(product.id);
+        //     if (Number.isFinite(workId) && workId > 0) {
+        //         void artsApiClient.work
+        //             .share({ work_id: workId })
+        //             .catch(error => console.error("[ProductCardCarousel] share failed", error));
+        //     }
+        // };
 
         const handleDotClick = (index: number) => {
             setCurrentIndex(index);
@@ -144,7 +142,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     {/* 分享到X按钮 */}
                                     <div
                                         className={`absolute z-8 top-[15px] left-[15px] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"}`}
-                                        onClick={e => handleShareClick(e, product)}
+                                        onClick={e => product.handleShareClick(e, product)}
                                     >
                                         <img
                                             src={images.works.toX}

@@ -112,7 +112,7 @@ export default function WorkDetail() {
                     variant: "error",
                 });
             });
-    }, [data, showAlert, t]);
+    }, [data, showAlert, t, workId]);
 
     useEffect(() => {
         if (!workId || Number.isNaN(workId)) {
