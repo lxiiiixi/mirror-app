@@ -100,13 +100,32 @@ import homeTokenTabFilter from "./images/home/token-tab-filter.svg";
 import imgWrapper from "./images/img-wrapper.png";
 import playVideoIconImg from "./images/play-video.png";
 
-// banner 相关：自动扫描目录，新增图片无需改此处
-const bannerGlob = import.meta.glob("./images/home/banner/*.png", { eager: true });
-const bannerImageMap: Record<string, string> = {};
-for (const path in bannerGlob) {
-    const name = path.replace(/^.+\/([^/]+)\.png$/, "$1");
-    bannerImageMap[name] = (bannerGlob[path] as { default: string }).default;
-}
+// banner 相关：与 packages/locales 中 banners[].img 对应，新增图片需在此处和 locales 中同步添加
+import banner1Cn from "./images/home/banner/banner1_cn.png";
+import banner1En from "./images/home/banner/banner1_en.png";
+import banner1Hk from "./images/home/banner/banner1_hk.png";
+import banner2Cn from "./images/home/banner/banner2_cn.png";
+import banner2En from "./images/home/banner/banner2_en.png";
+import banner2Hk from "./images/home/banner/banner2_hk.png";
+import banner3Cn from "./images/home/banner/banner3_cn.png";
+import banner3En from "./images/home/banner/banner3_en.png";
+import banner3Hk from "./images/home/banner/banner3_hk.png";
+import banner4Hk from "./images/home/banner/banner4_hk.png";
+import banner5Hk from "./images/home/banner/banner5_hk.png";
+
+const bannerImageMap: Record<string, string> = {
+    banner1_cn: banner1Cn,
+    banner1_en: banner1En,
+    banner1_hk: banner1Hk,
+    banner2_cn: banner2Cn,
+    banner2_en: banner2En,
+    banner2_hk: banner2Hk,
+    banner3_cn: banner3Cn,
+    banner3_en: banner3En,
+    banner3_hk: banner3Hk,
+    banner4_hk: banner4Hk,
+    banner5_hk: banner5Hk,
+};
 export { bannerImageMap };
 
 // 挖矿相关
