@@ -453,7 +453,7 @@ export function WorkDetailAirdrop({
                             <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[16px] py-[8px] rounded-lg border border-[#E358FF]">
                                 {part}{" "}
                             </div>
-                            {i < countdownParts.length - 1 ? ":" : ""}
+                            {i > 0 && i < countdownParts.length - 1 ? ":" : ""}
                         </div>
                     ))}
                 </div>

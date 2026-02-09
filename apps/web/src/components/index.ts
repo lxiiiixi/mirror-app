@@ -1,4 +1,5 @@
 export { TokenAvatar } from "./Common/TokenAvatar";
+export { ImageWrapper } from "./Common/ImageWrapper";
 export { BackButton } from "./Common/BackButton";
 export { Banner as HomeBanner } from "./Home/HomeBanner";
 export { AlertHost } from "./Common/AlertHost";
