@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { useSafeBack } from "./hooks/useSafeBack";
+import { usePersistInviteParams } from "./hooks/usePersistInviteParams";
 import { useTrackPromoClick } from "./hooks/useTrackPromoClick";
 import { AppLayout } from "./ui";
 import { images } from "@mirror/assets";
@@ -31,6 +32,7 @@ function App() {
     const clearWallets = useUserWalletsStore(state => state.clear);
 
     useTrackPromoClick();
+    usePersistInviteParams();
 
     console.log("[App] Login States", {
         isLoggedIn,

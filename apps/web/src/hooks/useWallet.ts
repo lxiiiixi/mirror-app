@@ -6,6 +6,7 @@ import { useAuth } from "./useAuth";
 import { useWalletStore } from "../store/useWalletStore";
 import { useAlertStore } from "../store/useAlertStore";
 import { envConfigs } from "@mirror/utils";
+import { clearPendingInviteParams, getPendingInviteParams } from "../utils/inviteParams";
 
 const buildLoginMessage = () => `Login Time ${Date.now()}`;
 
@@ -88,8 +89,7 @@ export const useWallet = () => {
             }
             const signature = await walletProvider.signMessage(new TextEncoder().encode(message));
             const sign = encodeSignature(signature);
-            const inviteCode =
-                typeof window !== "undefined" ? window.localStorage.getItem("club_invite") : null;
+            const pending = getPendingInviteParams();
 
             const response = await artsApiClient.user.solanaWalletLogin({
                 wallet_address: address,
@@ -97,13 +97,15 @@ export const useWallet = () => {
                 login_type: "wallet",
                 message,
                 sign,
-                ...(inviteCode ? { work_invite_code: inviteCode } : {}),
+                ...(pending.workInviteCode ? { work_invite_code: pending.workInviteCode } : {}),
+                ...(pending.inviteUid ? { invite_uid_code: pending.inviteUid } : {}),
             });
 
             const nextToken = response.data?.token;
             if (nextToken) {
                 saveToken(nextToken, "wallet");
                 lastLoggedAddressRef.current = address;
+                clearPendingInviteParams();
             }
         } catch (error) {
             console.error("[Wallet] login failed", error);
