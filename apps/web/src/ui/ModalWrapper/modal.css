@@ -25,8 +25,7 @@
     margin: 0;
     pointer-events: auto;
     transform: translateZ(0);
-    will-change: opacity;
-    /* backdrop-filter: blur(6px); */
+    /* 如果在这里使用 will-change: opacity 会令 overlay 被提升到单独合成层，面板的 backdrop-filter 会模糊到该层而非页面，磨砂失效 */
 }
 
 /* 渐变边框外层：2px 渐变环（与 Invitation List 等保持一致） */
@@ -41,21 +40,26 @@
     background: rgba(255, 255, 255, 0.8);
 }
 
-/* 偏白的磨砂玻璃：半透明白底 + 背景模糊，才能显出磨砂感 */
+/* 磨砂玻璃：与 ProductCardCarousel 底部信息条一致，灰阶渐变 + 半透明边框 + 背景模糊 */
 .modal-wrapper .modal-overlay .modal-panel {
     color: white;
-    background: #ffffff33;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(35px);
-    box-shadow: 0px 0px 5px 10px #00000040;
+    background: linear-gradient(
+        180deg,
+        rgba(127, 127, 127, 0.33) 100%,
+        rgba(217, 217, 217, 0.63) 20%
+    );
+    border: 1px solid rgba(127, 127, 127, 0.4);
+    /* backdrop-filter: blur(10px); */
+    /* -webkit-backdrop-filter: blur(10px); */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.98);
 }
 
 .modal-gradient-ring .modal-gradient-ring-inner .modal-panel {
     color: white;
     background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    box-shadow:
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    text-shadow:
         0 0 0 1px rgba(255, 255, 255, 0.12),
         0 8px 32px rgba(0, 0, 0, 0.35);
 }

@@ -137,7 +137,12 @@ export function Modal({
             aria-hidden={!open}
         >
             <div
-                className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6"
+                className="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-6"
+                style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    // backdropFilter: "blur(10px)",
+                    // WebkitBackdropFilter: "blur(10px)",
+                }}
                 onClick={closeOnBackdrop ? handleClose : undefined}
                 role="presentation"
             >
@@ -204,7 +209,7 @@ export function Modal({
                     ) : (
                         <div
                             className={[
-                                "modal-panel relative z-10 w-full max-w-lg min-w-[320px] overflow-hidden rounded-xl border border-[#727272]",
+                                "modal-panel backdrop-blur-[10px] relative z-10 w-full max-w-lg min-w-[320px] overflow-hidden rounded-xl",
                                 panelClassName,
                             ]
                                 .filter(Boolean)
