@@ -350,16 +350,14 @@ function TrailersAndStills({ workId }: { workId: number }) {
                                         {t("workDetail.durationUnknown")}
                                     </span>
                                 )}
-                                {showMore ? null : (
-                                    <span
-                                        className="text-xs text-white/50 cursor-pointer"
-                                        onClick={() => {
-                                            setShowMore(true);
-                                        }}
-                                    >
-                                        {t("workDetail.more")}
-                                    </span>
-                                )}
+                                <span
+                                    className="text-xs text-white/50 cursor-pointer"
+                                    onClick={() => setShowMore(!showMore)}
+                                >
+                                    {showMore
+                                        ? t("workDetail.collapse", { defaultValue: "收起" })
+                                        : t("workDetail.more")}
+                                </span>
                             </div>
                         </div>
                     ))}

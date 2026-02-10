@@ -16,8 +16,8 @@ import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "../Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
-import { Copy } from "lucide-react";
-import { WorkDetailResponseData, WorkExternalLinkItem } from "@mirror/api";
+import { Check, Copy } from "lucide-react";
+import { WorkDetailResponseData, WorkExternalLinkItem, isWorkDetailAfterSignIn } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
 import { getWorkNameInitials } from "../../utils/work";
 
@@ -189,8 +189,9 @@ export function WorkDetailHero({
 
             <div
                 id="work_detail_hero_gradient"
-                className="absolute inset-0"
+                className="absolute left-0 right-0 top-0"
                 style={{
+                    bottom: -2,
                     backgroundImage:
                         "linear-gradient(0deg, #030620 10%, rgba(13, 25, 134, 0.1) 80%)",
                 }}
@@ -204,7 +205,14 @@ export function WorkDetailHero({
                     imageSize={110}
                 />
                 <h2 className="text-2xl font-bold leading-none text-white text-center">
-                    {workData.signed_in ? workData.token_balance : "0"}{" "}
+                    {/* 这个地方对数据的展示是：
+                    如果用户没登陆（接口不返回 signed_in/ever_signed_in），不显示任何数字，也不展示 0；
+                    如果这个用户从来没有对这个作品签到过（ever_signed_in 为 false），不显示任何数字，也不展示 0；
+                    如果这个用户已经对这个作品签到过（ever_signed_in 为 true），展示 token_balance 的值； */}
+                    {/* 只要当前请求是登录态，就会有用户相关字段；是否展示数字只看 ever_signed_in */}
+                    {isWorkDetailAfterSignIn(workData) && workData.ever_signed_in
+                        ? `${workData.token_balance} `
+                        : ""}
                     {getWorkNameInitials(resolveLocalizedText(workData.work_name, "en")) + "s" ||
                         "—"}
                 </h2>
@@ -240,6 +248,7 @@ export function WorkDetailAirdrop({
 
     const [countdownParts, setCountdownParts] = useState(["00", "00", "00", "00"]);
     const [airdropStartText, setAirdropStartText] = useState("");
+    const [showCountdown, setShowCountdown] = useState(false);
     const [airdropInfo, setAirdropInfo] = useState<{
         total_amount: number;
         claimed_amount: number;
@@ -380,19 +389,27 @@ export function WorkDetailAirdrop({
 
     useEffect(() => {
         const startTime = workData.airdrop_start_time;
-        // const startTime = "2026-03-06T16:00:00Z";
         if (!startTime || typeof startTime !== "string") {
+            setShowCountdown(false);
             setCountdownParts(["00", "00", "00", "00"]);
             setAirdropStartText("");
             return;
         }
         const targetTime = Date.parse(startTime);
         if (Number.isNaN(targetTime)) {
+            setShowCountdown(false);
+            setCountdownParts(["00", "00", "00", "00"]);
+            setAirdropStartText("");
+            return;
+        }
+        if (targetTime <= Date.now()) {
+            setShowCountdown(false);
             setCountdownParts(["00", "00", "00", "00"]);
             setAirdropStartText("");
             return;
         }
 
+        setShowCountdown(true);
         const startDate = new Date(targetTime);
         const month = String(startDate.getMonth() + 1);
         const day = String(startDate.getDate());
@@ -410,6 +427,9 @@ export function WorkDetailAirdrop({
         const tick = () => {
             const now = Date.now();
             const remainSeconds = Math.max(0, Math.floor((targetTime - now) / 1000));
+            if (remainSeconds <= 0) {
+                setShowCountdown(false);
+            }
             const days = Math.floor(remainSeconds / 86400);
             const hours = Math.floor((remainSeconds % 86400) / 3600);
             const minutes = Math.floor((remainSeconds % 3600) / 60);
@@ -429,25 +449,31 @@ export function WorkDetailAirdrop({
 
     return (
         <section className="px-6">
-            {/* 倒计时 */}
-            <div className="flex items-center justify-center gap-2">
-                <div className="flex items-center gap-1 rounded-[20px]">
-                    {countdownParts.map((part, i) => (
-                        <div
-                            key={i}
-                            className="flex items-center justify-center text-[18px] font-bold text-white gap-1"
-                        >
-                            <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[16px] py-[8px] rounded-lg border border-[#E358FF]">
-                                {part}{" "}
-                            </div>
-                            {i > 0 && i < countdownParts.length - 1 ? ":" : ""}
+            {/* 倒计时：仅当 airdrop_start_time 存在且未结束时展示 */}
+            {!showCountdown && (
+                <>
+                    <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center gap-1 rounded-[20px]">
+                            {countdownParts.map((part, i) => (
+                                <div
+                                    key={i}
+                                    className="flex items-center justify-center text-[18px] font-bold text-white gap-1"
+                                >
+                                    <div className="bg-linear-to-b from-[#060320] to-[#860d68] px-[16px] py-[8px] rounded-lg border border-[#E358FF]">
+                                        {part}{" "}
+                                    </div>
+                                    {i < countdownParts.length - 1 ? ":" : ""}
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            </div>
-            {airdropStartText ? (
-                <div className="mt-2 text-center text-xs text-white/70">{airdropStartText}</div>
-            ) : null}
+                    </div>
+                    {airdropStartText ? (
+                        <div className="mt-2 text-center text-xs text-white/70">
+                            {airdropStartText}
+                        </div>
+                    ) : null}
+                </>
+            )}
 
             <div className="my-4 space-y-1">
                 <div className="flex flex-row items-center justify-between text-[14px] font-medium leading-tight text-white">
@@ -496,9 +522,11 @@ export function WorkDetailAirdrop({
                             onClick={copyLink}
                             aria-label={isCopied ? "Copied" : "Copy link"}
                         >
-                            <Copy
-                                className={`h-6 w-6 ${!isCopied ? "text-(--color-primary)" : "text-white"}`}
-                            />
+                            {isCopied ? (
+                                <Check className="h-6 w-6 text-white" />
+                            ) : (
+                                <Copy className="h-6 w-6 text-(--color-primary)" />
+                            )}
                         </button>
                     </div>
                 ) : (

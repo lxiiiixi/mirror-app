@@ -379,7 +379,7 @@ export interface WorkDetailBase {
     creative_team_members: CreativeTeamMembersItem[];
 }
 
-/** 未完成签到时的返回：仅包含基础字段，无 signed_in 或 signed_in 为 false */
+/** 未登录用户的作品详情：仅包含基础字段，不携带任何「当前用户」相关信息 */
 export interface WorkDetailBeforeSignIn extends WorkDetailBase {
     signed_in?: false;
 }
@@ -391,9 +391,14 @@ export interface WorkDetailCreativeTeamMember {
     avatar_url?: string;
 }
 
-/** 完成签到后的返回：在基础字段上增加签到/邀请/团队等字段，signed_in 为 true */
+/**
+ * 携带「当前用户」信息的作品详情：
+ * - 请求头里带上用户 token 时返回
+ * - `signed_in` 表示「今天是否已完成签到」，true/false 均可能
+ * - 只要用户已登录，这一整组字段都会存在（包括 ever_signed_in / token_balance 等）
+ */
 export interface WorkDetailAfterSignIn extends WorkDetailBase {
-    signed_in: true;
+    signed_in: boolean;
     can_show_team_btn: boolean;
     ever_signed_in: boolean;
     sign_in_time: string | null; // 今日签到时间（ISO8601/RFC3339）；未签到时为 null
@@ -415,25 +420,24 @@ export interface WorkDetailAfterSignIn extends WorkDetailBase {
 }
 
 /**
- * 作品详情接口返回：根据是否完成签到返回不同结构。
- * 使用可辨识联合，通过 signed_in 区分：
- * - 未签到：WorkDetailBeforeSignIn（signed_in 缺失或 false）
- * - 已签到：WorkDetailAfterSignIn（signed_in === true）
+ * 作品详情接口返回：
+ * - 未登录：WorkDetailBeforeSignIn（不返回任何用户相关字段，signed_in 缺失）
+ * - 已登录：WorkDetailAfterSignIn（返回签到/邀请/团队相关字段，signed_in 为 boolean）
  *
- * 使用示例：
- *   if (data.signed_in) {
+ * 使用示例（判断是否已登录）：
+ *   if (typeof data.signed_in === "boolean") {
  *     // data 被收窄为 WorkDetailAfterSignIn，可访问 my_invite_code、token_balance 等
  *   } else {
- *     // data 为 WorkDetailBeforeSignIn
+ *     // data 为 WorkDetailBeforeSignIn，仅有基础字段
  *   }
  */
 export type WorkDetailResponseData = WorkDetailBeforeSignIn | WorkDetailAfterSignIn;
 
-/** 类型守卫：判断是否为已签到状态的作品详情 */
+/** 类型守卫：判断当前是否为「已登录」的作品详情结构（不再表示“已签到”） */
 export function isWorkDetailAfterSignIn(
     data: WorkDetailResponseData,
 ): data is WorkDetailAfterSignIn {
-    return data.signed_in === true;
+    return typeof data.signed_in === "boolean";
 }
 
 export interface WorkUploadRequest {

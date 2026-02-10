@@ -71,7 +71,7 @@ export const useWallet = () => {
         setConnected(false);
         lastLoggedAddressRef.current = null;
         manualConnectRef.current = false;
-    }, [appKitDisconnect, appKit.disconnect, setAddress, setConnected, walletProvider]);
+    }, [appKitDisconnect, setAddress, setConnected, walletProvider, appKit]);
 
     const signInWithWallet = useCallback(async () => {
         if (!address || !walletProvider) return;
