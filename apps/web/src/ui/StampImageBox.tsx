@@ -1,0 +1,159 @@
+import { CSSProperties, HTMLAttributes, forwardRef, useId } from "react";
+import { resolveImageUrl } from "@mirror/utils";
+
+export interface StampImageBoxProps extends HTMLAttributes<HTMLDivElement> {
+    /**
+     * 图片地址
+     */
+    src: string;
+
+    /**
+     * 图片 alt 文案
+     */
+    alt?: string;
+
+    /**
+     * 组件宽度，默认 180px
+     */
+    width?: number | string;
+
+    /**
+     * 组件高度，默认 255px
+     */
+    height?: number | string;
+
+    /**
+     * 外部阴影颜色
+     */
+    shadowColor?: string;
+
+    /**
+     * 外部阴影模糊值（px）
+     */
+    shadowBlur?: number;
+}
+
+/**
+ * StampImageBox 组件
+ * 邮票齿孔效果图片盒子
+ */
+export const StampImageBox = forwardRef<HTMLDivElement, StampImageBoxProps>(
+    (
+        {
+            src,
+            alt = "stamp",
+            width = 180,
+            height = 255,
+            shadowColor = "rgba(157, 15, 179, 1)",
+            shadowBlur = 10,
+            className = "",
+            style,
+            ...props
+        },
+        ref,
+    ) => {
+        const clipId = useId().replace(/:/g, "");
+        const clipPathId = `stamp-clip-${clipId}`;
+        const resolvedSrc = resolveImageUrl(src);
+
+        const normalizedWidth = typeof width === "number" ? `${width}px` : width;
+        const normalizedHeight = typeof height === "number" ? `${height}px` : height;
+
+        const mergedStyle = {
+            "--stamp-width": normalizedWidth,
+            "--stamp-height": normalizedHeight,
+            "--stamp-shadow-color": shadowColor,
+            "--stamp-shadow-blur": `${shadowBlur}px`,
+            ...style,
+        } as CSSProperties;
+
+        const clipStyle: CSSProperties = {
+            clipPath: `url(#${clipPathId})`,
+            WebkitClipPath: `url(#${clipPathId})`,
+        };
+
+        return (
+            <div ref={ref} className={`stamp-wrapper ${className}`} style={mergedStyle} {...props}>
+                <svg
+                    className="stamp-clip-defs"
+                    width="0"
+                    height="0"
+                    viewBox="0 0 180 255"
+                    aria-hidden="true"
+                    focusable="false"
+                >
+                    <defs>
+                        <clipPath id={clipPathId} clipPathUnits="objectBoundingBox">
+                            <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                transform="scale(0.0055555556 0.0039215686)"
+                                d="M180 0H0V8.64341C2.48533 8.64341 4.50133 10.5792 4.50133 12.9673C4.50133 15.3532 2.48666 17.289 0.00133091 17.289L0 23.7704C2.48533 23.7704 4.50133 25.7062 4.50133 28.0944C4.50133 30.4803 2.48666 32.416 0.00133091 32.416L0 38.8975C2.48533 38.8975 4.50133 40.8333 4.50133 43.2214C4.50133 45.6073 2.48666 47.5431 0.00133091 47.5431L0 54.0246C2.48533 54.0246 4.50133 55.9603 4.50133 58.3484C4.50133 60.7343 2.48666 62.6701 0.00133091 62.6701L0 69.1538C2.48533 69.1538 4.50133 71.0873 4.50133 73.4754C4.50133 75.8614 2.48666 77.7971 0.00133091 77.7971L0 84.2786C2.48533 84.2786 4.50133 86.2144 4.50133 88.6003C4.50133 90.9884 2.48666 92.922 0.00133091 92.922L0 99.4056C2.48533 99.4056 4.50133 101.341 4.50133 103.73C4.50133 106.115 2.48666 108.051 0.00133091 108.051L0 114.535C2.48533 114.535 4.50133 116.468 4.50133 118.857C4.50133 121.242 2.48666 123.178 0.00133091 123.178L0 129.662C2.48533 129.662 4.50133 131.596 4.50133 133.984C4.50133 136.37 2.48666 138.305 0.00133091 138.305L0 144.789C2.48533 144.789 4.50133 146.723 4.50133 149.111C4.50133 151.497 2.48666 153.432 0.00133091 153.432L0 159.916C2.48533 159.916 4.50133 161.852 4.50133 164.238C4.50133 166.626 2.48666 168.559 0.00133091 168.559L0 175.043C2.48533 175.043 4.50133 176.979 4.50133 179.365C4.50133 181.751 2.48666 183.686 0.00133091 183.686L0 190.17C2.48533 190.17 4.50133 192.104 4.50133 194.492C4.50133 196.878 2.48666 198.814 0.00133091 198.814L0 205.297C2.48533 205.297 4.50133 207.233 4.50133 209.619C4.50133 212.007 2.48666 213.94 0.00133091 213.94L0 220.424C2.48533 220.424 4.50133 222.36 4.50133 224.746C4.50133 227.134 2.48666 229.068 0.00133091 229.068L0 235.551C2.48533 235.551 4.50133 237.487 4.50133 239.873C4.50133 242.261 2.48666 244.195 0.00133091 244.195L0 255H180V243.115C177.516 243.115 175.502 241.179 175.502 238.793C175.502 236.407 177.516 234.471 180 234.471V227.988C177.516 227.988 175.502 226.052 175.502 223.666C175.502 221.28 177.516 219.344 180 219.344V212.861C177.516 212.861 175.502 210.925 175.502 208.539C175.502 206.151 177.516 204.217 180 204.217V197.734C177.516 197.734 175.502 195.798 175.502 193.412C175.502 191.024 177.516 189.09 180 189.09V182.607C177.516 182.607 175.502 180.671 175.502 178.285C175.502 175.899 177.516 173.963 180 173.963V167.48C177.516 167.48 175.502 165.544 175.502 163.158C175.502 160.772 177.516 158.836 180 158.836V152.353C177.516 152.35 175.502 150.417 175.502 148.031C175.502 145.643 177.516 143.709 180 143.707V137.225C177.516 137.225 175.502 135.29 175.502 132.904C175.502 130.518 177.516 128.582 180 128.582V122.098C177.516 122.098 175.502 120.163 175.502 117.777C175.502 115.389 177.516 113.455 180 113.455V106.971C177.516 106.969 175.502 105.036 175.502 102.65C175.502 100.262 177.516 98.328 180 98.3258V91.8421C177.516 91.8421 175.502 89.9063 175.502 87.5204C175.502 85.1345 177.516 83.1987 180 83.1987V76.7173C177.516 76.7151 175.502 74.7815 175.502 72.3956C175.502 70.0074 177.516 68.0739 180 68.0717V61.5903C177.516 61.588 175.502 59.6545 175.502 57.2686C175.502 54.8804 177.516 52.9469 180 52.9447V46.461C177.516 46.461 175.502 44.5252 175.502 42.1393C175.502 39.7534 177.516 37.8176 180 37.8176V31.3361C177.516 31.3339 175.502 29.4004 175.502 27.0123C175.502 24.6264 177.516 22.6928 180 22.6906V16.2069C177.516 16.2069 175.502 14.2711 175.502 11.8852C175.502 9.49927 177.516 7.56355 180 7.56355V0Z"
+                            />
+                        </clipPath>
+                    </defs>
+                </svg>
+
+                <div className="stamp-border-frame">
+                    <div className="stamp-container" style={clipStyle}>
+                        <div className="stamp-content">
+                            <img src={resolvedSrc} alt={alt} />
+                        </div>
+                    </div>
+                </div>
+
+                <style jsx>{`
+                    .stamp-wrapper {
+                        position: relative;
+                        display: inline-block;
+                        width: var(--stamp-width, 180px);
+                        height: var(--stamp-height, 255px);
+                    }
+
+                    .stamp-clip-defs {
+                        position: absolute;
+                        width: 0;
+                        height: 0;
+                        pointer-events: none;
+                    }
+
+                    .stamp-border-frame {
+                        position: relative;
+                        width: 100%;
+                        height: 100%;
+                        filter: drop-shadow(
+                            0 0 var(--stamp-shadow-blur, 10px)
+                                var(--stamp-shadow-color, rgba(157, 15, 179, 1))
+                        );
+                    }
+
+                    .stamp-container {
+                        position: absolute;
+                        inset: 0;
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    .stamp-content {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        overflow: hidden;
+                        position: relative;
+                    }
+
+                    .stamp-content img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        display: block;
+                    }
+                `}</style>
+            </div>
+        );
+    },
+);
+
+StampImageBox.displayName = "StampImageBox";

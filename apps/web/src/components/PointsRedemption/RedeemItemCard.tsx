@@ -1,9 +1,8 @@
 import { HTMLAttributes, forwardRef, MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../ui";
+import { Button, StampImageBox } from "../../ui";
 import { PointsProductItem } from "@mirror/api";
-import { ImageWrapper } from "../Common/ImageWrapper";
-import { createNoiseDataUrl, Noise } from "../../ui/Noise/Noise";
+import { createNoiseDataUrl } from "../../ui/Noise/Noise";
 
 export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
     data: PointsProductItem;
@@ -43,12 +42,11 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
                 }}
                 {...props}
             >
-                <div className="absolute left-3 bottom-3 w-[90px] h-[110px] shrink-0">
-                    <ImageWrapper
-                        // src={data.image_url ?? ""}
-                        src={"https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"}
-                        alt={data.name}
-                        className="w-full h-full object-cover"
+                <div className="absolute left-3 bottom-3 shrink-0">
+                    <StampImageBox
+                        src="https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"
+                        width={85}
+                        height={119} // ratio 1.4
                     />
                 </div>
 
