@@ -252,7 +252,7 @@
       "missingWorkIdForPage": "缺少作品ID，無法進入積分商城。",
       "historyFailed": "兌換記錄載入失敗。"
     },
-    "emptyProducts": "暫無可兌換商品",
+    "emptyProducts": "積分禮品即將到來，伙伴們請耐心等待。",
     "emptyOrders": "暫無兌換記錄",
     "save": "儲存",
     "points": "{{value}} 積分",

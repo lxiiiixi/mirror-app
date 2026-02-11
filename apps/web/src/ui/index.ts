@@ -43,3 +43,5 @@ export { Progress } from "./Progress/Progress";
 export type { ProgressProps, ProgressSize } from "./Progress/Progress";
 export { AppLayout } from "./AppLayout";
 export type { AppLayoutProps, AppLayoutFooterItem } from "./AppLayout";
+export { Noise } from "./Noise/Noise";
+export type { NoiseProps, NoiseVariant, NoiseOptions } from "./Noise/Noise";

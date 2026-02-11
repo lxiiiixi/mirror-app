@@ -252,7 +252,7 @@
       "missingWorkIdForPage": "缺少作品ID，无法进入积分商城。",
       "historyFailed": "兑换记录加载失败。"
     },
-    "emptyProducts": "暂无可兑换商品",
+    "emptyProducts": "积分礼品即将到来，伙伴们请耐心等待。",
     "emptyOrders": "暂无兑换记录",
     "save": "保存",
     "points": "{{value}} 积分",

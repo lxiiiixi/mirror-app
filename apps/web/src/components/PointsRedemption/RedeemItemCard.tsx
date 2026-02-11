@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../../ui";
 import { PointsProductItem } from "@mirror/api";
 import { ImageWrapper } from "../Common/ImageWrapper";
+import { createNoiseDataUrl, Noise } from "../../ui/Noise/Noise";
 
 export interface RedeemItemCardProps extends HTMLAttributes<HTMLDivElement> {
     data: PointsProductItem;
@@ -31,18 +32,26 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
             onAction?.();
         };
 
+        const noiseUrl = createNoiseDataUrl({ baseFrequency: 0.65, numOctaves: 3, opacity: 0.35 });
+
         return (
             <div
                 ref={ref}
-                className={`relative flex gap-4 rounded-2xl border border-white/20 bg-linear-to-br from-white/5 to-white/20 p-4 pl-[130px] h-[130px] backdrop-blur-sm ${className}`}
+                className={`relative flex gap-4 rounded-2xl border border-white/20 p-2 pl-[130px] h-[100px] backdrop-blur-[100px] ${className}`}
+                style={{
+                    backgroundImage: `linear-gradient(to right bottom, var(--color-bg), rgba(0,0,0,0)), url("${noiseUrl}")`,
+                }}
                 {...props}
             >
-                <ImageWrapper
-                    // src={data.image_url ?? ""}
-                    src={"https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"}
-                    alt={data.name}
-                    className="absolute left-4 bottom-4 w-[100px] h-[140px] shrink-0"
-                />
+                <div className="absolute left-3 bottom-3 w-[90px] h-[110px] shrink-0">
+                    <ImageWrapper
+                        // src={data.image_url ?? ""}
+                        src={"https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"}
+                        alt={data.name}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+
                 <div className="flex min-w-0 flex-1 flex-col">
                     <h3 className="truncate text-base font-bold text-white">{data.name}</h3>
                     <div className="mt-1 text-sm font-medium text-white/80">
@@ -53,7 +62,7 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
                     <div className="mt-1 text-sm font-medium text-white/80">
                         {t("redeemItemCard.stock", { value: data.stock.toLocaleString() })}
                     </div>
-                    <div className="absolute right-4 bottom-4">
+                    <div className="absolute right-3 bottom-3">
                         <Button
                             variant="primary"
                             size="small"

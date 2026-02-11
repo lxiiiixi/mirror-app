@@ -164,7 +164,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     {/* 作品类型 */}
                                     <div className="absolute z-8 top-[15px] right-[15px] flex justify-center items-center">
                                         <img
-                                            className="mr-[5px] mt-px w-[14px] h-[12px] invert brightness-100 filter-[drop-shadow(0_1px_1px_rgba(35,35,35,0.8))]"
+                                            className="mr-[5px] w-[14px] h-[12px] invert brightness-100 -mt-[2px]"
                                             src={`${workInfo!.icon}`}
                                             alt={workInfo!.text}
                                         />

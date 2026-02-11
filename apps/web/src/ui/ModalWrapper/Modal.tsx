@@ -147,14 +147,6 @@ export function Modal({
                 role="presentation"
             >
                 <div className="relative flex items-start justify-center">
-                    {illustration ? (
-                        <div
-                            className="pointer-events-none absolute -top-[90px] left-1/2 z-0 -translate-x-1/2 bg-amber-50"
-                            aria-hidden
-                        >
-                            {illustration}
-                        </div>
-                    ) : null}
                     {borderVariant === "gradient" ? (
                         <div
                             className="modal-gradient-ring relative z-10 rounded-2xl p-[2px]"
@@ -162,9 +154,17 @@ export function Modal({
                             role="presentation"
                         >
                             <div className="modal-gradient-ring-inner">
+                                {illustration ? (
+                                    <div
+                                        className="pointer-events-none absolute -top-[90px] left-1/2 z-0 -translate-x-1/2"
+                                        aria-hidden
+                                    >
+                                        {illustration}
+                                    </div>
+                                ) : null}
                                 <div
                                     className={[
-                                        "modal-panel w-full max-w-lg overflow-hidden rounded-[14px] border-0",
+                                        "modal-panel w-full max-w-lg overflow-hidden rounded-[14px] border-0 backdrop-blur-[5px]",
                                         panelClassName,
                                     ]
                                         .filter(Boolean)

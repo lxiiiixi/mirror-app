@@ -384,13 +384,13 @@ export function CheckInModal({
         onInvite?.();
     };
     /* 跟 Modal 框内容本身对其，使 2/3 露出、1/3 被面板遮住 */
-    // const illustration = (
-    //     <img
-    //         src={images.works.checkInSuccess}
-    //         className="w-full object-contain"
-    //         // aria-hidden={false}
-    //     />
-    // );
+    const illustration = (
+        <img
+            src={images.works.checkInSuccess}
+            className="w-full object-contain"
+            // aria-hidden={false}
+        />
+    );
 
     return (
         <Modal
@@ -401,7 +401,7 @@ export function CheckInModal({
             borderVariant="gradient"
             panelClassName="min-w-[320px] max-w-[calc(100vw-32px)]"
             bodyClassName="px-4 py-4"
-            // illustration={illustration}
+            illustration={illustration}
         >
             <div className="space-y-4">
                 {HeadingSrc}
