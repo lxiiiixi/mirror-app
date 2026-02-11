@@ -34,10 +34,7 @@ export function formatNumber(value?: number | string | null): string {
  * formatAmount(1234.56789, 2)        // "1,234.57"
  * formatAmount(null)                 // "0"
  */
-export function formatAmount(
-    value?: number | string | null,
-    maximumFractionDigits = 4
-): string {
+export function formatAmount(value?: number | string | null, maximumFractionDigits = 4): string {
     if (value === undefined || value === null || value === "") return "0";
     const numberValue = Number(value);
     if (!Number.isFinite(numberValue)) return String(value);
@@ -46,22 +43,12 @@ export function formatAmount(
     });
 }
 
-/**
- * 将「千分单位」的奖励值转为实际数值（除以 1000），并保留最多 3 位小数。
- * 用于后端返回的毫级/千分单位与前端展示单位的转换。
- *
- * @param reward - 千分单位的数字或字符串，如 1500 表示 1.5
- * @returns 转换后的数值，非数字或空值返回 0
- *
- * @example
- * formatReward(1500)   // 1.5
- * formatReward("2000") // 2
- */
-export function formatReward(reward?: string | number | null): number {
+export function formatEnt(reward?: string | number | null): number {
     const raw = Number(reward ?? 0);
     if (!Number.isFinite(raw)) return 0;
-    const value = raw / 1000;
-    return Math.round(value * 1000) / 1000;
+    const entDecimals = 10 ** 6;
+    const value = raw / entDecimals;
+    return Math.round(value * entDecimals) / entDecimals;
 }
 
 /**
@@ -83,7 +70,7 @@ export function formatShortAddress(
     address?: string | number | null,
     headLength = 6,
     tailLength = 4,
-    separator = "..."
+    separator = "...",
 ): string {
     if (address === undefined || address === null) return "";
     const text = String(address).trim();
@@ -142,7 +129,7 @@ export function formatDateTime(value?: string | null): string {
 export function formatDisplayNumber(
     value?: number | string | null,
     maximumFractionDigits = 6,
-    emptyPlaceholder = "-"
+    emptyPlaceholder = "-",
 ): string {
     if (value === undefined || value === null || value === "") return emptyPlaceholder;
     const numberValue = Number(value);
@@ -163,10 +150,7 @@ export function formatDisplayNumber(
  * formatCurrency(1234.5)   // "$1,234.5"
  * formatCurrency(0)        // "-"
  */
-export function formatCurrency(
-    value?: number | string | null,
-    maximumFractionDigits = 6
-): string {
+export function formatCurrency(value?: number | string | null, maximumFractionDigits = 6): string {
     const text = formatDisplayNumber(value, maximumFractionDigits, "-");
     return text === "-" ? "-" : `$${text}`;
 }

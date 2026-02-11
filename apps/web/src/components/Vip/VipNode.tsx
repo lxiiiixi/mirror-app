@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { images } from "@mirror/assets";
-import {
-    formatAmount,
-    formatDate,
-    formatReward,
-    formatShortAddress,
-} from "@mirror/utils";
+import { formatAmount, formatDate, formatEnt, formatShortAddress } from "@mirror/utils";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
@@ -31,8 +26,7 @@ type InviteRecord = {
 };
 
 /** 邀请列表内地址展示：前3位 + *** + 后4位 */
-const formatAddress = (address?: string | number) =>
-    formatShortAddress(address, 3, 4, "***");
+const formatAddress = (address?: string | number) => formatShortAddress(address, 3, 4, "***");
 
 const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: number }) => {
     const [open, setOpen] = useState(false);
@@ -240,10 +234,10 @@ export function VipNode() {
             const rewardsInfo = rewardData?.rewards_info ?? rewardData ?? {};
             const totalData = rewardsInfo?.total_cycle_rewards ?? {};
             setRewards({
-                total_base_mining_reward: formatReward(totalData?.base_mining_reward),
-                total_invite_reward: formatReward(totalData?.invite_reward),
-                total_level_bonus_reward: formatReward(totalData?.level_bonus_reward),
-                total_total_reward: formatReward(totalData?.total_reward),
+                total_base_mining_reward: formatEnt(totalData?.base_mining_reward),
+                total_invite_reward: formatEnt(totalData?.invite_reward),
+                total_level_bonus_reward: formatEnt(totalData?.level_bonus_reward),
+                total_total_reward: formatEnt(totalData?.total_reward),
             });
         } catch (error) {
             console.error("[VipNode] load data failed", error);
@@ -266,7 +260,9 @@ export function VipNode() {
             <div className="card revenue">
                 <div className="grid">
                     <div>
-                        <div className="value text-[14px]">{rewards.total_base_mining_reward} ENT</div>
+                        <div className="value text-[14px]">
+                            {rewards.total_base_mining_reward} ENT
+                        </div>
                         <div className="label text-[12px]">{t("totalRevenue.dailyRevenue")}</div>
                     </div>
                     <div>
@@ -274,12 +270,18 @@ export function VipNode() {
                         <div className="label text-[12px]">{t("totalRevenue.teamRevenue")}</div>
                     </div>
                     <div>
-                        <div className="value text-[14px]">{rewards.total_level_bonus_reward} ENT</div>
-                        <div className="label text-[12px]">{t("totalRevenue.destructionRevenue")}</div>
+                        <div className="value text-[14px]">
+                            {rewards.total_level_bonus_reward} ENT
+                        </div>
+                        <div className="label text-[12px]">
+                            {t("totalRevenue.destructionRevenue")}
+                        </div>
                     </div>
                     <div>
                         <div className="value text-[14px]">{rewards.total_total_reward} ENT</div>
-                        <div className="label text-[12px]">{t("totalRevenue.directSalesRevenue")}</div>
+                        <div className="label text-[12px]">
+                            {t("totalRevenue.directSalesRevenue")}
+                        </div>
                     </div>
                 </div>
             </div>

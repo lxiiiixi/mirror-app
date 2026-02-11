@@ -382,6 +382,7 @@ export function WorkDetailAirdrop({
     const visits = workData.number_of_participants ?? 0;
     const totalAmount = airdropInfo?.total_amount ?? 0;
     const claimedAmount = airdropInfo?.claimed_amount ?? 0;
+    // 空投百分比进度条
     const progressPercent =
         totalAmount > 0 ? Math.min(100, Math.round((claimedAmount / totalAmount) * 100)) : 0;
     const airdropAmountFormatted =
@@ -450,7 +451,7 @@ export function WorkDetailAirdrop({
     return (
         <section className="px-6">
             {/* 倒计时：仅当 airdrop_start_time 存在且未结束时展示 */}
-            {!showCountdown && (
+            {showCountdown && (
                 <>
                     <div className="flex items-center justify-center gap-2">
                         <div className="flex items-center gap-1 rounded-[20px]">

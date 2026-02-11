@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { images } from "@mirror/assets";
 import type { UserLevelProgressItem } from "@mirror/api";
-import { formatReward } from "@mirror/utils";
+import { formatEnt } from "@mirror/utils";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { useAlertStore } from "../../store/useAlertStore";
@@ -114,29 +114,29 @@ export function VipMining() {
 
             const rewardData = rewardsResponse.data;
             setRewards({
-                pending_rewards: formatReward(rewardData?.rewards_info?.pending_rewards),
-                total_base_mining_reward: formatReward(
+                pending_rewards: formatEnt(rewardData?.rewards_info?.pending_rewards),
+                total_base_mining_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.base_mining_reward,
                 ),
-                total_invite_reward: formatReward(
+                total_invite_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.invite_reward,
                 ),
-                total_level_bonus_reward: formatReward(
+                total_level_bonus_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.level_bonus_reward,
                 ),
-                total_total_reward: formatReward(
+                total_total_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.total_reward,
                 ),
-                today_base_mining_reward: formatReward(
+                today_base_mining_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.base_mining_reward,
                 ),
-                today_invite_reward: formatReward(
+                today_invite_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.invite_reward,
                 ),
-                today_level_bonus_reward: formatReward(
+                today_level_bonus_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.level_bonus_reward,
                 ),
-                today_total_reward: formatReward(
+                today_total_reward: formatEnt(
                     rewardData?.rewards_info?.latest_cycle_rewards?.total_reward,
                 ),
             });
