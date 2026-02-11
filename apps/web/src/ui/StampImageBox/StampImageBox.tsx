@@ -45,8 +45,8 @@ export const StampImageBox = forwardRef<HTMLDivElement, StampImageBoxProps>(
             alt = "stamp",
             width = 180,
             height = 255,
-            shadowColor = "rgba(157, 15, 179, 1)",
-            shadowBlur = 10,
+            shadowColor = "rgba(157, 15, 179, 0.7)",
+            shadowBlur = 2,
             className = "",
             style,
             ...props

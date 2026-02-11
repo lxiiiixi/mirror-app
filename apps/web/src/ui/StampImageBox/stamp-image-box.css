@@ -1,8 +1,10 @@
 .stamp-image-box {
     position: relative;
     display: block;
-    width: var(--stamp-width, 180px);
-    height: var(--stamp-height, 255px);
+    /* width: var(--stamp-width, 180px);
+    height: var(--stamp-height, 255px); */
+    width: 85px;
+    height: 115px;
 }
 
 .stamp-image-box__defs {
@@ -17,8 +19,11 @@
     width: 100%;
     height: 100%;
     filter: drop-shadow(
-        0 0 var(--stamp-shadow-blur, 10px) var(--stamp-shadow-color, rgba(157, 15, 179, 1))
-    );
+            2px 1px var(--stamp-shadow-blur, 10px) var(--stamp-shadow-color, rgb(206, 82, 225))
+        )
+        drop-shadow(
+            -2px -1px var(--stamp-shadow-blur, 10px) var(--stamp-shadow-color, rgb(206, 82, 225))
+        );
 }
 
 .stamp-image-box__container {
