@@ -28,6 +28,7 @@ import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useAuth } from "../hooks/useAuth";
 import { artsApiClient } from "../api/artsClient";
 import { useAlertStore } from "../store/useAlertStore";
+import { useHomeWorkListStore } from "../store/useHomeWorkListStore";
 
 function Home() {
     const { t, i18n } = useTranslation();
@@ -35,27 +36,65 @@ function Home() {
     const navigate = useNavigate();
     const languageKey = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const { primaryWallet } = useUserWalletsStore();
-    const userId = primaryWallet?.uid ?? "";
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
     const showAlert = useAlertStore(s => s.show);
+    const {
+        items: cachedItems,
+        total: cachedTotal,
+        page: cachedPage,
+        hasMore: cachedHasMore,
+        language: cachedLanguage,
+        updatedAt: cachedUpdatedAt,
+        hasFetched: cachedHasFetched,
+        setCache,
+    } = useHomeWorkListStore();
+    const isCacheValid = useMemo(() => {
+        const CACHE_TTL_MS = 5 * 60 * 1000;
+        if (!cachedHasFetched) return false;
+        if (!cachedLanguage || cachedLanguage !== languageKey) return false;
+        if (!cachedUpdatedAt) return false;
+        return Date.now() - cachedUpdatedAt < CACHE_TTL_MS;
+    }, [cachedHasFetched, cachedLanguage, cachedUpdatedAt, languageKey]);
 
     const {
         items: workList,
         isLoading,
         isLoadingMore,
+        status,
+        total,
+        page,
+        hasMore,
         setScrollElement,
         refresh,
     } = useInfiniteWorkList({
         pageSize: 12,
         autoLoad: false,
         retainOnRefresh: true,
+        initialItems: isCacheValid ? cachedItems : undefined,
+        initialTotal: isCacheValid ? cachedTotal : undefined,
+        initialPage: isCacheValid ? cachedPage : 1,
+        initialHasMore: isCacheValid ? cachedHasMore : undefined,
+        initialStatus: isCacheValid ? "success" : "idle",
     });
 
     useEffect(() => {
         if (typeof window === "undefined") return;
+        if (isCacheValid) return;
         refresh();
-    }, [languageKey, refresh]);
+    }, [languageKey, refresh, isCacheValid]);
+
+    useEffect(() => {
+        if (status !== "success") return;
+        setCache({
+            items: workList,
+            total,
+            page,
+            hasMore,
+            language: languageKey,
+            hasFetched: true,
+        });
+    }, [hasMore, languageKey, page, setCache, status, total, workList]);
 
     useEffect(() => {
         if (typeof window === "undefined") return;

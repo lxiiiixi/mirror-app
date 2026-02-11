@@ -12,6 +12,10 @@ export type InfiniteWorkListStatus = 'idle' | 'loading' | 'loadingMore' | 'succe
 export interface UseInfiniteWorkListOptions {
   pageSize?: number
   initialPage?: number
+  initialItems?: WorkSummary[]
+  initialTotal?: number
+  initialHasMore?: boolean
+  initialStatus?: InfiniteWorkListStatus
   filters?: Omit<WorkListParams, 'page' | 'page_size'>
   enabled?: boolean
   autoLoad?: boolean
@@ -66,6 +70,10 @@ export const useInfiniteWorkList = (
   {
     pageSize = 12,
     initialPage = 1,
+    initialItems,
+    initialTotal,
+    initialHasMore,
+    initialStatus,
     filters,
     enabled = true,
     autoLoad = true,
@@ -75,12 +83,16 @@ export const useInfiniteWorkList = (
     client = defaultClient,
   }: UseInfiniteWorkListOptions = {},
 ): UseInfiniteWorkListResult => {
-  const [items, setItems] = useState<WorkSummary[]>([])
-  const [total, setTotal] = useState(0)
+  const [items, setItems] = useState<WorkSummary[]>(initialItems ?? [])
+  const [total, setTotal] = useState(initialTotal ?? 0)
   const [page, setPage] = useState(initialPage)
-  const [status, setStatus] = useState<InfiniteWorkListStatus>('idle')
+  const [status, setStatus] = useState<InfiniteWorkListStatus>(
+    initialStatus ?? 'idle',
+  )
   const [error, setError] = useState<unknown>(undefined)
-  const [hasMore, setHasMore] = useState(true)
+  const [hasMore, setHasMore] = useState(
+    typeof initialHasMore === 'boolean' ? initialHasMore : true,
+  )
   const [currentScrollElement, setScrollElement] = useState<ScrollElement | null>(
     scrollElement,
   )
