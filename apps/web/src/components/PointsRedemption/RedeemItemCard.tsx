@@ -36,7 +36,7 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
         return (
             <div
                 ref={ref}
-                className={`relative flex gap-4 rounded-2xl border border-white/20 p-2 pl-[130px] h-[100px] backdrop-blur-[100px] ${className}`}
+                className={`relative flex gap-4 rounded-2xl border border-white/20 p-2 pl-[110px] h-[100px] backdrop-blur-[100px] ${className}`}
                 style={{
                     backgroundImage: `linear-gradient(to right bottom, var(--color-bg), rgba(0,0,0,0)), url("${noiseUrl}")`,
                 }}
@@ -44,7 +44,9 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
             >
                 <div className="absolute left-3 bottom-3 shrink-0">
                     <StampImageBox
-                        src="https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"
+                        // src="https://testimage.mirror.fan/upload/lgn/lgn_poster1.jpeg"
+                        src={data.image_url ?? ""}
+                        alt={""}
                         width={85}
                         height={119} // ratio 1.4
                     />

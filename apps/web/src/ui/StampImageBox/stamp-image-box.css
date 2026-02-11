@@ -1,0 +1,46 @@
+.stamp-image-box {
+    position: relative;
+    display: block;
+    width: var(--stamp-width, 180px);
+    height: var(--stamp-height, 255px);
+}
+
+.stamp-image-box__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.stamp-image-box__frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(
+        0 0 var(--stamp-shadow-blur, 10px) var(--stamp-shadow-color, rgba(157, 15, 179, 1))
+    );
+}
+
+.stamp-image-box__container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.stamp-image-box__content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.stamp-image-box__content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

@@ -1,5 +1,6 @@
 import { CSSProperties, HTMLAttributes, forwardRef, useId } from "react";
 import { resolveImageUrl } from "@mirror/utils";
+import "./stamp-image-box.css";
 
 export interface StampImageBoxProps extends HTMLAttributes<HTMLDivElement> {
     /**
@@ -73,9 +74,14 @@ export const StampImageBox = forwardRef<HTMLDivElement, StampImageBoxProps>(
         };
 
         return (
-            <div ref={ref} className={`stamp-wrapper ${className}`} style={mergedStyle} {...props}>
+            <div
+                ref={ref}
+                className={`stamp-image-box ${className}`}
+                style={mergedStyle}
+                {...props}
+            >
                 <svg
-                    className="stamp-clip-defs"
+                    className="stamp-image-box__defs"
                     width="0"
                     height="0"
                     viewBox="0 0 180 255"
@@ -94,63 +100,13 @@ export const StampImageBox = forwardRef<HTMLDivElement, StampImageBoxProps>(
                     </defs>
                 </svg>
 
-                <div className="stamp-border-frame">
-                    <div className="stamp-container" style={clipStyle}>
-                        <div className="stamp-content">
+                <div className="stamp-image-box__frame">
+                    <div className="stamp-image-box__container" style={clipStyle}>
+                        <div className="stamp-image-box__content">
                             <img src={resolvedSrc} alt={alt} />
                         </div>
                     </div>
                 </div>
-
-                <style jsx>{`
-                    .stamp-wrapper {
-                        position: relative;
-                        display: inline-block;
-                        width: var(--stamp-width, 180px);
-                        height: var(--stamp-height, 255px);
-                    }
-
-                    .stamp-clip-defs {
-                        position: absolute;
-                        width: 0;
-                        height: 0;
-                        pointer-events: none;
-                    }
-
-                    .stamp-border-frame {
-                        position: relative;
-                        width: 100%;
-                        height: 100%;
-                        filter: drop-shadow(
-                            0 0 var(--stamp-shadow-blur, 10px)
-                                var(--stamp-shadow-color, rgba(157, 15, 179, 1))
-                        );
-                    }
-
-                    .stamp-container {
-                        position: absolute;
-                        inset: 0;
-                        width: 100%;
-                        height: 100%;
-                    }
-
-                    .stamp-content {
-                        width: 100%;
-                        height: 100%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        overflow: hidden;
-                        position: relative;
-                    }
-
-                    .stamp-content img {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        display: block;
-                    }
-                `}</style>
             </div>
         );
     },

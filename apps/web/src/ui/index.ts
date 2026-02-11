@@ -45,5 +45,5 @@ export { AppLayout } from "./AppLayout";
 export type { AppLayoutProps, AppLayoutFooterItem } from "./AppLayout";
 export { Noise } from "./Noise/Noise";
 export type { NoiseProps, NoiseVariant, NoiseOptions } from "./Noise/Noise";
-export { StampImageBox } from "./StampImageBox";
-export type { StampImageBoxProps } from "./StampImageBox";
+export { StampImageBox } from "./StampImageBox/StampImageBox";
+export type { StampImageBoxProps } from "./StampImageBox/StampImageBox";
