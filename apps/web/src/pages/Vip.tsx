@@ -2,17 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Notice, ProjectTabs } from "../ui";
 import { VipAbout, VipMining, VipNode } from "../components";
+import { STORAGE_KEYS, getStorageItem, removeStorageItem } from "../utils/localStorage";
 
 function Vip() {
     const { t } = useTranslation();
     const [activeProject, setActiveProject] = useState(0);
 
     useEffect(() => {
-        if (typeof window === "undefined") return;
-        const shouldShowMining = window.localStorage.getItem("su");
+        const shouldShowMining = getStorageItem(STORAGE_KEYS.vipMiningTab);
         if (shouldShowMining) {
             setActiveProject(1);
-            window.localStorage.removeItem("su");
+            removeStorageItem(STORAGE_KEYS.vipMiningTab);
         }
     }, []);
 

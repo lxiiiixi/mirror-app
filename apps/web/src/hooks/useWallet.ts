@@ -8,6 +8,9 @@ import { useAlertStore } from "../store/useAlertStore";
 import { envConfigs } from "@mirror/utils";
 import { clearPendingInviteParams, getPendingInviteParams } from "../utils/inviteParams";
 
+// const buildLoginMessage = (address: string) =>
+//     `Welcome to Mirror.Fan! Click to sign in and accept the Terms of Service. This request will not trigger a blockchain transaction or cost any gas fees. Wallet address: ${address} Nonce: ${Date.now()}`;
+
 const buildLoginMessage = () => `Login Time ${Date.now()}`;
 
 const encodeSignature = (signature: Uint8Array) => {
@@ -26,11 +29,19 @@ export const useWallet = () => {
 
     const setAddress = useWalletStore(state => state.setAddress);
     const setConnected = useWalletStore(state => state.setConnected);
+    const disconnectRequested = useWalletStore(state => state.disconnectRequested);
+    const clearDisconnectRequest = useWalletStore(state => state.clearDisconnectRequest);
 
     const [isLoggingIn, setIsLoggingIn] = useState(false);
-    const lastLoggedAddressRef = useRef<string | null>(null);
     const wasWalletLoginRef = useRef(loginMethod === "wallet");
     const manualConnectRef = useRef(false);
+    const lastSignAttemptRef = useRef<string | null>(null);
+
+    console.log("[useWallet] app kit state", {
+        address,
+        isConnected,
+        status,
+    });
 
     useEffect(() => {
         setAddress(address ?? null);
@@ -69,9 +80,14 @@ export const useWallet = () => {
         }
         setAddress(null);
         setConnected(false);
-        lastLoggedAddressRef.current = null;
         manualConnectRef.current = false;
     }, [appKitDisconnect, setAddress, setConnected, walletProvider, appKit]);
+
+    useEffect(() => {
+        if (!disconnectRequested) return;
+        clearDisconnectRequest();
+        void disconnectWallet();
+    }, [clearDisconnectRequest, disconnectRequested, disconnectWallet]);
 
     const signInWithWallet = useCallback(async () => {
         if (!address || !walletProvider) return;
@@ -83,8 +99,10 @@ export const useWallet = () => {
         setIsLoggingIn(true);
         try {
             const message = buildLoginMessage();
+            // const message = buildLoginMessage(address);
             if (!walletProvider.signMessage) {
                 showAlert({ message: "Wallet does not support message signing", variant: "error" });
+                await disconnectWallet();
                 return;
             }
             const signature = await walletProvider.signMessage(new TextEncoder().encode(message));
@@ -104,35 +122,35 @@ export const useWallet = () => {
             const nextToken = response.data?.token;
             if (nextToken) {
                 saveToken(nextToken, "wallet");
-                lastLoggedAddressRef.current = address;
                 clearPendingInviteParams();
+            } else {
+                await disconnectWallet();
             }
         } catch (error) {
             console.error("[Wallet] login failed", error);
             showAlert({ message: "Wallet login failed", variant: "error" });
+            await disconnectWallet();
         } finally {
             setIsLoggingIn(false);
             manualConnectRef.current = false;
         }
-    }, [address, saveToken, showAlert, walletProvider]);
+    }, [address, disconnectWallet, saveToken, showAlert, walletProvider]);
 
     useEffect(() => {
-        if (!isConnected || !address || isLoggingIn) return;
-        if (lastLoggedAddressRef.current === address) return;
-        if (token && loginMethod === "wallet") {
-            lastLoggedAddressRef.current = address;
-            return;
-        }
-        const allowAutoLogin = loginMethod === "wallet" || manualConnectRef.current;
-        if (!allowAutoLogin) return;
+        if (!isConnected || !address || isLoggingIn || !walletProvider) return;
+        if (token) return;
+        if (lastSignAttemptRef.current === address) return;
+        lastSignAttemptRef.current = address;
         void signInWithWallet();
-    }, [address, isConnected, isLoggingIn, loginMethod, signInWithWallet, token]);
+    }, [address, isConnected, isLoggingIn, signInWithWallet, token, walletProvider]);
 
     useEffect(() => {
-        if (!token) {
-            lastLoggedAddressRef.current = null;
+        if (!isConnected || !address) {
+            lastSignAttemptRef.current = null;
+        } else if (lastSignAttemptRef.current && lastSignAttemptRef.current !== address) {
+            lastSignAttemptRef.current = null;
         }
-    }, [token]);
+    }, [address, isConnected]);
 
     useEffect(() => {
         if (token || !wasWalletLoginRef.current) return;

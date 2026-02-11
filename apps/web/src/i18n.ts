@@ -5,6 +5,7 @@ import { initReactI18next } from "react-i18next";
 import en from "@mirror/locales/en.json";
 import zhHK from "@mirror/locales/zh-HK.json";
 import zhCN from "@mirror/locales/zh-CN.json";
+import { STORAGE_KEYS } from "./utils/localStorage";
 
 export enum SUPPORTED_LANGUAGES {
     en = "en",
@@ -33,7 +34,7 @@ void i18n
         detection: {
             order: ["querystring", "localStorage", "htmlTag"],
             lookupQuerystring: "lang",
-            lookupLocalStorage: "user-lang",
+            lookupLocalStorage: STORAGE_KEYS.userLang,
             caches: [],
         },
     });

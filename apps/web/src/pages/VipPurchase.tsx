@@ -18,6 +18,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useAlertStore } from "../store/useAlertStore";
 import { useLegalRestrictionStore } from "../store/useLegalRestrictionStore";
+import { STORAGE_KEYS, getStorageItem, setStorageItem } from "../utils/localStorage";
 import { AgntDialog, PaySuccDialog } from "../components/Modals";
 
 interface TierInfo {
@@ -161,9 +162,10 @@ function VipPurchase() {
     }, []);
 
     useEffect(() => {
-        const code = searchParams.get("club_invite") || localStorage.getItem("club_invite") || "";
+        const code =
+            searchParams.get("club_invite") || getStorageItem(STORAGE_KEYS.clubInvite) || "";
         if (code) {
-            localStorage.setItem("club_invite", code);
+            setStorageItem(STORAGE_KEYS.clubInvite, code);
         }
     }, [searchParams]);
 

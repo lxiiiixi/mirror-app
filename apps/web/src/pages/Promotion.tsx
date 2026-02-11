@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Discover } from "../components/Promotion/Discover";
 import { CommissionCard, CommunityCard } from "../components/Promotion/components";
 import "../components/Promotion/promotion.css";
+import { STORAGE_KEYS, getStorageItem, setStorageItem } from "../utils/localStorage";
 
 function Promotion() {
     const { t } = useTranslation();
@@ -27,9 +28,10 @@ function Promotion() {
     }, []);
 
     const getInviteData = useCallback(() => {
-        const code = searchParams.get("club_invite") || localStorage.getItem("club_invite") || "";
+        const code =
+            searchParams.get("club_invite") || getStorageItem(STORAGE_KEYS.clubInvite) || "";
         if (code) {
-            localStorage.setItem("club_invite", code);
+            setStorageItem(STORAGE_KEYS.clubInvite, code);
         }
         setInviteCode(code);
     }, [searchParams]);

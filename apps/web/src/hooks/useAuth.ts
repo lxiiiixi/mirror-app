@@ -2,28 +2,28 @@ import { useCallback, useEffect } from 'react'
 import { artsApiClient } from '../api/artsClient'
 import { useAuthStore } from '../store/useAuthStore'
 import { useWalletStore } from '../store/useWalletStore'
-
-const TOKEN_STORAGE_KEY = 'userToken'
-const TOKEN_EXPIRY_KEY = 'timestamp'
-const METHOD_STORAGE_KEY = 'loginMethod'
+import {
+  STORAGE_KEYS,
+  canUseStorage,
+  getStorageItem,
+  removeStorageItem,
+  setStorageItem,
+} from '../utils/localStorage'
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000
-
-const canUseStorage = () =>
-  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 
 const clearStoredToken = () => {
   if (!canUseStorage()) return
-  window.localStorage.removeItem(TOKEN_STORAGE_KEY)
-  window.localStorage.removeItem(TOKEN_EXPIRY_KEY)
-  window.localStorage.removeItem(METHOD_STORAGE_KEY)
+  removeStorageItem(STORAGE_KEYS.token)
+  removeStorageItem(STORAGE_KEYS.tokenExpiry)
+  removeStorageItem(STORAGE_KEYS.loginMethod)
 }
 
 const readStoredToken = (): string | null => {
   if (!canUseStorage()) return null
-  const token = window.localStorage.getItem(TOKEN_STORAGE_KEY)
+  const token = getStorageItem(STORAGE_KEYS.token)
   if (!token) return null
 
-  const expiryRaw = window.localStorage.getItem(TOKEN_EXPIRY_KEY)
+  const expiryRaw = getStorageItem(STORAGE_KEYS.tokenExpiry)
   const expiry = expiryRaw ? Number(expiryRaw) : 0
   if (expiry && Date.now() > expiry) {
     clearStoredToken()
@@ -35,7 +35,7 @@ const readStoredToken = (): string | null => {
 
 const readStoredLoginMethod = (): 'email' | 'wallet' | null => {
   if (!canUseStorage()) return null
-  const raw = window.localStorage.getItem(METHOD_STORAGE_KEY)
+  const raw = getStorageItem(STORAGE_KEYS.loginMethod)
   if (raw === 'email' || raw === 'wallet') return raw
   return null
 }
@@ -73,13 +73,13 @@ export const useAuth = () => {
   const saveToken = useCallback(
     (nextToken: string, method?: 'email' | 'wallet') => {
       if (canUseStorage()) {
-        window.localStorage.setItem(TOKEN_STORAGE_KEY, nextToken)
-        window.localStorage.setItem(
-          TOKEN_EXPIRY_KEY,
+        setStorageItem(STORAGE_KEYS.token, nextToken)
+        setStorageItem(
+          STORAGE_KEYS.tokenExpiry,
           String(Date.now() + TOKEN_TTL_MS),
         )
         if (method) {
-          window.localStorage.setItem(METHOD_STORAGE_KEY, method)
+          setStorageItem(STORAGE_KEYS.loginMethod, method)
         }
       }
       setToken(nextToken)

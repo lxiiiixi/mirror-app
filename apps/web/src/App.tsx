@@ -17,6 +17,12 @@ import { useWallet } from "./hooks/useWallet";
 import { matchRoute, getLayoutConfig, routeConfigs, type RouteContext } from "./utils/routes";
 import { envConfigs } from "@mirror/utils";
 import { useUserWalletsStore } from "./store/useUserWalletsStore";
+import {
+    STORAGE_KEYS,
+    getStorageItem,
+    removeStorageItem,
+    setStorageItem,
+} from "./utils/localStorage";
 
 function App() {
     const { t, i18n } = useTranslation();
@@ -37,6 +43,7 @@ function App() {
     console.log("[App] Login States", {
         isLoggedIn,
         isEmailLogin,
+        token,
         loginMethod,
         reownWalletAddress,
     });
@@ -55,9 +62,7 @@ function App() {
         return null;
     }, [location.search]);
 
-    const storedLanguage =
-        typeof window !== "undefined" ? window.localStorage.getItem("user-lang") : null;
-    const whitepaperRedirectKey = "skip-whitepaper-redirect";
+    const storedLanguage = getStorageItem(STORAGE_KEYS.userLang);
     const whitepaperUrl = "https://whitepaper.mirror.fan/";
 
     const fromWhitepaperParam = useMemo(() => {
@@ -69,7 +74,7 @@ function App() {
     const shouldSkipWhitepaperRedirect = useMemo(() => {
         if (fromWhitepaperParam) return true;
         if (typeof window === "undefined") return false;
-        return window.localStorage.getItem(whitepaperRedirectKey) === "true";
+        return getStorageItem(STORAGE_KEYS.skipWhitepaperRedirect) === "true";
     }, [fromWhitepaperParam]);
 
     // 匹配当前路由配置
@@ -125,9 +130,9 @@ function App() {
         const params = new URLSearchParams(location.search);
         const param = params.get("from_whitepaper");
         if (param === "true") {
-            window.localStorage.setItem(whitepaperRedirectKey, "true");
+            setStorageItem(STORAGE_KEYS.skipWhitepaperRedirect, "true");
         } else if (param === "false") {
-            window.localStorage.removeItem(whitepaperRedirectKey);
+            removeStorageItem(STORAGE_KEYS.skipWhitepaperRedirect);
         }
     }, [location.search]);
 
@@ -154,9 +159,7 @@ function App() {
     useEffect(() => {
         if (!urlLanguage) return;
         const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? "en";
-        if (typeof window !== "undefined") {
-            window.localStorage.setItem("user-lang", urlLanguage);
-        }
+        setStorageItem(STORAGE_KEYS.userLang, urlLanguage);
         if (currentLanguage.toLowerCase() === urlLanguage.toLowerCase()) return;
         void i18n.changeLanguage(urlLanguage);
     }, [i18n, urlLanguage]);
@@ -208,7 +211,7 @@ function App() {
         console.log(
             `[Change_Language] currentLanguage: ${currentLanguage}, nextLanguage: ${nextLanguage}`,
         );
-        localStorage.setItem("user-lang", nextLanguage);
+        setStorageItem(STORAGE_KEYS.userLang, nextLanguage);
         void i18n.changeLanguage(nextLanguage);
     };
     const handleEmailLogin = () => navigate("/account/email");

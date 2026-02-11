@@ -3,18 +3,13 @@
  * 在登录时带上对应参数，成功后清除，避免重复使用。
  */
 
-const PENDING_INVITE_UID_KEY = "mirror_pending_invite_uid";
-const PENDING_WORK_INVITE_CODE_KEY = "mirror_pending_work_invite_code";
+import { STORAGE_KEYS, getStorage } from "./localStorage";
 
 export interface PendingInviteParams {
     /** 注册邀请：URL 中的 invite_uid，登录时传 invite_uid_code */
     inviteUid: string | null;
     /** 作品邀请：URL 中的 invite_code，登录时传 work_invite_code */
     workInviteCode: string | null;
-}
-
-function getStorage(): Storage | null {
-    return typeof window !== "undefined" ? window.localStorage : null;
 }
 
 /**
@@ -26,8 +21,8 @@ export function persistInviteParamsFromSearch(search: string): void {
     const params = new URLSearchParams(search);
     const inviteUid = params.get("invite_uid")?.trim() ?? "";
     const inviteCode = params.get("invite_code")?.trim() ?? "";
-    if (inviteUid) storage.setItem(PENDING_INVITE_UID_KEY, inviteUid);
-    if (inviteCode) storage.setItem(PENDING_WORK_INVITE_CODE_KEY, inviteCode);
+    if (inviteUid) storage.setItem(STORAGE_KEYS.pendingInviteUid, inviteUid);
+    if (inviteCode) storage.setItem(STORAGE_KEYS.pendingWorkInviteCode, inviteCode);
 }
 
 /**
@@ -39,8 +34,8 @@ export function getPendingInviteParams(): PendingInviteParams {
         return { inviteUid: null, workInviteCode: null };
     }
     return {
-        inviteUid: storage.getItem(PENDING_INVITE_UID_KEY),
-        workInviteCode: storage.getItem(PENDING_WORK_INVITE_CODE_KEY),
+        inviteUid: storage.getItem(STORAGE_KEYS.pendingInviteUid),
+        workInviteCode: storage.getItem(STORAGE_KEYS.pendingWorkInviteCode),
     };
 }
 
@@ -50,6 +45,6 @@ export function getPendingInviteParams(): PendingInviteParams {
 export function clearPendingInviteParams(): void {
     const storage = getStorage();
     if (!storage) return;
-    storage.removeItem(PENDING_INVITE_UID_KEY);
-    storage.removeItem(PENDING_WORK_INVITE_CODE_KEY);
+    storage.removeItem(STORAGE_KEYS.pendingInviteUid);
+    storage.removeItem(STORAGE_KEYS.pendingWorkInviteCode);
 }
