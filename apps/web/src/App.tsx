@@ -267,6 +267,8 @@ function App() {
 
     return (
         <AppLayout
+            routeKey={location.pathname}
+            preserveScrollKeys="/"
             showWalletBar={showWalletBar}
             showPageNav={showPageNav}
             languageLabel={t("header.language")}

@@ -5,6 +5,7 @@ import {
     type UIEvent,
     forwardRef,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react";
@@ -23,6 +24,8 @@ export interface AppLayoutProps extends HTMLAttributes<HTMLDivElement> {
     showWalletBar?: boolean;
     showPageNav?: boolean;
     scrollShadow?: boolean;
+    routeKey?: string | number;
+    preserveScrollKeys?: Array<string | number> | string | number;
     pageTitle?: ReactNode;
     headerRight?: ReactNode;
     languageLabel?: ReactNode;
@@ -50,6 +53,8 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
             showWalletBar = true,
             showPageNav = false,
             scrollShadow = true,
+            routeKey,
+            preserveScrollKeys,
             pageTitle,
             headerRight,
             languageLabel = "Language",
@@ -80,6 +85,20 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
         const lastScrollTop = useRef(0);
         const headerOffsetRef = useRef(0);
         const rafId = useRef<number | null>(null);
+        const preserveKeySet = useMemo(() => {
+            if (preserveScrollKeys == null) return new Set<string | number>();
+            if (Array.isArray(preserveScrollKeys)) {
+                return new Set<string | number>(preserveScrollKeys);
+            }
+            return new Set<string | number>([preserveScrollKeys]);
+        }, [preserveScrollKeys]);
+        const scrollSnapshotsRef = useRef(
+            new Map<
+                string | number,
+                { scrollTop: number; headerOffset: number; isScrolled: boolean; useWindow: boolean }
+            >(),
+        );
+        const prevRouteKeyRef = useRef<string | number | undefined>(routeKey);
 
         const getScrollTop = () => {
             const target = contentRef.current;
@@ -144,6 +163,59 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                 }
             };
         }, []);
+
+        useEffect(() => {
+            const prevKey = prevRouteKeyRef.current;
+            if (prevKey != null && preserveKeySet.has(prevKey)) {
+                const target = contentRef.current;
+                const useWindow = !target;
+                const scrollTop = useWindow
+                    ? window.scrollY ||
+                      document.documentElement.scrollTop ||
+                      document.body.scrollTop ||
+                      0
+                    : target.scrollTop;
+                scrollSnapshotsRef.current.set(prevKey, {
+                    scrollTop,
+                    headerOffset: headerOffsetRef.current,
+                    isScrolled,
+                    useWindow,
+                });
+            }
+
+            const nextKey = routeKey;
+            const nextSnapshot =
+                nextKey != null && preserveKeySet.has(nextKey)
+                    ? scrollSnapshotsRef.current.get(nextKey)
+                    : undefined;
+
+            if (nextSnapshot) {
+                headerOffsetRef.current = nextSnapshot.headerOffset;
+                lastScrollTop.current = nextSnapshot.scrollTop;
+                setHeaderOffset(nextSnapshot.headerOffset);
+                setIsScrolled(nextSnapshot.isScrolled);
+
+                if (nextSnapshot.useWindow) {
+                    window.scrollTo(0, nextSnapshot.scrollTop);
+                } else if (contentRef.current) {
+                    contentRef.current.scrollTop = nextSnapshot.scrollTop;
+                }
+            } else if (routeKey != null) {
+                headerOffsetRef.current = 0;
+                lastScrollTop.current = 0;
+                setHeaderOffset(0);
+                setIsScrolled(false);
+
+                const target = contentRef.current;
+                if (target) {
+                    target.scrollTop = 0;
+                } else if (typeof window !== "undefined") {
+                    window.scrollTo(0, 0);
+                }
+            }
+
+            prevRouteKeyRef.current = routeKey;
+        }, [routeKey, preserveKeySet]);
 
         return (
             <div ref={ref} className={`app-layout ${className}`} {...props}>
