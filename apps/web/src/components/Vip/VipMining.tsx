@@ -116,28 +116,28 @@ export function VipMining() {
             setRewards({
                 pending_rewards: formatEnt(rewardData?.rewards_info?.pending_rewards),
                 total_base_mining_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.base_mining_reward,
+                    rewardData?.rewards_info?.total_cycle_rewards?.base_mining_reward,
                 ),
                 total_invite_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.invite_reward,
+                    rewardData?.rewards_info?.total_cycle_rewards?.invite_reward,
                 ),
                 total_level_bonus_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.level_bonus_reward,
+                    rewardData?.rewards_info?.total_cycle_rewards?.level_bonus_reward,
                 ),
                 total_total_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.total_reward,
+                    rewardData?.rewards_info?.total_cycle_rewards?.total_reward,
                 ),
                 today_base_mining_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.base_mining_reward,
-                ),
+                    rewardData?.rewards_info?.today_cycle_rewards?.base_mining_reward,
+                ), // 今日固定收益
                 today_invite_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.invite_reward,
+                    rewardData?.rewards_info?.today_cycle_rewards?.invite_reward,
                 ),
                 today_level_bonus_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.level_bonus_reward,
+                    rewardData?.rewards_info?.today_cycle_rewards?.level_bonus_reward,
                 ),
                 today_total_reward: formatEnt(
-                    rewardData?.rewards_info?.latest_cycle_rewards?.total_reward,
+                    rewardData?.rewards_info?.today_cycle_rewards?.total_reward,
                 ),
             });
         } catch (error) {
@@ -153,8 +153,8 @@ export function VipMining() {
     }, [fetchVipLevel]);
 
     return (
-        <div className="vip-mining mt-10">
-            <div className="card hero">
+        <div className="vip-mining">
+            <div className="card hero mt-5">
                 <div className="hero-image">
                     <img src={images.account.channel} alt="" />
                     <div className="hero-label text-[12px]">{t("miningMy.introduction")}</div>
@@ -229,13 +229,14 @@ export function VipMining() {
                 </div>
             </div>
 
+            {/* 今日挖矿数据 */}
             <div className="section">
                 <div className="section-title text-[14px]">{t("miningMy.todaysMiningData")}</div>
                 <div className="card stat-summary">
                     <div className="stat-main">
                         <img src={images.account.ent2} alt="" />
                         <div>
-                            <div className="stat-value text-[16px]">
+                            <div className="font-bold text-[16px]">
                                 {rewards.today_base_mining_reward} ENT
                             </div>
                             <div className="stat-speedup text-[12px]">
@@ -248,7 +249,7 @@ export function VipMining() {
                 <div className="card stat-grid-card">
                     <div className="stat-grid">
                         <div>
-                            <div className="stat-value text-[16px]">
+                            <div className="font-bold text-[16px]">
                                 {rewards.today_invite_reward} ENT
                             </div>
                             <div className="stat-label text-[12px]">
@@ -256,7 +257,7 @@ export function VipMining() {
                             </div>
                         </div>
                         <div>
-                            <div className="stat-value text-[16px]">
+                            <div className="font-bold text-[16px]">
                                 {rewards.today_level_bonus_reward} ENT
                             </div>
                             <div className="stat-label text-[12px]">
@@ -264,15 +265,13 @@ export function VipMining() {
                             </div>
                         </div>
                         <div>
-                            <div className="stat-value text-[16px]">
-                                {t("vipMining.comingSoon")}
-                            </div>
+                            <div className="font-bold text-[16px]">{t("vipMining.comingSoon")}</div>
                             <div className="stat-label text-[12px]">
                                 {t("miningMy.destructionEarnings")}
                             </div>
                         </div>
                         <div>
-                            <div className="stat-value text-[16px]">
+                            <div className="font-bold text-[16px]">
                                 {rewards.today_total_reward} ENT
                             </div>
                             <div className="stat-label text-[12px]">{t("miningMy.totalMined")}</div>
@@ -306,7 +305,6 @@ export function VipMining() {
                     align-items: center;
                     overflow: visible;
                     padding-left: 106px;
-                    margin-top: 10px;
                 }
 
                 .hero-image {
@@ -415,10 +413,6 @@ export function VipMining() {
                 .stat-summary .stat-main img {
                     width: 48px;
                     height: 48px;
-                }
-
-                .stat-value {
-                    font-weight: 700;
                 }
 
                 .stat-speedup {

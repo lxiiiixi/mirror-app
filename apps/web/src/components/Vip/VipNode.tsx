@@ -266,19 +266,19 @@ export function VipNode() {
                         <div className="label text-[12px]">{t("totalRevenue.dailyRevenue")}</div>
                     </div>
                     <div>
-                        <div className="value text-[14px]">{rewards.total_invite_reward} ENT</div>
-                        <div className="label text-[12px]">{t("totalRevenue.teamRevenue")}</div>
-                    </div>
-                    <div>
                         <div className="value text-[14px]">
                             {rewards.total_level_bonus_reward} ENT
                         </div>
+                        <div className="label text-[12px]">{t("totalRevenue.teamRevenue")}</div>
+                    </div>
+                    <div>
+                        <div className="value text-[14px]">{0} ENT</div>
                         <div className="label text-[12px]">
                             {t("totalRevenue.destructionRevenue")}
                         </div>
                     </div>
                     <div>
-                        <div className="value text-[14px]">{rewards.total_total_reward} ENT</div>
+                        <div className="value text-[14px]">{rewards.total_invite_reward} ENT</div>
                         <div className="label text-[12px]">
                             {t("totalRevenue.directSalesRevenue")}
                         </div>
