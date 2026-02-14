@@ -41,10 +41,7 @@ export function RedeemFlowModal({
     onClose,
 }: RedeemFlowModalProps) {
     const { t } = useTranslation();
-    const title =
-        step === 1
-            ? t("redeemFlow.step1Title")
-            : t("redeemFlow.step2Title");
+    const title = step === 1 ? t("redeemFlow.step1Title") : t("redeemFlow.step2Title");
     return (
         <Modal
             open={open}
@@ -64,7 +61,7 @@ export function RedeemFlowModal({
                                 disabled={insufficientPoints || isSubmitting}
                                 className={
                                     insufficientPoints
-                                        ? "cursor-not-allowed bg-[#9e9e9e] text-black hover:bg-[#9e9e9e]"
+                                        ? "cursor-not-allowed bg-[#9e9e9e] text-black hover:bg-[#9e9e9e] text-nowrap"
                                         : ""
                                 }
                                 onClick={onConfirmStep1}
@@ -86,9 +83,7 @@ export function RedeemFlowModal({
                                 disabled={isSubmitting}
                                 onClick={onConfirmStep2}
                             >
-                                {isSubmitting
-                                    ? t("redeemFlow.submitting")
-                                    : t("redeemFlow.redeem")}
+                                {isSubmitting ? t("redeemFlow.submitting") : t("redeemFlow.redeem")}
                             </Button>
                             <Button variant="secondary" size="medium" fullWidth onClick={onBack}>
                                 {t("redeemFlow.back")}

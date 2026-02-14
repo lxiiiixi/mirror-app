@@ -17,14 +17,10 @@ export const RedeemItemCard = forwardRef<HTMLDivElement, RedeemItemCardProps>(
     ({ data, redeemablePoints, onAction, className = "", ...props }, ref) => {
         const { t } = useTranslation();
         const isUnavailable = data.status !== 1 || data.stock <= 0;
-        const isInsufficient =
-            redeemablePoints != null && Number(redeemablePoints) < Number(data.points_price);
         const actionText = isUnavailable
             ? t("redeemItemCard.unavailable")
-            : isInsufficient
-              ? t("redeemItemCard.insufficientPoints")
-              : t("redeemItemCard.redeem");
-        const actionDisabled = isUnavailable || isInsufficient;
+            : t("redeemItemCard.redeem");
+        const actionDisabled = isUnavailable;
 
         const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();

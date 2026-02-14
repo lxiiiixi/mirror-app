@@ -197,9 +197,7 @@ export function Modal({
                                         {children}
                                     </div>
                                     {actions ? (
-                                        <div
-                                            className={`border-t border-white/10 px-6 py-4 ${actionsClassName}`.trim()}
-                                        >
+                                        <div className={`px-6 py-4 ${actionsClassName}`.trim()}>
                                             {actions}
                                         </div>
                                     ) : null}
@@ -241,9 +239,7 @@ export function Modal({
                             )}
                             <div className={`px-6 py-5 ${bodyClassName}`.trim()}>{children}</div>
                             {actions ? (
-                                <div
-                                    className={`border-t border-white/10 px-6 py-4 ${actionsClassName}`.trim()}
-                                >
+                                <div className={`px-6 py-4 ${actionsClassName}`.trim()}>
                                     {actions}
                                 </div>
                             ) : null}

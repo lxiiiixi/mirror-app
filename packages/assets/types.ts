@@ -1,6 +1,5 @@
 /** 图标资源：favicon、calendar、copyIcon */
 export interface IconsMap {
-    favicon: string;
     calendar: string;
     copyIcon: string;
 }

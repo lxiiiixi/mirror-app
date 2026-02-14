@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatNumber } from "@mirror/utils";
 import { ProjectTabs, Spinner } from "../ui";
 import { RedeemItemCard } from "../components/PointsRedemption/RedeemItemCard";
@@ -13,9 +13,9 @@ import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import type { PointsOrderItem, PointsProductItem } from "@mirror/api";
-import { BlackBarHeader } from "../ui/Headers";
 import { useTranslation } from "react-i18next";
 import { resolveLocalizedText } from "@mirror/utils";
+import { images } from "@mirror/assets";
 
 /** 积分商城 Tab 索引 */
 const TAB_MALL = 0;
@@ -49,6 +49,8 @@ export default function PointsRedemption() {
     const [recipientName, setRecipientName] = useState("");
     const [phone, setPhone] = useState("");
     const [shippingAddress, setShippingAddress] = useState("");
+
+    const navigate = useNavigate();
 
     const tabs = useMemo(
         () => [
@@ -93,7 +95,10 @@ export default function PointsRedemption() {
         const requiredPoints = Number(selectedItem.points_price ?? 0);
         const insufficient = currentBalance < requiredPoints;
         if (insufficient) {
-            showAlert({ message: t("pointsRedemption.alerts.insufficientPoints"), variant: "error" });
+            showAlert({
+                message: t("pointsRedemption.alerts.insufficientPoints"),
+                variant: "error",
+            });
             return;
         }
         if (selectedItem.stock <= 0) {
@@ -179,7 +184,10 @@ export default function PointsRedemption() {
         const currentBalance = Number(redeemablePoints ?? 0);
         const requiredPoints = Number(selectedItem.points_price ?? 0);
         if (currentBalance < requiredPoints) {
-            showAlert({ message: t("pointsRedemption.alerts.insufficientPoints"), variant: "error" });
+            showAlert({
+                message: t("pointsRedemption.alerts.insufficientPoints"),
+                variant: "error",
+            });
             return;
         }
         if (selectedItem.stock <= 0) {
@@ -254,8 +262,7 @@ export default function PointsRedemption() {
             const name =
                 product?.name ??
                 t("pointsRedemption.productFallback", { id: String(order.product_id) });
-            const statusLabel =
-                statusTextMap[order.status] ?? t("pointsRedemption.status.unknown");
+            const statusLabel = statusTextMap[order.status] ?? t("pointsRedemption.status.unknown");
             const status = t("pointsRedemption.statusWithQty", {
                 status: statusLabel,
                 quantity: String(order.quantity),
@@ -353,7 +360,18 @@ export default function PointsRedemption() {
 
     return (
         <div className="min-h-screen bg-[#030620] text-white w-dvw" role="presentation">
-            <BlackBarHeader title={t("pointsRedemption.title")} />
+            {/* <header className="flex h-[50px] items-center gap-4 px-[20px] bg-[rgba(3, 6, 32, 1)] shadow-[0px_10px_40px_0px_#A916E340]"> */}
+            <header className="flex h-[50px] items-center gap-4 px-[20px]">
+                <button type="button" className={`w-[18px]`} onClick={() => navigate(-1)}>
+                    <img
+                        src={images.works.backBtn}
+                        alt=""
+                        aria-hidden="true"
+                        className="w-full h-full object-contain"
+                    />
+                </button>
+                <h1 className="text-[18px] font-bold">{t("pointsRedemption.title")}</h1>
+            </header>
             <div className="px-4 pb-8 pt-4">
                 <p className="text-base font-semibold text-white">
                     {t("pointsRedemption.redeemablePoints", { balance: balanceDisplay })}

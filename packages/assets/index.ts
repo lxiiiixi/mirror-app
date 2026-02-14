@@ -1,12 +1,10 @@
 import type { IconsMap, ImagesMap } from "./types";
 
 // 图标资源
-import faviconIcon from "./favicon.ico";
 import calendarIcon from "./icons/calendar.svg";
 import copyIconSvg from "./icons/copy-icon.svg";
 
 export const icons = {
-    favicon: faviconIcon,
     calendar: calendarIcon,
     copyIcon: copyIconSvg,
 } satisfies IconsMap;
