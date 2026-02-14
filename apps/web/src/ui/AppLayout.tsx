@@ -4,11 +4,13 @@ import {
     type ReactNode,
     type UIEvent,
     forwardRef,
+    useCallback,
     useEffect,
     useMemo,
     useRef,
     useState,
 } from "react";
+import { LanguageSelect } from "../components/Common/LanguageSelect";
 
 export interface AppLayoutFooterItem {
     label: ReactNode;
@@ -28,13 +30,11 @@ export interface AppLayoutProps extends HTMLAttributes<HTMLDivElement> {
     preserveScrollKeys?: Array<string | number> | string | number;
     pageTitle?: ReactNode;
     headerRight?: ReactNode;
-    languageLabel?: ReactNode;
     assetsLabel?: ReactNode;
     loginLabel?: ReactNode;
     isLoggedIn?: boolean;
     langIconSrc?: string;
     logoSrc?: string;
-    onLanguageClick?: () => void;
     onLogoClick?: () => void;
     onWalletClick?: () => void;
     onBack?: () => void;
@@ -57,12 +57,10 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
             preserveScrollKeys,
             pageTitle,
             headerRight,
-            languageLabel = "Language",
             assetsLabel = "Assets",
             loginLabel = "Login",
             isLoggedIn = false,
             langIconSrc,
-            onLanguageClick,
             onLogoClick,
             onWalletClick,
             onBack,
@@ -141,14 +139,14 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
             lastScrollTop.current = currentScrollTop;
         };
 
-        const handleScroll = () => {
+        const handleScroll = useCallback(() => {
             if (rafId.current) {
                 cancelAnimationFrame(rafId.current);
             }
             rafId.current = requestAnimationFrame(() => {
                 updateScrollState();
             });
-        };
+        }, []);
 
         const handleContentScroll = (_event: UIEvent<HTMLElement>) => {
             handleScroll();
@@ -162,7 +160,7 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                     cancelAnimationFrame(rafId.current);
                 }
             };
-        }, []);
+        }, [handleScroll]);
 
         useEffect(() => {
             const prevKey = prevRouteKeyRef.current;
@@ -231,32 +229,10 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                         >
                             {showWalletBar ? (
                                 <>
-                                    <button
+                                    <LanguageSelect
                                         className="header-item text-[12px]"
-                                        type="button"
-                                        onClick={onLanguageClick}
-                                    >
-                                        {langIconSrc ? (
-                                            <img
-                                                className="lang-icon"
-                                                src={langIconSrc || "/placeholder.svg"}
-                                                alt=""
-                                                aria-hidden="true"
-                                            />
-                                        ) : (
-                                            <svg
-                                                className="lang-icon"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                strokeWidth="2"
-                                            >
-                                                <circle cx="12" cy="12" r="10" />
-                                                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                                            </svg>
-                                        )}
-                                        <span className="lang text-[14px]">{languageLabel}</span>
-                                    </button>
+                                        langIconSrc={langIconSrc}
+                                    />
 
                                     <div className="nav-item-logo">
                                         <button
@@ -458,16 +434,6 @@ export const AppLayout = forwardRef<HTMLDivElement, AppLayoutProps>(
                         font-weight: 700;
                         color: #fff;
                         letter-spacing: 2px;
-                    }
-
-                    .lang-icon {
-                        width: 16px;
-                        height: 16px;
-                        margin-right: 5px;
-                    }
-
-                    .lang {
-                        font-weight: 700;
                     }
 
                     .connector .text {

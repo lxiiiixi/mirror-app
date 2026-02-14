@@ -200,20 +200,6 @@ function App() {
         };
     }, [clearWallets, hydrated, isLoggedIn, setWallets, setWalletsLoading, token]);
 
-    const handleLanguageToggle = () => {
-        const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? "en";
-        const normalizedCurrent = currentLanguage.toLowerCase();
-        const availableLanguages = ["en", "zh-HK", "zh-CN"];
-        const currentIndex = availableLanguages.findIndex(
-            lang => lang.toLowerCase() === normalizedCurrent,
-        );
-        const nextLanguage = availableLanguages[(currentIndex + 1) % availableLanguages.length];
-        console.log(
-            `[Change_Language] currentLanguage: ${currentLanguage}, nextLanguage: ${nextLanguage}`,
-        );
-        setStorageItem(STORAGE_KEYS.userLang, nextLanguage);
-        void i18n.changeLanguage(nextLanguage);
-    };
     const handleEmailLogin = () => navigate("/account/email");
     const handleWalletLogin = () => {
         openWallet();
@@ -271,14 +257,12 @@ function App() {
             preserveScrollKeys="/"
             showWalletBar={showWalletBar}
             showPageNav={showPageNav}
-            languageLabel={t("header.language")}
             assetsLabel={t("header.assets")}
             loginLabel={t("header.login")}
             isLoggedIn={isLoggedIn}
             pageTitle={layoutConfig?.pageTitle}
             headerRight={layoutConfig?.headerRight ? <layoutConfig.headerRight /> : undefined}
             onBack={showPageNav ? handleSafeBack : undefined}
-            onLanguageClick={handleLanguageToggle}
             onLogoClick={() => navigate("/")}
             onWalletClick={handleWalletClick}
             footerItems={routeContext.footerItems}
