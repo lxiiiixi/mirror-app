@@ -179,3 +179,12 @@ img {
         padding-right: max(0px, env(safe-area-inset-right));
     }
 }
+
+/* 透明渐变背景：左上角较不透明，右下角较透明 */
+.transparent-linear-bg {
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.2) 120%
+    );
+}

@@ -152,20 +152,32 @@ export function VipMining() {
         void fetchVipLevel();
     }, [fetchVipLevel]);
 
+    const gradientText =
+        "bg-[linear-gradient(0deg,#b546ff_0.96%,#ea82ff_100%)] bg-clip-text text-transparent";
+
     return (
-        <div className="vip-mining">
-            <div className="card hero mt-5">
-                <div className="hero-image">
-                    <img src={images.account.channel} alt="" />
-                    <div className="hero-label text-[12px]">{t("miningMy.introduction")}</div>
-                    <div className="hero-icon">
-                        <img src={images.account.ent} alt="" />
+        <div className="flex flex-col gap-5 text-white">
+            {/* 矿机介绍 */}
+            <div className="relative flex items-center gap-4 overflow-visible pl-[106px] h-[114px] mt-5 rounded-[14px] p-5 transparent-linear-bg">
+                <div className="absolute left-0 bottom-0 h-[134px] w-[96px] shrink-0 overflow-hidden rounded-xl">
+                    <img
+                        src={images.account.channel}
+                        alt=""
+                        className="h-full w-full object-cover"
+                    />
+                    {/* <div className="absolute bottom-0 left-0 w-full text-center text-[12px] font-bold bg-white/25">
+                        {t("miningMy.introduction")}
+                    </div> */}
+                    <div className="hero-icon absolute top-0 right-0 flex h-[26px] w-[26px] items-center justify-center rounded-bl-xl bg-white/45">
+                        <img src={images.account.ent} alt="" className="h-4 w-4" />
                     </div>
                 </div>
-                <div className="hero-info">
+                <div className="flex flex-1 flex-col gap-2">
                     <div>
-                        <span className="text-[16px] font-bold gradient-text">VIP {vipLevel}</span>{" "}
-                        <span className="text-[12px] gradient-text">({purchasedNodes}x)</span>
+                        <span className={`text-[16px] font-bold ${gradientText}`}>
+                            VIP {vipLevel}
+                        </span>{" "}
+                        <span className={`text-[12px] ${gradientText}`}>({purchasedNodes}x)</span>
                     </div>
                     {/* 第一个 Progress：升级所需有效用户数，对应 next_level_progress.team_user_progress */}
                     {invitesProgress && (
@@ -193,13 +205,15 @@ export function VipMining() {
                         }
                         size="small"
                     />
-                    <div className="flex justify-between items-center gap-4 mt">
-                        <span className="text-[12px] text-white">{t("miningMy.clubVip")}</span>
+                    <div className="mt-2 flex items-end justify-between gap-4">
+                        <span className="text-[12px] text-white font-semibold">
+                            {t("miningMy.clubVip")}
+                        </span>
                         <Button
                             variant="primary"
                             size="x-small"
                             onClick={() => navigate("./purchase")}
-                            className=""
+                            style={{ borderRadius: "999px", padding: "3px 12px" }}
                         >
                             {t("miningMy.buyVip")}
                         </Button>
@@ -207,265 +221,96 @@ export function VipMining() {
                 </div>
             </div>
 
-            <div className="section">
-                <div className="section-title text-[14px]">{t("miningMy.dataDetails")}</div>
-                <div className="card gift" style={{ backgroundImage: `url(${images.vip.giftBg})` }}>
-                    <div className="gift-row text-[13px]">
-                        <span>{t("vipMining.numberOfVips")}</span>
-                        <strong>{vipLevel}</strong>
-                    </div>
-                    <div className="gift-row text-[13px]">
-                        <span>{t("miningMy.purchasedNode")}</span>
-                        <strong>{purchasedNodes}</strong>
-                    </div>
-                    <div className="gift-row text-[13px]">
-                        <span>{t("miningMy.fixedHashrate")}</span>
-                        <strong>1500A × {purchasedNodes}</strong>
-                    </div>
-                    <div className="gift-row text-[13px]">
-                        <span>{t("miningMy.accelerateRelease")}</span>
-                        <strong>35%</strong>
+            {/* 矿机数据 */}
+            <div className="flex flex-col gap-2.5">
+                <div className="text-[18px] font-bold">{t("miningMy.dataDetails")}</div>
+                <div
+                    className="rounded-xl border border-white/10 bg-[rgba(153,153,153,0.12)] bg-top-right bg-no-repeat p-3 bg-size-[30%]"
+                    style={{ backgroundImage: `url(${images.vip.giftBg})` }}
+                >
+                    <div className="flex flex-col gap-2">
+                        {[
+                            { label: t("vipMining.numberOfVips"), value: vipLevel },
+                            { label: t("miningMy.purchasedNode"), value: purchasedNodes },
+                            {
+                                label: t("miningMy.fixedHashrate"),
+                                value: `1500A × ${purchasedNodes}`,
+                            },
+                            { label: t("miningMy.accelerateRelease"), value: "35%" },
+                        ].map(({ label, value }) => (
+                            <div key={label} className="flex gap-1.5 text-[14px]">
+                                <span>{label}</span>
+                                <strong className="text-[16px]">{value}</strong>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
             {/* 今日挖矿数据 */}
-            <div className="section">
-                <div className="section-title text-[14px]">{t("miningMy.todaysMiningData")}</div>
-                <div className="card stat-summary">
-                    <div className="stat-main">
-                        <img src={images.account.ent2} alt="" />
-                        <div>
-                            <div className="font-bold text-[16px]">
-                                {rewards.today_base_mining_reward} ENT
+            <div className="flex flex-col gap-2.5">
+                <div className="text-[18px] font-bold">{t("miningMy.todaysMiningData")}</div>
+                <div className="rounded-xl border border-white/10 transparent-linear-bg">
+                    <div className=" p-3">
+                        <div className="flex items-center gap-3">
+                            <img src={images.account.ent2} alt="" className="h-12 w-12" />
+                            <div>
+                                <div className="text-[16px] font-bold">
+                                    {rewards.today_base_mining_reward} ENT
+                                </div>
+                                <div className={`text-[12px] font-semibold ${gradientText}`}>
+                                    {purchasedNodes}X SPEEDUP
+                                </div>
+                                <div className="text-[12px] text-white/65">
+                                    {t("miningMy.todaysTip")}
+                                </div>
                             </div>
-                            <div className="stat-speedup text-[12px]">
-                                {purchasedNodes}X SPEEDUP
+                        </div>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-[rgba(153,153,153,0.12)] p-2.5">
+                        <div className="grid grid-cols-2 grid-rows-2 [&>div]:flex [&>div]:min-h-[72px] [&>div]:flex-col [&>div]:items-center [&>div]:justify-center [&>div]:p-3 [&>div]:text-center [&>div]:border-r [&>div]:border-b [&>div]:border-white/18 [&>div:nth-child(2n)]:border-r-0 [&>div:nth-child(n+3)]:border-b-0">
+                            <div>
+                                <div className="text-[16px] font-bold">
+                                    {rewards.today_invite_reward} ENT
+                                </div>
+                                <div className="text-[12px] text-white/65">
+                                    {t("miningMy.directEarnings")}
+                                </div>
                             </div>
-                            <div className="stat-hint text-[12px]">{t("miningMy.todaysTip")}</div>
+                            <div>
+                                <div className="text-[16px] font-bold">
+                                    {rewards.today_level_bonus_reward} ENT
+                                </div>
+                                <div className="text-[12px] text-white/65">
+                                    {t("miningMy.dividendEarnings")}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[16px] font-bold">
+                                    {t("vipMining.comingSoon")}
+                                </div>
+                                <div className="text-[12px] text-white/65">
+                                    {t("miningMy.destructionEarnings")}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[16px] font-bold">
+                                    {rewards.today_total_reward} ENT
+                                </div>
+                                <div className="text-[12px] text-white/65">
+                                    {t("miningMy.totalMined")}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="card stat-grid-card">
-                    <div className="stat-grid">
-                        <div>
-                            <div className="font-bold text-[16px]">
-                                {rewards.today_invite_reward} ENT
-                            </div>
-                            <div className="stat-label text-[12px]">
-                                {t("miningMy.directEarnings")}
-                            </div>
-                        </div>
-                        <div>
-                            <div className="font-bold text-[16px]">
-                                {rewards.today_level_bonus_reward} ENT
-                            </div>
-                            <div className="stat-label text-[12px]">
-                                {t("miningMy.dividendEarnings")}
-                            </div>
-                        </div>
-                        <div>
-                            <div className="font-bold text-[16px]">{t("vipMining.comingSoon")}</div>
-                            <div className="stat-label text-[12px]">
-                                {t("miningMy.destructionEarnings")}
-                            </div>
-                        </div>
-                        <div>
-                            <div className="font-bold text-[16px]">
-                                {rewards.today_total_reward} ENT
-                            </div>
-                            <div className="stat-label text-[12px]">{t("miningMy.totalMined")}</div>
-                        </div>
-                    </div>
+
+                <div className="text-[12px] leading-normal text-white/65">
+                    {t("miningMy.releaseInfo")}
                 </div>
-                <div className="section-release text-[12px]">{t("miningMy.releaseInfo")}</div>
             </div>
 
-            {loading ? <div className="loading text-[12px]">...</div> : null}
-
-            <style jsx>{`
-                .vip-mining {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                    color: #fff;
-                }
-
-                .card {
-                    background: rgba(153, 153, 153, 0.12);
-                    border-radius: 12px;
-                    padding: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                }
-
-                .hero {
-                    position: relative;
-                    display: flex;
-                    gap: 16px;
-                    align-items: center;
-                    overflow: visible;
-                    padding-left: 106px;
-                }
-
-                .hero-image {
-                    position: absolute;
-                    left: 0px;
-                    bottom: 0px;
-                    width: 90px;
-                    height: 124px;
-                    border-radius: 12px;
-                    overflow: hidden;
-                    flex-shrink: 0;
-                }
-
-                .hero-image img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-
-                .hero-label {
-                    position: absolute;
-                    bottom: 0;
-                    left: 0;
-                    width: 100%;
-                    text-align: center;
-                    font-weight: 700;
-                    background: rgba(255, 255, 255, 0.25);
-                }
-
-                .hero-icon {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    width: 26px;
-                    height: 26px;
-                    background: rgba(255, 255, 255, 0.45);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-bottom-left-radius: 12px;
-                }
-
-                .hero-icon img {
-                    width: 16px;
-                    height: 16px;
-                }
-
-                .hero-info {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                }
-
-                .gradient-text {
-                    background: linear-gradient(0deg, #b546ff 0.96%, #ea82ff 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
-
-                .hero-label-text {
-                    color: rgba(255, 255, 255, 0.7);
-                }
-
-                .hero-button {
-                    border: none;
-                    background: var(--color-primary);
-                    color: #fff;
-                    border-radius: 999px;
-                    padding: 6px 12px;
-                    cursor: pointer;
-                }
-
-                .hero-value {
-                    font-weight: 700;
-                }
-
-                .section {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
-
-                .section-title {
-                    font-weight: 700;
-                }
-
-                .gift {
-                    background-size: contain;
-                    background-position: right bottom;
-                    background-repeat: no-repeat;
-                }
-
-                .gift-row {
-                    display: flex;
-                    gap: 6px;
-                    margin-bottom: 8px;
-                }
-
-                .stat-summary .stat-main {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                }
-
-                .stat-summary .stat-main img {
-                    width: 48px;
-                    height: 48px;
-                }
-
-                .stat-speedup {
-                    font-weight: 600;
-                    background: linear-gradient(0deg, #b546ff 0.96%, #ea82ff 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
-
-                .stat-hint {
-                    color: rgba(255, 255, 255, 0.65);
-                }
-
-                .stat-grid-card .stat-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    grid-template-rows: repeat(2, 1fr);
-                }
-
-                .stat-grid-card .stat-grid > div {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-                    min-height: 72px;
-                    padding: 12px;
-                    border-right: 1px solid rgba(255, 255, 255, 0.18);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-                }
-
-                .stat-grid-card .stat-grid > div:nth-child(2n) {
-                    border-right: none;
-                }
-
-                .stat-grid-card .stat-grid > div:nth-child(n + 3) {
-                    border-bottom: none;
-                }
-
-                .stat-label {
-                    color: rgba(255, 255, 255, 0.65);
-                }
-
-                .section-release {
-                    color: rgba(255, 255, 255, 0.65);
-                    line-height: 1.5;
-                }
-
-                .loading {
-                    color: rgba(255, 255, 255, 0.6);
-                }
-            `}</style>
+            {loading ? <div className="text-[12px] text-white/60">...</div> : null}
         </div>
     );
 }

@@ -146,6 +146,11 @@ export interface ImagesMap {
         shareBg: string;
         inviteArrowDown: string;
         inviteArrowRight: string;
+        inviteLevel1: string;
+        inviteLevel2: string;
+        inviteLevel3: string;
+        inviteLevel4: string;
+        inviteLevel5: string;
         invite: string;
         medal: string;
     };

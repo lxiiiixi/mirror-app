@@ -24,26 +24,27 @@ export function VipAbout() {
     };
 
     return (
-        <div className="vip-about">
-            <div className="links">
+        <div>
+            {/* 链接区域 */}
+            <div className="flex justify-between items-center gap-12 flex-wrap mb-[10px]">
                 <button
                     type="button"
-                    className="white-paper text-[14px]"
-                    onClick={() =>
-                        openLink(
-                            MIRROR_EXTERNAL_LINKS.whitePaper[
-                                i18n.language as keyof typeof MIRROR_EXTERNAL_LINKS.whitePaper
-                            ],
-                        )
-                    }
+                    className="inline-flex items-center gap-1 border-none bg-transparent cursor-pointer"
+                    // onClick={() =>
+                    //     openLink(
+                    //         MIRROR_EXTERNAL_LINKS.whitePaper[
+                    //             i18n.language as keyof typeof MIRROR_EXTERNAL_LINKS.whitePaper
+                    //         ],
+                    //     )
+                    // }
                 >
-                    <img src={images.vip.whitePaperIcon} alt="" />
-                    <span>{t("vipAbout.whitePaper")}</span>
+                    <img className="w-[18px]" src={images.vip.whitePaperIcon} alt="" />
+                    <span className="font-bold text-[14px]">{t("vipAbout.whitePaper")}</span>
                 </button>
-                <div className="socials">
+                <div className="flex items-center gap-2">
                     <button
                         type="button"
-                        className="social-btn flex items-center gap-2"
+                        className="inline-flex h-[22px] min-w-0 items-center justify-center gap-[6px] rounded border-none px-2.5 py-1.5 text-white cursor-pointer [background:var(--gradient-primary)]"
                         onClick={() => openLink(MIRROR_EXTERNAL_LINKS.discord)}
                     >
                         <img className="w-[14px]" src={images.vip.discord} alt="Discord" />
@@ -51,17 +52,20 @@ export function VipAbout() {
                     </button>
                     <button
                         type="button"
-                        className="social-btn"
+                        className="inline-flex h-[22px] min-w-[80px] items-center justify-center gap-[6px] rounded border-none px-2.5 py-1.5 text-white cursor-pointer [background:var(--gradient-primary)]"
                         onClick={() => openLink(MIRROR_EXTERNAL_LINKS.twitter)}
                     >
-                        <img className="w-[12px]" src={images.vip.x} alt="X" />
+                        <img className="w-[14px]" src={images.vip.x} alt="X" />
                     </button>
                 </div>
             </div>
 
-            <div className="card">
-                <h3 className="card-title text-[18px]">{t("vipAbout.cardTitle")}</h3>
-                <div className="privileges">
+            {/* 卡片区域 */}
+            <div className="rounded-[14px] border border-white/12 p-5 px-4 mb-[18px]">
+                <h3 className="text-center text-[20px] font-bold mb-4">
+                    {t("vipAbout.cardTitle")}
+                </h3>
+                <div className="flex flex-col gap-[8px] px-14">
                     {[
                         {
                             title: t("vipAbout.newbieWhite"),
@@ -84,22 +88,22 @@ export function VipAbout() {
                             desc: t("vipAbout.topOGsDesc"),
                         },
                     ].map(item => (
-                        <div key={item.title} className="privilege-item">
-                            <span className="privilege-title text-[12px] font-bold">
-                                {item.title}
-                            </span>
-                            <span className="privilege-desc text-[12px] font-semibold">
+                        <div key={item.title} className="text-center gap-1.5 leading-[1.2]">
+                            <span className="text-[14px] font-semibold">{item.title}</span>{" "}
+                            <span className="text-[14px] font-semibold text-white/80">
                                 {item.desc}
                             </span>
                         </div>
                     ))}
                 </div>
 
-                <div className="join">
-                    <div className="join-title text-[20px]">{t("vipAbout.joinTitle")}</div>
+                <div className="mt-4 rounded-xl border border-[rgba(175,88,183,0.6)] p-4 pt-2 text-center bg-[linear-gradient(0deg,rgba(11,12,19,0),rgba(11,12,19,0)),linear-gradient(0deg,rgba(255,255,255,0.06),rgba(255,255,255,0.06))]">
+                    <div className="mb-2.5 text-[20px] font-semibold bg-[linear-gradient(90deg,#9afff2_0%,#e7cbfb_50.96%,#9efdf2_100%)] bg-clip-text text-transparent">
+                        {t("vipAbout.joinTitle")}
+                    </div>
                     <button
                         type="button"
-                        className="join-button"
+                        className="rounded-[6px] border-none bg-(--color-primary) px-6 py-1 font-semibold text-white cursor-pointer"
                         onClick={() => navigate("/vip/purchase")}
                     >
                         {t("vipAbout.payButton")}
@@ -107,15 +111,22 @@ export function VipAbout() {
                 </div>
             </div>
 
-            <div className="card gifted">
-                <h3 className="card-title text-[18px]">{t("vipAbout.giftedNodes")}</h3>
-                <div className="centered text-[13px]">{t("vipAbout.totalMiningCapacity")}</div>
-                <div className="ent-amount text-[27px]">6,000,000,000 ENT</div>
-                <div className="centered text-[13px]">{t("vipAbout.currentLimit")}</div>
-                <div className="logo">
-                    <img src={images.logo} alt="" className="h-[53px]" />
+            {/* 矿机区域 */}
+            <div className="rounded-[14px] border border-white/12 p-5 px-4 text-center">
+                <h3 className="text-center text-[20px] font-bold mb-2">
+                    {t("vipAbout.giftedNodes")}
+                </h3>
+                <div className="mb-2 text-[13px] font-semibold text-white/90">
+                    {t("vipAbout.totalMiningCapacity")}
                 </div>
-                <div className="release text-[12px]">
+                <div className="mb-2 text-[27px] font-bold text-[#37FFC6]">6,000,000,000 ENT</div>
+                <div className="mb-2 text-[14px] font-semibold text-white/90">
+                    {t("vipAbout.currentLimit")}
+                </div>
+                <div className="my-4 flex justify-center">
+                    <img src={images.logo} alt="" className="h-[50px]" />
+                </div>
+                <div className="my-5 flex flex-col gap-1.5 text-[14px] text-[#9996A9]">
                     <span>{t("vipAbout.dailyOutputPerNode")}</span>
                     <span>{t("vipAbout.acceleratedRelease")}</span>
                     <span>{t("vipAbout.oneVipGiftNode")}</span>
@@ -131,147 +142,6 @@ export function VipAbout() {
                     data={vipRulesData}
                 />
             </div>
-
-            <style jsx>{`
-                .vip-about {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
-
-                .links {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 12px;
-                    flex-wrap: wrap;
-                }
-
-                .white-paper {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    border: none;
-                    background: transparent;
-                    color: #fff;
-                    font-weight: 500;
-                    cursor: pointer;
-                }
-
-                .white-paper img {
-                    width: 20px;
-                }
-
-                .socials {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-
-                .social-btn {
-                    height: 25px;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 6px;
-                    border: none;
-                    cursor: pointer;
-                    background: var(--gradient-primary);
-                    border-radius: 8px;
-                    color: #fff;
-                    padding: 6px 10px;
-                }
-
-                .card {
-                    background: var(--gradient-card);
-                    border-radius: 16px;
-                    padding: 20px 16px;
-                    border: 1px solid rgba(255, 255, 255, 0.12);
-                }
-
-                .card-title {
-                    text-align: center;
-                    font-weight: 700;
-                    margin-bottom: 16px;
-                }
-
-                .privileges {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 14px;
-                }
-
-                .privilege-item {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 6px;
-                    line-height: 1.4;
-                }
-
-                .privilege-title {
-                    font-weight: 600;
-                }
-
-                .privilege-desc {
-                    color: rgba(255, 255, 255, 0.8);
-                }
-
-                .join {
-                    margin-top: 16px;
-                    border: 1px solid rgba(175, 88, 183, 0.6);
-                    border-radius: 12px;
-                    padding: 16px;
-                    text-align: center;
-                }
-
-                .join-title {
-                    font-weight: 600;
-                    margin-bottom: 10px;
-                    background: linear-gradient(90deg, #9afff2 0%, #e7cbfb 50.96%, #9efdf2 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
-
-                .join-button {
-                    border: none;
-                    background: var(--color-primary);
-                    color: #fff;
-                    padding: 8px 16px;
-                    border-radius: 10px;
-                    font-weight: 600;
-                    cursor: pointer;
-                }
-
-                .gifted {
-                    text-align: center;
-                }
-
-                .centered {
-                    color: rgba(255, 255, 255, 0.9);
-                    margin-bottom: 8px;
-                    font-weight: 600;
-                }
-
-                .ent-amount {
-                    font-weight: 700;
-                    color: #05faea;
-                    margin-bottom: 8px;
-                }
-
-                .logo {
-                    margin: 16px auto;
-                    display: flex;
-                    justify-content: center;
-                }
-
-                .release {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 6px;
-                    margin: 16px 0 20px;
-                    color: rgba(255, 255, 255, 0.7);
-                }
-            `}</style>
         </div>
     );
 }
