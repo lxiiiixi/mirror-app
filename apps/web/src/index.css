@@ -188,3 +188,10 @@ img {
         rgba(255, 255, 255, 0.2) 120%
     );
 }
+/* .border-gradient {
+    --gradient-border-bg: transparent;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(var(--gradient-border-bg), var(--gradient-border-bg)) padding-box,
+        linear-gradient(136.97deg, #9dfef2 5.76%, #e0d0fa 52.55%, #7e6cff 94.24%) border-box;
+} */

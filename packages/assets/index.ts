@@ -210,6 +210,8 @@ import idoRegularUser from "./images/ido/regular-user.png";
 import idoVipUser from "./images/ido/vip-user.png";
 import idoWhitelistedUser from "./images/ido/whitelisted-user.png";
 
+import qrcodeBg from "./images/qrcode-bg.png";
+
 export const images = {
     logo: logoImg,
     loginImg,
@@ -397,6 +399,7 @@ export const images = {
     images: {
         imgWrapper,
         playVideoIcon: playVideoIconImg,
+        qrcodeBg: qrcodeBg,
     },
 } satisfies ImagesMap;
 

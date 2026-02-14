@@ -27,8 +27,12 @@
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 16px;
-    background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.18);
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.01) 0%,
+        rgba(255, 255, 255, 0.08) 100%
+    );
     backdrop-filter: blur(40px);
 }
 
@@ -48,22 +52,6 @@
     align-items: flex-end;
     margin-top: 12px;
     gap: 16px;
-}
-
-#promotion-page .qrcode-box {
-    width: 180px;
-    height: 110px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #000000db;
-    border-radius: 12px;
-    gap: 8px;
-}
-
-#promotion-page .share-logo {
-    width: 80px;
 }
 
 #promotion-page .promotion-right {
@@ -104,7 +92,7 @@
 }
 
 #promotion-page .stats-label {
-    color: rgba(255, 255, 255, 0.8);
+    color: #fff;
     margin-bottom: 6px;
 }
 

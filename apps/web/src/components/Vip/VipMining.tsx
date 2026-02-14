@@ -250,7 +250,7 @@ export function VipMining() {
             {/* 今日挖矿数据 */}
             <div className="flex flex-col gap-2.5">
                 <div className="text-[18px] font-bold">{t("miningMy.todaysMiningData")}</div>
-                <div className="rounded-xl border border-white/10 transparent-linear-bg">
+                <div className="rounded-xl border transparent-linear-bg border-[#9DFEF2]/20">
                     <div className=" p-3">
                         <div className="flex items-center gap-3">
                             <img src={images.account.ent2} alt="" className="h-12 w-12" />
@@ -267,40 +267,34 @@ export function VipMining() {
                             </div>
                         </div>
                     </div>
-                    <div className="rounded-xl border border-white/10 bg-[rgba(153,153,153,0.12)] p-2.5">
-                        <div className="grid grid-cols-2 grid-rows-2 [&>div]:flex [&>div]:min-h-[72px] [&>div]:flex-col [&>div]:items-center [&>div]:justify-center [&>div]:p-3 [&>div]:text-center [&>div]:border-r [&>div]:border-b [&>div]:border-white/18 [&>div:nth-child(2n)]:border-r-0 [&>div:nth-child(n+3)]:border-b-0">
-                            <div>
-                                <div className="text-[16px] font-bold">
-                                    {rewards.today_invite_reward} ENT
+                    <div className="rounded-xl border border-[#E0D0FA]/20 p-2.5">
+                        <div className="grid grid-cols-2 grid-rows-2 [&>div:nth-child(2n)]:border-r-0 [&>div:nth-child(n+3)]:border-b-0">
+                            {[
+                                {
+                                    value: `${rewards.today_invite_reward} ENT`,
+                                    label: t("miningMy.directEarnings"),
+                                },
+                                {
+                                    value: `${rewards.today_level_bonus_reward} ENT`,
+                                    label: t("miningMy.dividendEarnings"),
+                                },
+                                {
+                                    value: t("vipMining.comingSoon"),
+                                    label: t("miningMy.destructionEarnings"),
+                                },
+                                {
+                                    value: `${rewards.today_total_reward} ENT`,
+                                    label: t("miningMy.totalMined"),
+                                },
+                            ].map(({ value, label }) => (
+                                <div
+                                    key={label}
+                                    className="flex min-h-[72px] flex-col items-center justify-center border-r border-b border-white/18 p-3 text-center"
+                                >
+                                    <div className="text-[16px] font-bold">{value}</div>
+                                    <div className="text-[12px] text-white/65">{label}</div>
                                 </div>
-                                <div className="text-[12px] text-white/65">
-                                    {t("miningMy.directEarnings")}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[16px] font-bold">
-                                    {rewards.today_level_bonus_reward} ENT
-                                </div>
-                                <div className="text-[12px] text-white/65">
-                                    {t("miningMy.dividendEarnings")}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[16px] font-bold">
-                                    {t("vipMining.comingSoon")}
-                                </div>
-                                <div className="text-[12px] text-white/65">
-                                    {t("miningMy.destructionEarnings")}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[16px] font-bold">
-                                    {rewards.today_total_reward} ENT
-                                </div>
-                                <div className="text-[12px] text-white/65">
-                                    {t("miningMy.totalMined")}
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

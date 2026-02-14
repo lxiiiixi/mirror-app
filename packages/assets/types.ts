@@ -186,5 +186,6 @@ export interface ImagesMap {
     images: {
         imgWrapper: string;
         playVideoIcon: string;
+        qrcodeBg: string;
     };
 }

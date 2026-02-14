@@ -87,12 +87,12 @@ export const CommunityCard = ({
     return (
         <div className="content-card promotion-card">
             <div className="card-title">
-                <div className="title text-[14px]">{t("promotion.promotion")}</div>
+                <div className="title text-[16px]">{t("promotion.promotion")}</div>
                 <div>
-                    <div className="commission-line text-[12px]">
+                    <div className="text-[12px]">
                         {t("promotion.directCommission")} {inviteNum.direct_invites}
                     </div>
-                    <div className="commission-line text-[12px]">
+                    <div className="text-[12px]">
                         {t("promotion.indirectCommission")} {inviteNum.indirect_invites}
                     </div>
                 </div>
@@ -100,19 +100,29 @@ export const CommunityCard = ({
 
             <div className="share-box">
                 <div className="promotion-left">
-                    <div className="qrcode-box">
-                        <img className="share-logo" src={images.vip.shareLogo} alt="" />
-                        <QrcodeCanvas value={inviteUrl} size={56} />
+                    <div className="relative flex h-[110px] w-[180px] flex-col items-center justify-center gap-2 overflow-hidden rounded-xl">
+                        {/* 背景图：铺满容器，可能裁剪 */}
+                        <div
+                            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                            style={{ backgroundImage: `url(${images.images.qrcodeBg})` }}
+                        />
+                        {/* 黑色半透明遮罩 */}
+                        <div className="absolute inset-0 bg-black/80" />
+                        {/* 内容层 */}
+                        <div className="relative z-10 flex flex-col items-center justify-center gap-2">
+                            <img className="w-20" src={images.vip.shareLogo} alt="" />
+                            <QrcodeCanvas value={inviteUrl} size={56} />
+                        </div>
                     </div>
                 </div>
                 <div className="promotion-right">
                     <div className="btn-row">
-                        <button type="button" className="save-btn text-[12px]" onClick={savePoster}>
+                        <button type="button" className="save-btn text-[14px]" onClick={savePoster}>
                             {savingPoster
                                 ? t("miningShare.generating")
                                 : t("miningShare.savePoster")}
                         </button>
-                        <button type="button" className="share-btn text-[12px]" onClick={copyLink}>
+                        <button type="button" className="share-btn text-[14px]" onClick={copyLink}>
                             {t("miningShare.shareLink")}
                         </button>
                     </div>
@@ -127,12 +137,12 @@ export const CommissionCard = ({ today, total }: { today: string; total: string 
     return (
         <div className="content-card stats-card">
             <div className="stats-col">
-                <div className="stats-label text-[12px]">{t("promotion.todaysCommission")}</div>
-                <div className="stats-value text-[24px]">{formatNumber(today)}</div>
+                <div className="stats-label text-[14px]">{t("promotion.todaysCommission")}</div>
+                <div className="stats-value text-[26px]">{formatNumber(today)}</div>
             </div>
             <div className="stats-col">
-                <div className="stats-label text-[12px]">{t("promotion.cumulativeCommission")}</div>
-                <div className="stats-value text-[24px]">${formatNumber(total)}</div>
+                <div className="stats-label text-[14px]">{t("promotion.cumulativeCommission")}</div>
+                <div className="stats-value text-[26px]">${formatNumber(total)}</div>
             </div>
         </div>
     );
