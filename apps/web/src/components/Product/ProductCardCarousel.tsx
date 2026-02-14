@@ -1,13 +1,11 @@
 import { HTMLAttributes, forwardRef, useState, useEffect, useRef } from "react";
 import { ProductData } from "./ProductCard";
+import { ShareButton } from "./Common";
 import { images } from "@mirror/assets";
-import { resolveImageUrl, shareToX } from "@mirror/utils";
-import { getWorkTypeInfo, goToWorkDetail } from "../utils/work";
+import { resolveImageUrl } from "@mirror/utils";
+import { getWorkTypeInfo, goToWorkDetail } from "../../utils/work";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useTranslation } from "react-i18next";
-import { artsApiClient } from "../api/artsClient";
 
 export interface ProductCardCarouselProps extends HTMLAttributes<HTMLDivElement> {
     /**
@@ -104,14 +102,14 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
             <div
                 id="product_card_carousel"
                 ref={ref}
-                className={`relative z-5 w-full max-w-[380px] mx-auto aspect-320/430 pt-[4.26%] ${className}`}
+                className={`relative z-5 w-full max-w-[380px] mx-auto aspect-320/430 mt-[10px] ${className}`}
                 {...props}
             >
                 {/* 阴影背景 */}
-                <div className="absolute z-6 bottom-0 w-full h-[92.32%] rounded-[25px] border border-[#c81cc569] shadow-[0_0_8px_0_rgba(228,21,153,0.33)_inset] filter-[drop-shadow(0_0.6px_1.3px_rgba(0,0,0,0.41))]" />
+                <div className="absolute z-6 bottom-0 w-full h-[92%] rounded-[25px] border border-[#c81cc569] shadow-[0_0_8px_0_rgba(228,21,153,0.33)_inset] filter-[drop-shadow(0_0.6px_1.3px_rgba(0,0,0,0.41))]" />
 
                 {/* 产品图片区域：圆角与图片一致，滚动过程中裁剪出的可见区域也保持圆角 */}
-                <div className="relative z-7 w-[92.5%] h-full mx-auto overflow-hidden -mt-[4.26%] rounded-[26px]">
+                <div className="relative z-7 w-[92.5%] h-full mx-auto overflow-hidden rounded-[26px] pb-[28px]">
                     {/* 轮播容器 - 水平滚动 */}
                     <div
                         className="flex h-[94.43%] transition-transform duration-500 ease-in-out"
@@ -140,7 +138,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     />
 
                                     {/* 分享到X按钮 */}
-                                    <div
+                                    {/* <div
                                         className={`absolute z-8 top-[15px] left-[15px] w-[18.75%] h-[4.71%] rounded-[20px] flex justify-center items-center ${product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"}`}
                                         onClick={e => product.handleShareClick(e, product)}
                                     >
@@ -159,12 +157,20 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                                 {product.shareCount}
                                             </div>
                                         ) : null}
-                                    </div>
+                                    </div> */}
+
+                                    <ShareButton
+                                        size="large"
+                                        className="absolute z-8 top-[15px] left-[15px]"
+                                        isShared={product.isShared}
+                                        shareCount={product.shareCount}
+                                        onClick={e => product.handleShareClick(e, product)}
+                                    />
 
                                     {/* 作品类型 */}
-                                    <div className="absolute z-8 top-[15px] right-[15px] flex justify-center items-center">
+                                    <div className="absolute z-8 top-[15px] h-[25px] right-[15px] flex justify-center items-center">
                                         <img
-                                            className="mr-[5px] w-[14px] h-[12px] invert brightness-100 -mt-[2px]"
+                                            className="mr-[4px] w-[16px] h-[14px] invert brightness-100"
                                             src={`${workInfo!.icon}`}
                                             alt={workInfo!.text}
                                         />
@@ -175,10 +181,11 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
 
                                     {/* 底部内容区域 */}
                                     <div
-                                        className={`absolute z-9 w-[87.5%] min-h-[21.88%] rounded-[11px] -bottom-[2.35%] left-1/2 -translate-x-1/2 p-[1.18%_2.81%] text-white border border-[rgba(127,127,127,0.4)] bg-[linear-gradient(180deg,rgba(127,127,127,0.33)_100%,rgba(217,217,217,0.63)_20%)] backdrop-blur-[10px] [text-shadow:0_2px_4px_rgba(0,0,0,0.98)] text-[12px] font-normal text-center transition-all duration-300 ${
+                                        id="product_card_carousel_bottom"
+                                        className={`absolute z-9 w-[94%] min-h-[21.88%] rounded-[11px] -bottom-[4.35%] left-1/2 -translate-x-1/2 p-[10px_20px] text-white border border-[rgba(67,67,67,1)] bg-[linear-gradient(180deg,rgba(127,127,127,0.33)_100%,rgba(217,217,217,0.63)_20%)] backdrop-blur-sm [text-shadow:0_2px_4px_rgba(0,0,0,0.98)] text-[12px] font-normal text-center transition-all duration-300 ${
                                             expandedDesc && index === currentIndex
                                                 ? "max-h-[94.12%] overflow-y-auto"
-                                                : "overflow-hidden"
+                                                : ""
                                         }`}
                                     >
                                         <div className="text-[17px] font-semibold mb-[5px] break-all overflow-hidden line-clamp-1">
@@ -189,7 +196,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                         </div>
                                         {product.description && (
                                             <div
-                                                className={`relative z-10 pt-[12.5px] text-[11px] leading-[14px] break-all cursor-pointer ${
+                                                className={`relative z-10 text-[11px] leading-[14px] break-all cursor-pointer text-[rgba(185,185,185,1)] ${
                                                     expandedDesc && index === currentIndex
                                                         ? ""
                                                         : "overflow-hidden line-clamp-2"
@@ -210,6 +217,11 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                                 {product.description}
                                             </div>
                                         )}
+                                        <img
+                                            src={images.works.descTop}
+                                            className="w-[18px] h-[18px] z-11 absolute -bottom-[10px] left-1/2 -translate-x-1/2"
+                                            alt="descTop"
+                                        />
                                     </div>
                                 </div>
                             );
@@ -219,7 +231,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
 
                 {/* 轮播指示器 */}
                 {displayProducts.length > 1 && (
-                    <div className="absolute z-7 bottom-[13px] left-1/2 -translate-x-1/2 flex gap-[6px]">
+                    <div className="absolute z-7 bottom-[10px] left-1/2 -translate-x-1/2 flex gap-[6px]">
                         {displayProducts.map((_, index) => (
                             <button
                                 key={index}

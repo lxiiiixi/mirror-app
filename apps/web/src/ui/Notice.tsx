@@ -27,11 +27,11 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
         return (
             <div
                 ref={ref}
-                className={`notice-container text-[14px] font-semibold ${className}`}
+                className={`notice-container text-[14px] font-semibold py-1 px-4 ${className}`}
                 {...props}
             >
                 {/* 左侧喇叭图标 */}
-                <img className="icon" src={images.home.notice} alt="Notice" />
+                <img className="shrink-0 w-4 h-4 mr-2" src={images.home.notice} alt="Notice" />
 
                 {/* 跑马灯容器 */}
                 <div className="marquee-container">
@@ -58,9 +58,9 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
                 <style jsx>{`
                     .notice-container {
                         color: #fff;
-                        background: var(--color-secondary-bg);
+                        background: rgba(126, 126, 126, 0.3);
                         border-radius: 20px;
-                        padding: 6px 2px 6px 10px;
+                        /* padding: 6px 2px 6px 10px; */
                         display: flex;
                         align-items: center;
                         overflow: hidden;
@@ -68,13 +68,7 @@ export const Notice = forwardRef<HTMLDivElement, NoticeProps>(
                         width: 100%;
                         height: 32px;
                         max-width: 100%;
-                    }
-
-                    .icon {
-                        width: 12px;
-                        height: 12px;
-                        margin-right: 8px;
-                        flex-shrink: 0;
+                        border: 1px solid rgba(255, 255, 255, 0.3);
                     }
 
                     .icon-jump {

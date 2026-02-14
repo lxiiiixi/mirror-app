@@ -1,12 +1,8 @@
 import { HTMLAttributes, forwardRef } from "react";
-import { images } from "@mirror/assets";
-import { resolveImageUrl, shareToX } from "@mirror/utils";
-import { getWorkTypeInfo, goToWorkDetail, WorkType } from "../utils/work";
+import { ShareButton } from "./Common";
+import { resolveImageUrl } from "@mirror/utils";
+import { getWorkTypeInfo, goToWorkDetail, WorkType } from "../../utils/work";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { useLoginModalStore } from "../store/useLoginModalStore";
-import { useTranslation } from "react-i18next";
-import { artsApiClient } from "../api/artsClient";
 
 /**
  * 产品数据接口
@@ -42,7 +38,6 @@ export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "
  */
 export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     ({ product, onLike, className = "", ...props }, ref) => {
-        const { t } = useTranslation();
         const workInfo = getWorkTypeInfo(product.type, true);
         const creators = product.creators || [];
         const creatorText = creators.slice(0, 3).join("/");
@@ -100,31 +95,18 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 </div>
 
                 {/* 分享到X按钮 */}
-                <div
-                    className={`absolute z-8 top-[9.38%] left-[9.09%] w-[32.73%] h-[7.5%] rounded-[20px] flex justify-center items-center ${product.isShared ? "bg-[#eb1484]" : "bg-[rgba(0,0,0,0.4)]"}`}
+                <ShareButton
+                    size="small"
+                    className="absolute z-8 top-[18px] left-[10px]"
+                    isShared={product.isShared}
+                    shareCount={product.shareCount}
                     onClick={e => product.handleShareClick(e, product)}
-                >
-                    <img
-                        src={images.works.toX}
-                        alt={t("common.xIconAlt")}
-                        className="w-[23.61%] h-[66.67%] mr-[13.89%]"
-                    />
-                    <img
-                        src={images.works.toXWhite}
-                        alt={t("common.xIconWhiteAlt")}
-                        className="w-[23.61%] h-[66.67%]"
-                    />
-                    {product.shareCount ? (
-                        <div className="absolute z-8 w-full text-center top-[85%] text-[10px] font-medium text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">
-                            {product.shareCount}
-                        </div>
-                    ) : null}
-                </div>
+                />
 
                 {/* 作品类型 */}
-                <div className="absolute z-8 top-[6.25%] right-[9.09%] flex justify-center items-center">
+                <div className="absolute z-8 top-[14px] right-[12px] flex justify-center items-center">
                     <img
-                        className="mr-[5px] mt-[2.5px] w-[7.5px] h-[6.5px] invert brightness-100 filter-[drop-shadow(0_1px_1px_rgba(35,35,35,0.8))]"
+                        className="mr-[2px] w-[9px] h-[8px] invert brightness-100"
                         src={workInfo!.icon}
                         alt={workInfo!.text}
                     />
