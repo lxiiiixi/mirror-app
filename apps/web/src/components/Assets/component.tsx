@@ -1,5 +1,7 @@
 import { images } from "@mirror/assets";
 import { displayAddress } from "@mirror/utils";
+import { Check, Copy } from "lucide-react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -8,11 +10,11 @@ export function GlassButton({ route, title }: { route: string; title: string }) 
     return (
         <button
             type="button"
-            className="flex items-center justify-between rounded-2xl border-2 border-white/30 bg-linear-to-b from-white/5 to-white/20 px-4 py-4 text-left backdrop-blur-xl"
+            className="flex items-center justify-between rounded-2xl border border-white/30 bg-linear-to-b from-white/5 to-white/20 px-4 py-4 text-left backdrop-blur-xl"
             onClick={() => navigate(route)}
         >
             <span className="text-[15px] font-semibold text-white">{title}</span>
-            <img src={images.account.right} alt="" className="h-3 w-3 opacity-80" aria-hidden />
+            <img src={images.account.right} alt="" className="h-2 w-2 opacity-80" aria-hidden />
         </button>
     );
 }
@@ -59,6 +61,16 @@ export function UserInfo({
     handleCopyAddress: () => void;
 }) {
     const { t } = useTranslation();
+    const [copied, setCopied] = useState(false);
+    const resetTidRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const onCopy = () => {
+        if (resetTidRef.current) clearTimeout(resetTidRef.current);
+        handleCopyAddress();
+        setCopied(true);
+        resetTidRef.current = setTimeout(() => setCopied(false), 2000);
+    };
+
     return (
         <>
             {walletAddress ? (
@@ -75,10 +87,25 @@ export function UserInfo({
                         </div>
                         <button
                             type="button"
-                            className="shrink-0 rounded-lg border border-white px-2 py-1 text-[12px] text-white"
-                            onClick={handleCopyAddress}
+                            className="flex shrink-0 items-center gap-1.5 rounded-md border border-white px-3 py-[2px] text-[12px] text-white"
+                            onClick={onCopy}
+                            aria-label={
+                                copied
+                                    ? t("account.copied", { defaultValue: "Copied" })
+                                    : t("account.copy")
+                            }
                         >
-                            {t("account.copy")}
+                            {copied ? (
+                                <>
+                                    <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} />
+                                    {t("account.copied", { defaultValue: "Copied" })}
+                                </>
+                            ) : (
+                                <>
+                                    <Copy className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+                                    {t("account.copy")}
+                                </>
+                            )}
                         </button>
                     </div>
                 </>

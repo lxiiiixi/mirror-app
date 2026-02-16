@@ -51,7 +51,7 @@ export function OverlapInfoCard({
                         </span>
                         <button
                             type="button"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/35 px-2 py-1 text-[12px] font-semibold text-white"
+                            className="inline-flex items-center gap-1.5 rounded-md border border-white/30 bg-white/20 px-2 py-1 text-[12px] font-semibold text-white"
                             onClick={onRefresh}
                         >
                             <span>{t("account.refresh")}</span>
@@ -61,7 +61,7 @@ export function OverlapInfoCard({
                 </div>
             </div>
             {/* 上层：磨砂玻璃卡，负 margin 叠在下层之上 */}
-            <div className="-mt-20 rounded-2xl border-2 border-white/30 bg-linear-to-b from-white/5 to-white/20 p-4 backdrop-blur-2xl">
+            <div className="-mt-20 rounded-2xl border border-white/30 bg-linear-to-b from-white/5 to-white/10 p-4 backdrop-blur-2xl">
                 {/* 四块：横线 + 竖线在中间交叉，分成左上 ENT、右上 RWA token、左下 ticket、右下 RWA ticket */}
                 <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-3 gap-x-4 gap-y-1">
                     {/* 左上 */}

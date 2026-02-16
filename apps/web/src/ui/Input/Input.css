@@ -3,12 +3,12 @@
     --input-height: 37px;
     --input-padding-x: 16px;
     --input-radius: 10px;
-    --input-border-width: 2px;
+    --input-border-width: 1px;
     --input-border-color: rgba(255, 255, 255, 0.3);
     --input-bg: linear-gradient(
-        151.34deg,
-        rgba(255, 255, 255, 0.06) 38.01%,
-        rgba(255, 255, 255, 0.1) 125.13%
+        180deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 100%
     );
     --input-text: #fff;
     --input-placeholder: rgba(255, 255, 255, 0.4);
@@ -20,7 +20,7 @@
     padding: 0 var(--input-padding-x);
     background: var(--input-bg);
     border: var(--input-border-width) solid var(--input-border-color);
-    backdrop-filter: blur(var(--input-backdrop-blur));
+    /* backdrop-filter: blur(var(--input-backdrop-blur)); */
     border-radius: var(--input-radius);
     font-size: var(--input-font-size);
     color: var(--input-text);
@@ -41,7 +41,7 @@
     --input-height: 37px;
     --input-padding-x: 16px;
     --input-radius: 7px;
-    --input-border-width: 2px;
+    --input-border-width: 1px;
     --input-font-size: 14px;
 }
 
@@ -50,7 +50,7 @@
     --input-height: 44px;
     --input-padding-x: 18px;
     --input-radius: 8px;
-    --input-border-width: 2px;
+    --input-border-width: 1px;
     --input-font-size: 16px;
 }
 
