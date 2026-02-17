@@ -443,7 +443,7 @@
     "balance": "餘額"
   },
   "account": {
-    "balanceTotal": "{{d}} 總價值",
+    "balanceTotal": "總價值 ({{d}})",
     "refresh": "刷新",
     "ent": "ENT",
     "rwa_token": "USDT 數量",

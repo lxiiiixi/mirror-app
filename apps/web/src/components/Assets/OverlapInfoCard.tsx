@@ -41,7 +41,14 @@ export function OverlapInfoCard({
         <div className="relative">
             {/* 下层：较小的渐变卡（总资产 + 刷新） */}
             <div className="px-4">
-                <div className="rounded-2xl bg-linear-to-br from-[#ad7eff] via-[#7a39fd] to-[#7c1af3] px-5 pt-5 pb-24">
+                <div
+                    className="rounded-2xl bg-linear-to-br from-[#ad7eff] via-[#7a39fd] to-[#7c1af3] px-5 pt-5 pb-24 relative"
+                    style={{
+                        backgroundImage:
+                            "linear-gradient(110deg, #ad7eff, #7a39fd, #7c1af3), linear-gradient(34deg, rgba(255, 255, 255, 0.08) 50%, transparent 30%), linear-gradient(311deg, rgba(0, 0, 0, 0.08) 40%, transparent 50%)",
+                        backgroundBlendMode: "overlay",
+                    }}
+                >
                     <div className="text-[15px] font-semibold text-white/95">
                         {t("account.balanceTotal", { d: "USDT" })}
                     </div>
@@ -65,7 +72,7 @@ export function OverlapInfoCard({
                 {/* 四块：横线 + 竖线在中间交叉，分成左上 ENT、右上 RWA token、左下 ticket、右下 RWA ticket */}
                 <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-3 gap-x-4 gap-y-1">
                     {/* 左上 */}
-                    <div className="flex items-start gap-2">
+                    <div className="flex items-start gap-2 px-3">
                         <img src={images.account.ent} alt="" className="mt-0.5 h-6 w-6 shrink-0" />
                         <div className="min-w-0">
                             <div className="text-[13px] font-semibold text-white/90">
@@ -104,7 +111,7 @@ export function OverlapInfoCard({
                         <LinearDivideHorizontal />
                     </div>
                     {/* 左下 */}
-                    <div className="row-start-3 flex items-start gap-2">
+                    <div className="row-start-3 flex items-start gap-2 px-3">
                         <img
                             src={images.account.todayIcon}
                             alt=""

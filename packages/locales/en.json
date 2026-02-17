@@ -445,7 +445,7 @@
     "balance": "balance"
   },
   "account": {
-    "balanceTotal": "Total Value {{d}}",
+    "balanceTotal": "Total Value ({{d}})",
     "refresh": "Refresh",
     "ent": "ENT",
     "rwa_token": "USDT quantity",

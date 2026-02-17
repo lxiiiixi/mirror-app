@@ -76,7 +76,7 @@ export function UserInfo({
             {walletAddress ? (
                 <>
                     <LinearDivideHorizontal />
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center justify-between gap-3 px-3">
                         <div className="min-w-0">
                             <div className="text-[14px] font-semibold text-white">
                                 {t("account.address")}
@@ -97,13 +97,13 @@ export function UserInfo({
                         >
                             {copied ? (
                                 <>
-                                    <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} />
                                     {t("account.copied", { defaultValue: "Copied" })}
+                                    <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} />
                                 </>
                             ) : (
                                 <>
-                                    <Copy className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
                                     {t("account.copy")}
+                                    <Copy className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
                                 </>
                             )}
                         </button>
@@ -114,7 +114,7 @@ export function UserInfo({
             {email ? (
                 <>
                     <LinearDivideHorizontal />
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center justify-between gap-3 px-3">
                         <div className="min-w-0">
                             <div className="text-[14px] font-semibold text-white">
                                 {t("emailLogin.email")}
