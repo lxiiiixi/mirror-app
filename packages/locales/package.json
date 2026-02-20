@@ -6,8 +6,11 @@
   "types": "index.d.ts",
   "files": [
     "en.json",
-    "zh-HK.json",
+    "zh-hk.json",
     "zh-CN.json",
-    "index.js"
+    "index.js",
+    "index.d.ts",
+    "i18n.js",
+    "i18n.d.ts"
   ]
 }

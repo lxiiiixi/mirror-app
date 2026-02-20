@@ -2,30 +2,22 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
-import en from "@mirror/locales/en.json";
-import zhHK from "@mirror/locales/zh-HK.json";
-import zhCN from "@mirror/locales/zh-CN.json";
+import {
+    createI18nResources,
+    FALLBACK_LANGUAGE,
+    SUPPORTED_LANGUAGE_LIST,
+} from "@mirror/locales/i18n";
 import { STORAGE_KEYS } from "./utils/localStorage";
 
-export enum SUPPORTED_LANGUAGES {
-    en = "en",
-    zh_hk = "zh-HK",
-    zh_cn = "zh-CN",
-}
-
-const resources = {
-    [SUPPORTED_LANGUAGES.en]: { common: en },
-    [SUPPORTED_LANGUAGES.zh_hk]: { common: zhHK },
-    [SUPPORTED_LANGUAGES.zh_cn]: { common: zhCN },
-};
+const resources = createI18nResources("common");
 
 void i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,
-        fallbackLng: "en",
-        supportedLngs: ["en", "zh-HK", "zh-CN"],
+        fallbackLng: FALLBACK_LANGUAGE,
+        supportedLngs: [...SUPPORTED_LANGUAGE_LIST],
         defaultNS: "common",
         ns: ["common"],
         interpolation: {

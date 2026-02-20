@@ -1,5 +1,5 @@
 import en from './en.json'
-import zhHK from './zh-HK.json'
+import zhHK from './zh-hk.json'
 import zhCN from './zh-CN.json'
 
 export default {
