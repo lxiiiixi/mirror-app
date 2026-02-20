@@ -7,3 +7,5 @@ export default {
   'zh-HK': zhHK,
   'zh-CN': zhCN,
 }
+
+export { SUPPORTED_LANGUAGES } from './i18n.js'
