@@ -21,4 +21,13 @@ config.resolver.extraNodeModules = {
   'react-native': path.resolve(workspaceNodeModules, 'react-native'),
 };
 
-module.exports = config;
+let withNativeWind;
+try {
+  ({ withNativeWind } = require('nativewind/metro'));
+} catch {
+  withNativeWind = null;
+}
+
+module.exports = withNativeWind
+  ? withNativeWind(config, { input: './global.css' })
+  : config;

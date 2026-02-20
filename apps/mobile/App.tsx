@@ -1,5 +1,6 @@
 // import { fontsCss } from '@mirror/assets';
 // import { useFonts } from "expo-font";
+import "./global.css";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
@@ -27,7 +28,12 @@ export default function App() {
                     <View style={styles.header}>
                         <View style={styles.badge}>
                             <View style={styles.badgeDot} />
-                            <Text style={styles.badgeText}>MIRROR APP</Text>
+                            <Text
+                                // style={styles.badgeText}
+                                className="text-xs font-semibold tracking-wider text-emerald-700"
+                            >
+                                MIRROR APP
+                            </Text>
                         </View>
                         <Text style={styles.title}>Mobile Preview</Text>
                         <Text style={styles.subtitle}>
