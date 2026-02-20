@@ -25,6 +25,9 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.mirrorapp"
     },
+    "plugins": [
+      "expo-router"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     }

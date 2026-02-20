@@ -15,6 +15,7 @@ config.resolver.nodeModulesPaths = [
 ];
 config.resolver.disableHierarchicalLookup = true;
 config.resolver.extraNodeModules = {
+  '@mirror/routes': path.resolve(workspaceRoot, 'packages/routes/src'),
   react: path.resolve(projectNodeModules, 'react'),
   'react/jsx-runtime': path.resolve(projectNodeModules, 'react/jsx-runtime'),
   'react/jsx-dev-runtime': path.resolve(projectNodeModules, 'react/jsx-dev-runtime'),
