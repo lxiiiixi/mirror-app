@@ -14,7 +14,7 @@ import {
     View,
     type ScrollViewProps,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, LinearGradient, RadialGradient, Rect, Stop } from "react-native-svg";
 
 type FooterIconValue = ReactNode | string | number;
@@ -101,6 +101,7 @@ export function AppLayout({
     contentContainerStyle,
     ...scrollProps
 }: AppLayoutProps) {
+    const insets = useSafeAreaInsets();
     const shouldShowHeader = showWalletBar || showPageNav;
     const shouldShowFooter = showFooter && footerItems.length > 0;
     const headerOffset = useRef(new Animated.Value(0)).current;
@@ -348,7 +349,13 @@ export function AppLayout({
             </ScrollView>
 
             {shouldShowFooter ? (
-                <SafeAreaView style={styles.footerSafeArea} edges={["bottom", "left", "right"]}>
+                <SafeAreaView
+                    style={[
+                        styles.footerSafeArea,
+                        { paddingBottom: Math.max(insets.bottom - 10, 0) },
+                    ]}
+                    edges={["left", "right"]}
+                >
                     <View style={styles.footerFrame}>
                         {footerBackgroundSource ? (
                             <Image
@@ -518,19 +525,19 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     contentWithFooter: {
-        paddingBottom: 118,
+        paddingBottom: 136,
     },
     footerSafeArea: {
         position: "absolute",
         left: 0,
         right: 0,
-        bottom: 0,
+        bottom: -2,
         alignItems: "center",
         backgroundColor: "transparent",
     },
     footerFrame: {
-        width: 265,
-        height: 86,
+        width: 294,
+        height: 98,
         alignItems: "center",
         justifyContent: "center",
     },

@@ -1,6 +1,6 @@
 import { images } from "@mirror/assets";
 import { ROUTE_PATHS, type AppRoutePath } from "@mirror/routes";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSelect, type LanguageOption } from "../components";
@@ -20,13 +20,17 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
 export function MainTabsLayout({ children, activeFooterIndex }: MainTabsLayoutProps) {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
   const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? "en";
   const currentLanguageValue =
     LANGUAGE_OPTIONS.find((option) => option.value.toLowerCase() === currentLanguage.toLowerCase())
       ?.value ?? "en";
 
   const navigate = (path: AppRoutePath) => {
-    router.push(path);
+    if (pathname === path) {
+      return;
+    }
+    router.replace(path);
   };
 
   return (
