@@ -1,14 +1,7 @@
-import type { LocaleMessages, SupportedLocale } from "./index";
+import type { SupportedLocale } from "./constants";
+import type { LocaleMessages } from "./index";
 
-export declare const SUPPORTED_LANGUAGES: {
-  readonly en: "en";
-  readonly zh_hk: "zh-HK";
-  readonly zh_cn: "zh-CN";
-};
-
-export declare const SUPPORTED_LANGUAGE_LIST: readonly SupportedLocale[];
-
-export declare const FALLBACK_LANGUAGE: SupportedLocale;
+export { SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGE_LIST, FALLBACK_LANGUAGE } from "./constants";
 
 export declare function createI18nResources(
   namespace?: string,

@@ -8,4 +8,4 @@ export default {
   'zh-CN': zhCN,
 }
 
-export { SUPPORTED_LANGUAGES } from './i18n.js'
+export { SUPPORTED_LANGUAGES } from "./constants.js";

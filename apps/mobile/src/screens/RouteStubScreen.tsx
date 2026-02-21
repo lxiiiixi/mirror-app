@@ -1,9 +1,8 @@
 import { type ReactNode } from "react";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { ROUTE_PATHS } from "@mirror/routes";
-import { ScrollView, StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "../ui";
+import { StyleSheet, Text, View } from "react-native";
+import { AppLayout } from "../ui";
 
 interface RouteStubScreenProps {
   title: string;
@@ -12,35 +11,40 @@ interface RouteStubScreenProps {
 }
 
 export function RouteStubScreen({ title, path, children }: RouteStubScreenProps) {
+  const router = useRouter();
+
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace(ROUTE_PATHS.home);
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <AppLayout
+      showWalletBar={false}
+      showPageNav
+      showFooter={false}
+      pageTitle={title}
+      onBackPress={handleBack}
+    >
+      <View style={styles.content}>
         <Text style={styles.badge}>MOBILE ROUTE PAGE</Text>
-        <Text style={styles.title}>{title}</Text>
         <Text style={styles.path}>Path: {path}</Text>
         <Text style={styles.description}>
           This is a scaffold page generated from shared route config. Replace with real business UI.
         </Text>
 
         {children}
-
-        <Link href={ROUTE_PATHS.home} asChild>
-          <Button variant="secondary" size="small">
-            Back Home
-          </Button>
-        </Link>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </AppLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#f8fafc",
-  },
   content: {
-    padding: 20,
+    paddingHorizontal: 5,
     gap: 12,
   },
   badge: {
@@ -53,11 +57,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
-  },
-  title: {
-    color: "#0f172a",
-    fontSize: 28,
-    fontWeight: "700",
   },
   path: {
     color: "#475569",

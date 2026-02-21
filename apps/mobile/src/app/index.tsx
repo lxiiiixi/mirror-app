@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { SHARED_ROUTE_CONFIGS } from "@mirror/routes";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
+import { MainTabsLayout } from "../layouts/MainTabsLayout";
 import { Button } from "../ui";
 
 const routeCards = SHARED_ROUTE_CONFIGS.filter(
@@ -10,8 +10,8 @@ const routeCards = SHARED_ROUTE_CONFIGS.filter(
 
 export default function HomeRoutePage() {
     return (
-        <SafeAreaView style={styles.safeArea}>
-            <ScrollView contentContainerStyle={styles.content}>
+        <MainTabsLayout activeFooterIndex={0}>
+            <View style={styles.content}>
                 <Text style={styles.badge}>EXPO ROUTER READY</Text>
                 <Text style={styles.title}>Mirror Mobile Routes</Text>
                 <Text style={styles.description}>
@@ -25,24 +25,19 @@ export default function HomeRoutePage() {
                             <Text style={styles.cardPath}>{route.path}</Text>
                             <Text style={styles.cardMeta}>Layout: {route.layoutType}</Text>
                             <Link href={route.path} asChild>
-                                {/* <Button size="small">Open Page</Button> */}
-                                <Text className="text-sm font-medium text-blue-500">Open Page</Text>
+                                <Button size="small">Open Page</Button>
                             </Link>
                         </View>
                     ))}
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            </View>
+        </MainTabsLayout>
     );
 }
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1,
-        backgroundColor: "#f8fafc",
-    },
     content: {
-        padding: 20,
+        paddingHorizontal: 5,
         gap: 14,
     },
     badge: {

@@ -10,4 +10,4 @@ export type SupportedLocale = keyof typeof locales;
 
 export default locales;
 
-export { SUPPORTED_LANGUAGES } from "./i18n";
+export { SUPPORTED_LANGUAGES } from "./constants";
