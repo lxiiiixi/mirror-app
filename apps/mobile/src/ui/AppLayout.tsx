@@ -227,7 +227,11 @@ export function AppLayout({
 
     const renderFooterLabel = (label: ReactNode, isActive: boolean) => {
         if (typeof label === "string" || typeof label === "number") {
-            return <Text style={[styles.footerLabel, isActive && styles.footerLabelActive]}>{label}</Text>;
+            return (
+                <Text style={[styles.footerLabel, isActive && styles.footerLabelActive]}>
+                    {label}
+                </Text>
+            );
         }
 
         return <View>{label}</View>;
@@ -279,7 +283,11 @@ export function AppLayout({
                             <View pointerEvents="box-none" style={styles.headerCenterOverlay}>
                                 <Pressable style={styles.logoButton} onPress={onLogoPress}>
                                     {logoSource ? (
-                                        <Image source={logoSource} style={styles.logoImage} resizeMode="contain" />
+                                        <Image
+                                            source={logoSource}
+                                            style={styles.logoImage}
+                                            resizeMode="contain"
+                                        />
                                     ) : (
                                         <Text style={styles.logoText}>MIRROR</Text>
                                     )}
@@ -287,7 +295,10 @@ export function AppLayout({
                             </View>
                             <View style={styles.headerRightSlot}>
                                 <Pressable
-                                    style={[styles.walletButton, isLoggedIn && styles.walletButtonAssets]}
+                                    style={[
+                                        styles.walletButton,
+                                        isLoggedIn && styles.walletButtonAssets,
+                                    ]}
                                     onPress={onWalletPress}
                                 >
                                     <Text style={styles.walletButtonText}>
@@ -312,7 +323,9 @@ export function AppLayout({
                                         ) : (
                                             <Text style={styles.backText}>{backIcon}</Text>
                                         )
-                                    ) : backIcon
+                                    ) : (
+                                        backIcon
+                                    )
                                 ) : defaultBackIconSource ? (
                                     <Image
                                         source={defaultBackIconSource}
@@ -414,14 +427,14 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         zIndex: 20,
     },
-    headerScrolled: {
-        backgroundColor: "rgba(18, 9, 44, 0.9)",
-    },
     walletHeaderRow: {
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+    },
+    headerScrolled: {
+        // backgroundColor#2d117ee5.9)",
     },
     headerLeftSlot: {
         width: 90,
