@@ -4,6 +4,8 @@ import { usePathname, useRouter } from "expo-router";
 import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSelect, type LanguageOption } from "../components";
+import { useAuth } from "../hooks/useAuth";
+import { useLoginModal } from "../hooks/useLoginModal";
 import { AppLayout } from "../ui";
 
 interface MainTabsLayoutProps {
@@ -21,6 +23,8 @@ export function MainTabsLayout({ children, activeFooterIndex }: MainTabsLayoutPr
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
+  const { isLoggedIn } = useAuth();
+  const { openModal } = useLoginModal();
   const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? "en";
   const currentLanguageValue =
     LANGUAGE_OPTIONS.find((option) => option.value.toLowerCase() === currentLanguage.toLowerCase())
@@ -39,7 +43,14 @@ export function MainTabsLayout({ children, activeFooterIndex }: MainTabsLayoutPr
       showFooter
       activeFooterIndex={activeFooterIndex}
       onLogoPress={() => navigate(ROUTE_PATHS.home)}
-      onWalletPress={() => navigate(ROUTE_PATHS.assets)}
+      onWalletPress={() => {
+        if (isLoggedIn) {
+          navigate(ROUTE_PATHS.assets);
+          return;
+        }
+        openModal();
+      }}
+      isLoggedIn={isLoggedIn}
       languageSelect={
         <LanguageSelect
           value={currentLanguageValue}

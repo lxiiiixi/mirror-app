@@ -4,7 +4,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@mirror/routes": ["../../packages/routes/src/index.ts"]
+      "@mirror/routes": ["../../packages/routes/src/index.ts"],
+      "@mirror/api": ["../../packages/api/src/index.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "nativewind-env.d.ts"]

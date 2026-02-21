@@ -23,6 +23,14 @@ const readEnv = (key: string, fallback = ""): string => {
     return fallback;
 };
 
+const readEnvAny = (keys: string[], fallback = ""): string => {
+    for (const key of keys) {
+        const value = readEnv(key);
+        if (value) return value;
+    }
+    return fallback;
+};
+
 const parseNumber = (value: string | undefined, fallback?: number): number | undefined => {
     if (!value) return fallback;
     const numeric = Number(value);
@@ -68,13 +76,40 @@ export type EnvConfigs = {
 };
 
 export const envConfigs: EnvConfigs = {
-    ARTS_API_BASE:
-        readEnv("VITE_ARTS_API_BASE") ||
-        readEnv("ARTS_API_BASE") ||
-        readEnv("EXPO_PUBLIC_ARTS_API_BASE"),
-    REOWN_PROJECT_ID: readEnv("VITE_REOWN_PROJECT_ID"),
-    SOLANA_RPC_URL: readEnv("VITE_SOLANA_RPC_URL"),
-    SOLANA_CHAIN_ID: parseSolanaChainId(readEnv("VITE_SOLANA_CHAIN_ID")),
-    SOLANA_NETWORK: parseSolanaNetwork(readEnv("VITE_SOLANA_NETWORK")),
-    NETWORK: parseNetwork(readEnv("VITE_NETWORK")),
+    ARTS_API_BASE: readEnvAny([
+        "VITE_ARTS_API_BASE",
+        "EXPO_PUBLIC_ARTS_API_BASE",
+        "ARTS_API_BASE",
+    ]),
+    REOWN_PROJECT_ID: readEnvAny([
+        "VITE_REOWN_PROJECT_ID",
+        "EXPO_PUBLIC_REOWN_PROJECT_ID",
+        "REOWN_PROJECT_ID",
+    ]),
+    SOLANA_RPC_URL: readEnvAny([
+        "VITE_SOLANA_RPC_URL",
+        "EXPO_PUBLIC_SOLANA_RPC_URL",
+        "SOLANA_RPC_URL",
+    ]),
+    SOLANA_CHAIN_ID: parseSolanaChainId(
+        readEnvAny([
+            "VITE_SOLANA_CHAIN_ID",
+            "EXPO_PUBLIC_SOLANA_CHAIN_ID",
+            "SOLANA_CHAIN_ID",
+        ]),
+    ),
+    SOLANA_NETWORK: parseSolanaNetwork(
+        readEnvAny([
+            "VITE_SOLANA_NETWORK",
+            "EXPO_PUBLIC_SOLANA_NETWORK",
+            "SOLANA_NETWORK",
+        ]),
+    ),
+    NETWORK: parseNetwork(
+        readEnvAny([
+            "VITE_NETWORK",
+            "EXPO_PUBLIC_NETWORK",
+            "NETWORK",
+        ]),
+    ),
 };
