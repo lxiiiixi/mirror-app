@@ -12,6 +12,7 @@
     "@mirror/assets": "workspace:*",
     "@mirror/locales": "workspace:*",
     "@mirror/routes": "workspace:*",
+    "@mirror/utils": "workspace:*",
     "expo": "~52.0.38",
     "expo-constants": "~17.0.8",
     "expo-font": "~13.0.4",

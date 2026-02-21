@@ -3,12 +3,14 @@ import { SHARED_ROUTE_CONFIGS } from "@mirror/routes";
 import { StyleSheet, Text, View } from "react-native";
 import { MainTabsLayout } from "../layouts/MainTabsLayout";
 import { Button } from "../ui";
+import { envConfigs } from "@mirror/utils";
 
 const routeCards = SHARED_ROUTE_CONFIGS.filter(
     route => route.key !== "home" && route.key !== "notFound",
 );
 
 export default function HomeRoutePage() {
+    console.log("[HomeRoutePage] envConfigs", envConfigs);
     return (
         <MainTabsLayout activeFooterIndex={0}>
             <View style={styles.content}>

@@ -3,9 +3,9 @@ import { SUPPORTED_NETWORK_VALUES, SupportedNetwork } from "./network";
 type EnvSource = Record<string, string | undefined>;
 
 const resolveEnvSource = (): EnvSource => {
-    if (typeof import.meta !== "undefined") {
-        const viteEnv = (import.meta as { env?: EnvSource }).env;
-        if (viteEnv) return viteEnv;
+    const globalEnv = (globalThis as { __APP_ENV__?: EnvSource }).__APP_ENV__;
+    if (globalEnv && typeof globalEnv === "object") {
+        return globalEnv;
     }
 
     if (typeof process !== "undefined") {
