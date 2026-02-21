@@ -1,6 +1,9 @@
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { images } from "@mirror/assets";
+import { type ReactNode, isValidElement, useCallback, useEffect, useRef, useState } from "react";
 import {
     Animated,
+    Image,
+    type ImageSourcePropType,
     type LayoutChangeEvent,
     type NativeScrollEvent,
     type NativeSyntheticEvent,
@@ -12,11 +15,15 @@ import {
     type ScrollViewProps,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Svg, { Circle, Defs, LinearGradient, RadialGradient, Rect, Stop } from "react-native-svg";
+
+type FooterIconValue = ReactNode | string | number;
 
 export interface AppLayoutFooterItem {
     label: ReactNode;
-    icon?: ReactNode;
-    activeIcon?: ReactNode;
+    icon?: FooterIconValue;
+    activeIcon?: FooterIconValue;
+    position?: "left" | "center" | "right";
     key?: string | number;
     onPress?: () => void;
 }
@@ -27,6 +34,7 @@ export interface AppLayoutProps extends Omit<ScrollViewProps, "children"> {
     showPageNav?: boolean;
     pageTitle?: ReactNode;
     headerRight?: ReactNode;
+    languageSelect?: ReactNode;
     assetsLabel?: ReactNode;
     loginLabel?: ReactNode;
     isLoggedIn?: boolean;
@@ -34,11 +42,40 @@ export interface AppLayoutProps extends Omit<ScrollViewProps, "children"> {
     onWalletPress?: () => void;
     onBackPress?: () => void;
     backIcon?: ReactNode;
-    onLanguagePress?: () => void;
     footerItems?: AppLayoutFooterItem[];
     activeFooterIndex?: number;
     showFooter?: boolean;
     autoHideHeaderOnScroll?: boolean;
+}
+
+function toImageSource(value: string | number | null | undefined): ImageSourcePropType | undefined {
+    if (value == null) {
+        return undefined;
+    }
+
+    if (typeof value === "number") {
+        return value;
+    }
+
+    const normalized = value.trim();
+    if (!normalized) {
+        return undefined;
+    }
+
+    const seemsImagePath =
+        normalized.startsWith("http://") ||
+        normalized.startsWith("https://") ||
+        normalized.startsWith("file://") ||
+        normalized.startsWith("data:") ||
+        normalized.includes("/") ||
+        normalized.endsWith(".png") ||
+        normalized.endsWith(".jpg") ||
+        normalized.endsWith(".jpeg") ||
+        normalized.endsWith(".webp") ||
+        normalized.endsWith(".gif") ||
+        normalized.endsWith(".svg");
+
+    return seemsImagePath ? { uri: normalized } : undefined;
 }
 
 export function AppLayout({
@@ -47,14 +84,14 @@ export function AppLayout({
     showPageNav = false,
     pageTitle,
     headerRight,
+    languageSelect,
     assetsLabel = "Assets",
     loginLabel = "Login",
     isLoggedIn = false,
     onLogoPress,
     onWalletPress,
     onBackPress,
-    backIcon = "←",
-    onLanguagePress,
+    backIcon,
     footerItems = [],
     activeFooterIndex = 0,
     showFooter = true,
@@ -70,14 +107,20 @@ export function AppLayout({
     const headerOffsetRef = useRef(0);
     const headerVisibleRef = useRef(true);
     const [headerVisible, setHeaderVisibleState] = useState(true);
+    const [isScrolled, setIsScrolled] = useState(false);
     const lastScrollYRef = useRef(0);
-    const headerHeightRef = useRef(54);
+    const headerHeightRef = useRef(50);
+
+    const logoSource = toImageSource(images.logo);
+    const defaultBackIconSource = toImageSource(images.works.backBtn);
+    const footerBackgroundSource = toImageSource(images.nav.footBarBg);
 
     const setHeaderVisible = useCallback(
         (visible: boolean) => {
             if (headerVisibleRef.current === visible) {
                 return;
             }
+
             headerVisibleRef.current = visible;
             setHeaderVisibleState(visible);
 
@@ -108,8 +151,10 @@ export function AppLayout({
 
     const handleScroll = useCallback(
         (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            const nextY = Math.max(event.nativeEvent.contentOffset.y, 0);
+            setIsScrolled(nextY > 0);
+
             if (autoHideHeaderOnScroll && shouldShowHeader) {
-                const nextY = Math.max(event.nativeEvent.contentOffset.y, 0);
                 const delta = nextY - lastScrollYRef.current;
                 if (nextY <= 2) {
                     setHeaderVisible(true);
@@ -131,19 +176,96 @@ export function AppLayout({
             headerOffsetRef.current = 0;
             headerVisibleRef.current = true;
             setHeaderVisibleState(true);
+            setIsScrolled(false);
             lastScrollYRef.current = 0;
             headerOffset.setValue(0);
         }
     }, [autoHideHeaderOnScroll, headerOffset, shouldShowHeader]);
+
     const showHeaderContent = !autoHideHeaderOnScroll || headerVisible;
+
+    const renderFooterIcon = (
+        iconValue: FooterIconValue | undefined,
+        isActive: boolean,
+        position: AppLayoutFooterItem["position"],
+    ) => {
+        if (iconValue == null) {
+            return null;
+        }
+
+        const imageSource =
+            typeof iconValue === "string" || typeof iconValue === "number"
+                ? toImageSource(iconValue)
+                : undefined;
+
+        const iconImageStyle = [
+            styles.footerIconImage,
+            position === "center" && styles.footerIconImageCenter,
+            isActive && styles.footerIconImageActive,
+            isActive && position === "center" && styles.footerIconImageCenterActive,
+        ];
+
+        if (imageSource) {
+            return <Image source={imageSource} style={iconImageStyle} resizeMode="contain" />;
+        }
+
+        if (typeof iconValue === "string" || typeof iconValue === "number") {
+            return (
+                <Text style={[styles.footerIconText, isActive && styles.footerIconTextActive]}>
+                    {iconValue}
+                </Text>
+            );
+        }
+
+        if (isValidElement(iconValue)) {
+            return iconValue;
+        }
+
+        return null;
+    };
+
+    const renderFooterLabel = (label: ReactNode, isActive: boolean) => {
+        if (typeof label === "string" || typeof label === "number") {
+            return <Text style={[styles.footerLabel, isActive && styles.footerLabelActive]}>{label}</Text>;
+        }
+
+        return <View>{label}</View>;
+    };
 
     return (
         <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+            <View pointerEvents="none" style={styles.backgroundLayer}>
+                <Svg height="100%" width="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <Defs>
+                        <LinearGradient id="pageGradient" x1="0" y1="0" x2="1" y2="1">
+                            <Stop offset="5%" stopColor="#1f1a48" />
+                            <Stop offset="20%" stopColor="#0d233f" />
+                            <Stop offset="40%" stopColor="#030620" />
+                            <Stop offset="100%" stopColor="#030620" />
+                        </LinearGradient>
+                        <RadialGradient id="leftOrb" cx="30%" cy="30%" r="60%">
+                            <Stop offset="0%" stopColor="#03254c" stopOpacity="0.95" />
+                            <Stop offset="52%" stopColor="#03254c" stopOpacity="0.35" />
+                            <Stop offset="100%" stopColor="#03254c" stopOpacity="0" />
+                        </RadialGradient>
+                        <RadialGradient id="rightOrb" cx="70%" cy="30%" r="58%">
+                            <Stop offset="0%" stopColor="#4E18F0" stopOpacity="0.28" />
+                            <Stop offset="56%" stopColor="#4E18F0" stopOpacity="0.12" />
+                            <Stop offset="100%" stopColor="#4E18F0" stopOpacity="0" />
+                        </RadialGradient>
+                    </Defs>
+                    <Rect fill="url(#pageGradient)" height="100" width="100" x="0" y="0" />
+                    <Circle cx="-8" cy="-10" r="38" fill="url(#leftOrb)" />
+                    <Circle cx="108" cy="-8" r="30" fill="url(#rightOrb)" />
+                </Svg>
+            </View>
+
             {shouldShowHeader ? (
                 <Animated.View
                     onLayout={handleHeaderLayout}
                     style={[
                         styles.header,
+                        isScrolled && styles.headerScrolled,
                         autoHideHeaderOnScroll && {
                             transform: [{ translateY: Animated.multiply(headerOffset, -1) }],
                             marginBottom: Animated.multiply(headerOffset, -1),
@@ -151,27 +273,54 @@ export function AppLayout({
                     ]}
                 >
                     {showWalletBar && showHeaderContent ? (
-                        <>
-                            <Pressable style={styles.headerChip} onPress={onLanguagePress}>
-                                <Text style={styles.headerChipText}>Lang</Text>
-                            </Pressable>
-
-                            <Pressable style={styles.logoButton} onPress={onLogoPress}>
-                                <Text style={styles.logoText}>MIRROR</Text>
-                            </Pressable>
-
-                            <Pressable style={styles.walletButton} onPress={onWalletPress}>
-                                <Text style={styles.walletButtonText}>
-                                    {isLoggedIn ? assetsLabel : loginLabel}
-                                </Text>
-                            </Pressable>
-                        </>
+                        <View style={styles.walletHeaderRow}>
+                            <View style={styles.headerLeftSlot}>{languageSelect}</View>
+                            <View pointerEvents="box-none" style={styles.headerCenterOverlay}>
+                                <Pressable style={styles.logoButton} onPress={onLogoPress}>
+                                    {logoSource ? (
+                                        <Image source={logoSource} style={styles.logoImage} resizeMode="contain" />
+                                    ) : (
+                                        <Text style={styles.logoText}>MIRROR</Text>
+                                    )}
+                                </Pressable>
+                            </View>
+                            <View style={styles.headerRightSlot}>
+                                <Pressable
+                                    style={[styles.walletButton, isLoggedIn && styles.walletButtonAssets]}
+                                    onPress={onWalletPress}
+                                >
+                                    <Text style={styles.walletButtonText}>
+                                        {isLoggedIn ? assetsLabel : loginLabel}
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        </View>
                     ) : null}
 
                     {showPageNav && showHeaderContent ? (
-                        <>
+                        <View style={styles.pageNavRow}>
                             <Pressable style={styles.backButton} onPress={onBackPress}>
-                                <Text style={styles.backText}>{backIcon}</Text>
+                                {backIcon ? (
+                                    typeof backIcon === "string" || typeof backIcon === "number" ? (
+                                        toImageSource(backIcon) ? (
+                                            <Image
+                                                source={toImageSource(backIcon)}
+                                                style={styles.backImage}
+                                                resizeMode="contain"
+                                            />
+                                        ) : (
+                                            <Text style={styles.backText}>{backIcon}</Text>
+                                        )
+                                    ) : backIcon
+                                ) : defaultBackIconSource ? (
+                                    <Image
+                                        source={defaultBackIconSource}
+                                        style={styles.backImage}
+                                        resizeMode="contain"
+                                    />
+                                ) : (
+                                    <Text style={styles.backText}>←</Text>
+                                )}
                             </Pressable>
                             <View style={styles.pageTitleWrap}>
                                 <Text numberOfLines={1} style={styles.pageTitle}>
@@ -179,7 +328,7 @@ export function AppLayout({
                                 </Text>
                             </View>
                             <View style={styles.headerRight}>{headerRight}</View>
-                        </>
+                        </View>
                     ) : null}
                 </Animated.View>
             ) : null}
@@ -199,36 +348,39 @@ export function AppLayout({
             </ScrollView>
 
             {shouldShowFooter ? (
-                <SafeAreaView style={styles.footer} edges={["bottom", "left", "right"]}>
-                    <View style={styles.footerInner}>
-                        {footerItems.map((item, index) => {
-                            const isActive = index === activeFooterIndex;
-                            const icon = isActive ? (item.activeIcon ?? item.icon) : item.icon;
-                            return (
-                                <Pressable
-                                    key={item.key ?? index}
-                                    style={styles.footerItem}
-                                    onPress={item.onPress}
-                                >
-                                    <Text
+                <SafeAreaView style={styles.footerSafeArea} edges={["bottom", "left", "right"]}>
+                    <View style={styles.footerFrame}>
+                        {footerBackgroundSource ? (
+                            <Image
+                                source={footerBackgroundSource}
+                                style={styles.footerBackgroundImage}
+                                resizeMode="stretch"
+                            />
+                        ) : null}
+                        <View style={styles.footerInner}>
+                            {footerItems.map((item, index) => {
+                                const isActive = index === activeFooterIndex;
+                                const icon = isActive ? (item.activeIcon ?? item.icon) : item.icon;
+                                return (
+                                    <Pressable
+                                        key={item.key ?? index}
                                         style={[
-                                            styles.footerIcon,
-                                            isActive && styles.footerIconActive,
+                                            styles.footerItem,
+                                            item.position === "left" && styles.footerItemLeft,
+                                            item.position === "right" && styles.footerItemRight,
                                         ]}
+                                        onPress={item.onPress}
                                     >
-                                        {icon}
-                                    </Text>
-                                    <Text
-                                        style={[
-                                            styles.footerLabel,
-                                            isActive && styles.footerLabelActive,
-                                        ]}
-                                    >
-                                        {item.label}
-                                    </Text>
-                                </Pressable>
-                            );
-                        })}
+                                        <View style={styles.footerIconSlot}>
+                                            {renderFooterIcon(icon, isActive, item.position)}
+                                        </View>
+                                        <View style={styles.footerLabelSlot}>
+                                            {renderFooterLabel(item.label, isActive)}
+                                        </View>
+                                    </Pressable>
+                                );
+                            })}
+                        </View>
                     </View>
                 </SafeAreaView>
             ) : null}
@@ -239,60 +391,101 @@ export function AppLayout({
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: "#f8fafc",
+        backgroundColor: "#030620",
+    },
+    backgroundLayer: {
+        ...StyleSheet.absoluteFillObject,
+        zIndex: 0,
     },
     header: {
-        minHeight: 54,
-        paddingHorizontal: 14,
+        minHeight: 50,
+        paddingHorizontal: 15,
         paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: "#e2e8f0",
-        backgroundColor: "rgba(248, 250, 252, 0.96)",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "transparent",
+        zIndex: 20,
+    },
+    headerScrolled: {
+        backgroundColor: "rgba(18, 9, 44, 0.9)",
+    },
+    walletHeaderRow: {
+        width: "100%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: 10,
     },
-    headerChip: {
-        borderRadius: 999,
-        backgroundColor: "#eef2ff",
-        paddingHorizontal: 10,
-        paddingVertical: 6,
+    headerLeftSlot: {
+        width: 90,
+        height: 27,
+        justifyContent: "center",
+        alignItems: "flex-start",
     },
-    headerChipText: {
-        color: "#3730a3",
-        fontWeight: "600",
-        fontSize: 12,
+    headerCenterOverlay: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        alignItems: "center",
+        justifyContent: "center",
     },
     logoButton: {
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        padding: 0,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    logoImage: {
+        width: 90,
+        height: 30,
     },
     logoText: {
+        color: "#ffffff",
         fontSize: 15,
-        fontWeight: "800",
-        letterSpacing: 0.5,
-        color: "#0f172a",
+        fontWeight: "700",
+        letterSpacing: 1.8,
+    },
+    headerRightSlot: {
+        width: 90,
+        height: 27,
+        alignItems: "flex-end",
+        justifyContent: "center",
     },
     walletButton: {
-        borderRadius: 999,
-        backgroundColor: "#0f172a",
-        paddingHorizontal: 12,
-        paddingVertical: 7,
+        width: 90,
+        height: 27,
+        borderRadius: 4,
+        backgroundColor: "#eb1484",
+        alignItems: "center",
+        justifyContent: "center",
+        paddingHorizontal: 8,
+    },
+    walletButtonAssets: {
+        backgroundColor: "#5546f5",
     },
     walletButtonText: {
         color: "#ffffff",
-        fontWeight: "600",
+        fontWeight: "700",
         fontSize: 12,
+        lineHeight: 16,
+    },
+    pageNavRow: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
     },
     backButton: {
-        width: 56,
-        height: 32,
-        alignItems: "flex-start",
+        zIndex: 10,
+        width: 24,
+        height: 24,
+        alignItems: "center",
         justifyContent: "center",
     },
+    backImage: {
+        width: 20,
+        height: 20,
+    },
     backText: {
-        color: "#0f172a",
+        color: "#ffffff",
         fontSize: 20,
         fontWeight: "700",
         lineHeight: 22,
@@ -300,62 +493,116 @@ const styles = StyleSheet.create({
     pageTitleWrap: {
         flex: 1,
         alignItems: "center",
-        paddingHorizontal: 6,
+        justifyContent: "center",
+        paddingHorizontal: 24,
     },
     pageTitle: {
-        color: "#0f172a",
+        color: "#ffffff",
         fontSize: 16,
         fontWeight: "700",
     },
     headerRight: {
-        minWidth: 56,
+        position: "absolute",
+        right: 10,
         alignItems: "flex-end",
+        justifyContent: "center",
+        minWidth: 40,
     },
     scroll: {
         flex: 1,
     },
     content: {
         paddingHorizontal: 15,
-        paddingTop: 12,
+        paddingTop: 10,
         paddingBottom: 18,
         gap: 12,
     },
     contentWithFooter: {
-        paddingBottom: 104,
+        paddingBottom: 118,
     },
-    footer: {
-        borderTopWidth: 1,
-        borderTopColor: "#e2e8f0",
-        backgroundColor: "#ffffff",
+    footerSafeArea: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        bottom: 0,
+        alignItems: "center",
+        backgroundColor: "transparent",
+    },
+    footerFrame: {
+        width: 265,
+        height: 86,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    footerBackgroundImage: {
+        ...StyleSheet.absoluteFillObject,
+        width: "100%",
+        height: "100%",
     },
     footerInner: {
+        width: "100%",
+        height: "100%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-around",
-        paddingHorizontal: 10,
-        paddingTop: 8,
-        paddingBottom: 6,
     },
     footerItem: {
-        minWidth: 80,
+        flex: 1,
         alignItems: "center",
-        gap: 3,
-        paddingVertical: 4,
+        justifyContent: "center",
     },
-    footerIcon: {
-        color: "#94a3b8",
-        fontSize: 12,
+    footerItemLeft: {
+        marginLeft: 20,
+    },
+    footerItemRight: {
+        marginRight: 20,
+    },
+    footerIconSlot: {
+        width: 72,
+        height: 45,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    footerLabelSlot: {
+        width: 72,
+        height: 15,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    footerIconImage: {
+        marginTop: 13,
+        width: 25,
+        height: 25,
+    },
+    footerIconImageActive: {
+        marginTop: 15,
+        width: 44,
+        height: 44,
+    },
+    footerIconImageCenter: {
+        marginTop: -2,
+        width: 43,
+        height: 43,
+    },
+    footerIconImageCenterActive: {
+        marginTop: -2,
+        width: 62,
+        height: 62,
+    },
+    footerIconText: {
+        color: "#fcfcfc",
+        fontSize: 14,
         fontWeight: "700",
     },
-    footerIconActive: {
-        color: "#0f172a",
+    footerIconTextActive: {
+        color: "#ff2696",
     },
     footerLabel: {
-        color: "#64748b",
-        fontSize: 11,
-        fontWeight: "600",
+        color: "#fcfcfc",
+        fontSize: 12,
+        fontWeight: "500",
     },
     footerLabelActive: {
-        color: "#0f172a",
+        color: "#ff2696",
     },
 });
