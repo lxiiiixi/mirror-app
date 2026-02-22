@@ -48,6 +48,8 @@ export interface AppLayoutProps extends Omit<ScrollViewProps, "children"> {
     autoHideHeaderOnScroll?: boolean;
 }
 
+const PAGE_NAV_SIDE_WIDTH = 96;
+
 function toImageSource(value: string | number | null | undefined): ImageSourcePropType | undefined {
     if (value == null) {
         return undefined;
@@ -311,37 +313,45 @@ export function AppLayout({
 
                     {showPageNav && showHeaderContent ? (
                         <View style={styles.pageNavRow}>
-                            <Pressable style={styles.backButton} onPress={onBackPress}>
-                                {backIcon ? (
-                                    typeof backIcon === "string" || typeof backIcon === "number" ? (
-                                        toImageSource(backIcon) ? (
-                                            <Image
-                                                source={toImageSource(backIcon)}
-                                                style={styles.backImage}
-                                                resizeMode="contain"
-                                            />
+                            <View style={[styles.pageNavSide, styles.pageNavLeft]}>
+                                <Pressable style={styles.backButton} onPress={onBackPress}>
+                                    {backIcon ? (
+                                        typeof backIcon === "string" || typeof backIcon === "number" ? (
+                                            toImageSource(backIcon) ? (
+                                                <Image
+                                                    source={toImageSource(backIcon)}
+                                                    style={styles.backImage}
+                                                    resizeMode="contain"
+                                                />
+                                            ) : (
+                                                <Text style={styles.backText}>{backIcon}</Text>
+                                            )
                                         ) : (
-                                            <Text style={styles.backText}>{backIcon}</Text>
+                                            backIcon
                                         )
+                                    ) : defaultBackIconSource ? (
+                                        <Image
+                                            source={defaultBackIconSource}
+                                            style={styles.backImage}
+                                            resizeMode="contain"
+                                        />
                                     ) : (
-                                        backIcon
-                                    )
-                                ) : defaultBackIconSource ? (
-                                    <Image
-                                        source={defaultBackIconSource}
-                                        style={styles.backImage}
-                                        resizeMode="contain"
-                                    />
-                                ) : (
-                                    <Text style={styles.backText}>←</Text>
-                                )}
-                            </Pressable>
-                            <View style={styles.pageTitleWrap}>
-                                <Text numberOfLines={1} style={styles.pageTitle}>
-                                    {pageTitle}
-                                </Text>
+                                        <Text style={styles.backText}>←</Text>
+                                    )}
+                                </Pressable>
                             </View>
-                            <View style={styles.headerRight}>{headerRight}</View>
+
+                            <View pointerEvents="none" style={styles.pageTitleOverlay}>
+                                <View style={styles.pageTitleWrap}>
+                                    <Text numberOfLines={1} style={styles.pageTitle}>
+                                        {pageTitle}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <View style={[styles.pageNavSide, styles.pageNavRight]}>
+                                <View style={styles.headerRight}>{headerRight}</View>
+                            </View>
                         </View>
                     ) : null}
                 </Animated.View>
@@ -490,13 +500,27 @@ const styles = StyleSheet.create({
     },
     pageNavRow: {
         width: "100%",
+        minHeight: 28,
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
+        position: "relative",
+    },
+    pageNavSide: {
+        width: PAGE_NAV_SIDE_WIDTH,
+        minHeight: 28,
+        justifyContent: "center",
+    },
+    pageNavLeft: {
+        alignItems: "flex-start",
+    },
+    pageNavRight: {
+        alignItems: "flex-end",
     },
     backButton: {
         zIndex: 10,
-        width: 24,
-        height: 24,
+        width: 32,
+        height: 28,
         alignItems: "center",
         justifyContent: "center",
     },
@@ -510,20 +534,25 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         lineHeight: 22,
     },
+    pageTitleOverlay: {
+        position: "absolute",
+        left: PAGE_NAV_SIDE_WIDTH + 4,
+        right: PAGE_NAV_SIDE_WIDTH + 4,
+        top: 0,
+        bottom: 0,
+        justifyContent: "center",
+    },
     pageTitleWrap: {
-        flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 24,
     },
     pageTitle: {
         color: "#ffffff",
         fontSize: 16,
         fontWeight: "700",
+        textAlign: "center",
     },
     headerRight: {
-        position: "absolute",
-        right: 10,
         alignItems: "flex-end",
         justifyContent: "center",
         minWidth: 40,
