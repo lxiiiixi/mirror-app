@@ -11,4 +11,5 @@ declare module "lucide-react-native" {
 
   export const Globe: ComponentType<LucideProps>;
   export const ChevronDown: ComponentType<LucideProps>;
+  export const X: ComponentType<LucideProps>;
 }
