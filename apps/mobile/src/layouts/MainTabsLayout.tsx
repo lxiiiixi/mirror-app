@@ -6,9 +6,9 @@ import { useTranslation } from "react-i18next";
 import { LanguageSelect, type LanguageOption } from "../components";
 import { useAuth } from "../hooks/useAuth";
 import { useLoginModal } from "../hooks/useLoginModal";
-import { AppLayout } from "../ui";
+import { AppLayout, type AppLayoutProps } from "../ui";
 
-interface MainTabsLayoutProps {
+interface MainTabsLayoutProps extends Pick<AppLayoutProps, "onScroll" | "scrollEventThrottle"> {
   children: ReactNode;
   activeFooterIndex: 0 | 1 | 2;
 }
@@ -19,7 +19,12 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
   { value: "zh-CN", label: "简体" },
 ];
 
-export function MainTabsLayout({ children, activeFooterIndex }: MainTabsLayoutProps) {
+export function MainTabsLayout({
+  children,
+  activeFooterIndex,
+  onScroll,
+  scrollEventThrottle,
+}: MainTabsLayoutProps) {
   const { t, i18n } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
@@ -41,6 +46,8 @@ export function MainTabsLayout({ children, activeFooterIndex }: MainTabsLayoutPr
     <AppLayout
       showWalletBar
       showFooter
+      onScroll={onScroll}
+      scrollEventThrottle={scrollEventThrottle}
       activeFooterIndex={activeFooterIndex}
       onLogoPress={() => navigate(ROUTE_PATHS.home)}
       onWalletPress={() => {

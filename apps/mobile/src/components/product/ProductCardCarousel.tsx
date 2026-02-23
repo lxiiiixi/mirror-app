@@ -58,16 +58,19 @@ export function ProductCardCarousel({
             clearInterval(timerRef.current);
         }
 
-        timerRef.current = setInterval(() => {
-            const next = (indexRef.current + 1) % displayProducts.length;
-            indexRef.current = next;
-            setCurrentIndex(next);
-            setExpandedDesc(false);
-            scrollRef.current?.scrollTo({
-                x: next * containerWidth,
-                animated: true,
-            });
-        }, Math.max(1500, autoplayInterval));
+        timerRef.current = setInterval(
+            () => {
+                const next = (indexRef.current + 1) % displayProducts.length;
+                indexRef.current = next;
+                setCurrentIndex(next);
+                setExpandedDesc(false);
+                scrollRef.current?.scrollTo({
+                    x: next * containerWidth,
+                    animated: true,
+                });
+            },
+            Math.max(1500, autoplayInterval),
+        );
 
         return () => {
             if (timerRef.current) {
@@ -150,11 +153,16 @@ export function ProductCardCarousel({
                                 }}
                                 style={[
                                     styles.slide,
-                                    containerWidth > 0 ? { width: containerWidth } : { width: "100%" },
+                                    containerWidth > 0
+                                        ? { width: containerWidth }
+                                        : { width: "100%" },
                                 ]}
                             >
                                 <Image
-                                    source={toImageSource(product.coverUrl) ?? toImageSource(images.empty)}
+                                    source={
+                                        toImageSource(product.coverUrl) ??
+                                        toImageSource(images.empty)
+                                    }
                                     style={styles.slideImage}
                                     resizeMode="cover"
                                 />
@@ -205,7 +213,10 @@ export function ProductCardCarousel({
                                             </Text>
                                         </Pressable>
                                     ) : null}
-                                    <AssetIcon icon={images.works.descTop} style={styles.descArrow} />
+                                    <AssetIcon
+                                        icon={images.works.descTop}
+                                        style={styles.descArrow}
+                                    />
                                 </View>
                             </Pressable>
                         );
@@ -234,7 +245,7 @@ export function ProductCardCarousel({
 const styles = StyleSheet.create({
     root: {
         width: "100%",
-        maxWidth: 380,
+        maxWidth: 330,
         alignSelf: "center",
         aspectRatio: 320 / 430,
         marginTop: 10,
@@ -253,7 +264,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.35,
         shadowRadius: 8,
         shadowOffset: { width: 0, height: 1 },
-        backgroundColor: "rgba(35, 18, 75, 0.38)",
+        boxShadow: "0 0 8px 0 rgba(228, 21, 153, 0.33) inset",
     },
     carouselFrame: {
         width: "92.5%",
