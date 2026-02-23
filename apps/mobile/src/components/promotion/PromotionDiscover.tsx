@@ -2,21 +2,12 @@ import { images } from "@mirror/assets";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { AutoImage } from "../../ui/AutoImage";
 import { toImageSource } from "../../utils/imageSource";
 
 const DISCOVER_PIC_KEYS = ["d1", "d2", "d3"] as const;
 const DISCOVER_PIC_KEYS_CN = ["d1Cn", "d2Cn", "d3Cn"] as const;
 const DEFAULT_TIME_LIST = ["2025.06.30", "2025.03.26", "2024.06.23"] as const;
-const DISCOVER_ASPECT_RATIO: Record<(typeof DISCOVER_PIC_KEYS)[number], number> = {
-    d1: 750 / 440,
-    d2: 750 / 440,
-    d3: 790 / 480,
-};
-const DISCOVER_ASPECT_RATIO_CN: Record<(typeof DISCOVER_PIC_KEYS_CN)[number], number> = {
-    d1Cn: 750 / 480,
-    d2Cn: 750 / 440,
-    d3Cn: 750 / 480,
-};
 
 interface NewsItem {
     content: string;
@@ -55,25 +46,18 @@ export function PromotionDiscover({ onNewsPress }: PromotionDiscoverProps) {
         return (index: number) => {
             if (isZh) {
                 const key = DISCOVER_PIC_KEYS_CN[index];
-                return {
-                    source: key ? images.discover[key] : undefined,
-                    ratio: key ? DISCOVER_ASPECT_RATIO_CN[key] : 750 / 440,
-                };
+                return key ? images.discover[key] : undefined;
             }
 
             const key = DISCOVER_PIC_KEYS[index];
-            return {
-                source: key ? images.discover[key] : undefined,
-                ratio: key ? DISCOVER_ASPECT_RATIO[key] : 750 / 440,
-            };
+            return key ? images.discover[key] : undefined;
         };
     }, [i18n.language, i18n.resolvedLanguage]);
 
     return (
         <View style={styles.list}>
             {newsList.map((item, index) => {
-                const newsImage = resolveNewsPic(index);
-                const newsImageSource = toImageSource(newsImage.source);
+                const newsImageSource = toImageSource(resolveNewsPic(index));
 
                 return (
                     <View key={`discover-${index}`} style={styles.newsItem}>
@@ -96,11 +80,7 @@ export function PromotionDiscover({ onNewsPress }: PromotionDiscoverProps) {
                         </View>
 
                         <Pressable style={styles.newsPicButton} onPress={onNewsPress}>
-                            <Image
-                                source={newsImageSource}
-                                style={[styles.newsPic, { aspectRatio: newsImage.ratio }]}
-                                resizeMode="cover"
-                            />
+                            <AutoImage source={newsImageSource} />
                         </Pressable>
 
                         <Text style={styles.newsContent}>{item.content}</Text>
@@ -156,19 +136,10 @@ const styles = StyleSheet.create({
         width: 15,
         height: 15,
     },
-    // 新闻图按钮容器
     newsPicButton: {
-        // width: "100%",
-        // maxWidth: "100%",
-        // alignSelf: "stretch",
+        alignSelf: "stretch",
         borderRadius: 10,
         overflow: "hidden",
-        backgroundColor: "transparent",
-    },
-    // 新闻图图片
-    newsPic: {
-        width: "100%",
-        maxWidth: "100%",
     },
     // 新闻正文
     newsContent: {
