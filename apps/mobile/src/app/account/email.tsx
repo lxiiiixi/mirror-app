@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
+import { themeColors } from "../../theme/colors";
 import {
     clearPendingInviteParams,
     getPendingInviteParams,
@@ -44,7 +45,7 @@ export default function AccountEmailPage() {
     const params = useLocalSearchParams<{ invite_uid?: string; invite_code?: string }>();
     const { saveToken } = useAuth();
 
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState("slowlyxixi@outlook.com");
     const [code, setCode] = useState("");
     const [inviteCode, setInviteCode] = useState("");
     const [countdown, setCountdown] = useState(0);
@@ -387,7 +388,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#eb1484",
+        backgroundColor: themeColors.primary,
     },
     codeButtonDisabled: {
         backgroundColor: "rgba(126, 0, 245, 0.3)",
@@ -403,7 +404,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#EB1484",
+        backgroundColor: themeColors.primary,
     },
     loginButtonDisabled: {
         opacity: 0.5,

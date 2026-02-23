@@ -17,7 +17,8 @@ import {
 import { artsApiClient } from "../api/artsClient";
 import { RechargeWithdrawalDialog } from "../components";
 import { useAuth } from "../hooks/useAuth";
-import { AppLayout, Button } from "../ui";
+import { themeColors } from "../theme/colors";
+import { AppLayout } from "../ui";
 
 type RechargeTab = "recharge" | "withdraw";
 
@@ -267,9 +268,11 @@ export default function AssetsPage() {
           </Pressable>
         </View>
 
-        <Button fullWidth size="large" onPress={() => openDialog("recharge")}>
-          {t("account.withdrawDialog.title1", { defaultValue: "Recharge and withdrawal" })}
-        </Button>
+        <Pressable style={styles.actionButton} onPress={() => openDialog("recharge")}>
+          <Text style={styles.actionButtonText}>
+            {t("account.withdrawDialog.title1", { defaultValue: "Recharge and withdrawal" })}
+          </Text>
+        </Pressable>
       </View>
 
       {loading ? (
@@ -451,6 +454,22 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     opacity: 0.86,
+  },
+  actionButton: {
+    width: "100%",
+    minHeight: 44,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: themeColors.primary,
+  },
+  actionButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
   loadingMask: {
     ...StyleSheet.absoluteFillObject,

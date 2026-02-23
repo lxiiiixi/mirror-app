@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
-import { Button } from "../../ui";
+import { themeColors } from "../../theme/colors";
 
 type RechargeTab = "recharge" | "withdraw";
 
@@ -334,18 +334,24 @@ export function RechargeWithdrawalDialog({
             </View>
           ) : null}
 
-          <Button
-            fullWidth
-            size="large"
+          <Pressable
+            style={[
+              styles.submitButton,
+              (loadingAssets || submitting) && styles.submitButtonDisabled,
+            ]}
             onPress={() => void handleSubmit()}
             disabled={loadingAssets || submitting}
           >
-            {submitting
-              ? t("miningIndex.processing", { defaultValue: "Processing..." })
-              : activeTab === "recharge"
-                ? t("account.withdrawDialog.recharge_btn", { defaultValue: "Submit a recharge" })
-                : t("account.withdrawDialog.withdraw_btn", { defaultValue: "Submit a withdraw" })}
-          </Button>
+            <Text style={styles.submitButtonText}>
+              {submitting
+                ? t("miningIndex.processing", { defaultValue: "Processing..." })
+                : activeTab === "recharge"
+                  ? t("account.withdrawDialog.recharge_btn", { defaultValue: "Submit a recharge" })
+                  : t("account.withdrawDialog.withdraw_btn", {
+                      defaultValue: "Submit a withdraw",
+                    })}
+            </Text>
+          </Pressable>
         </Pressable>
       </Pressable>
     </Modal>
@@ -389,7 +395,7 @@ const styles = StyleSheet.create({
   },
   tabActive: {
     borderWidth: 0,
-    backgroundColor: "#eb1484",
+    backgroundColor: themeColors.primary,
   },
   tabText: {
     color: "#ffffff",
@@ -490,5 +496,23 @@ const styles = StyleSheet.create({
   loadingText: {
     color: "rgba(255,255,255,0.9)",
     fontSize: 13,
+  },
+  submitButton: {
+    width: "100%",
+    minHeight: 44,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: themeColors.primary,
+  },
+  submitButtonDisabled: {
+    opacity: 0.55,
+  },
+  submitButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

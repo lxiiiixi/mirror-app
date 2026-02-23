@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, LinearGradient, RadialGradient, Rect, Stop } from "react-native-svg";
+import { themeColors } from "../theme/colors";
 
 type FooterIconValue = ReactNode | string | number;
 
@@ -484,7 +485,7 @@ const styles = StyleSheet.create({
         width: 90,
         height: 27,
         borderRadius: 4,
-        backgroundColor: "#eb1484",
+        backgroundColor: themeColors.primary,
         alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: 8,

@@ -1,9 +1,9 @@
 import { Link } from "expo-router";
 import { SHARED_ROUTE_CONFIGS } from "@mirror/routes";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MainTabsLayout } from "../layouts/MainTabsLayout";
-import { Button } from "../ui";
 import { envConfigs } from "@mirror/utils";
+import { themeColors } from "../theme/colors";
 
 const routeCards = SHARED_ROUTE_CONFIGS.filter(
     route => route.key !== "home" && route.key !== "notFound",
@@ -27,7 +27,9 @@ export default function HomeRoutePage() {
                             <Text style={styles.cardPath}>{route.path}</Text>
                             <Text style={styles.cardMeta}>Layout: {route.layoutType}</Text>
                             <Link href={route.path} asChild>
-                                <Button size="small">Open Page</Button>
+                                <Pressable style={styles.openPageButton}>
+                                    <Text style={styles.openPageButtonText}>Open Page</Text>
+                                </Pressable>
                             </Link>
                         </View>
                     ))}
@@ -88,5 +90,20 @@ const styles = StyleSheet.create({
         color: "#64748b",
         fontSize: 12,
         fontWeight: "500",
+    },
+    openPageButton: {
+        alignSelf: "flex-start",
+        minHeight: 28,
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: themeColors.primary,
+    },
+    openPageButtonText: {
+        color: "#ffffff",
+        fontSize: 14,
+        fontWeight: "600",
     },
 });
