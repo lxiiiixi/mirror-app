@@ -3,7 +3,6 @@ import { type ReactNode, isValidElement, useCallback, useEffect, useRef, useStat
 import {
     Animated,
     Image,
-    type ImageSourcePropType,
     type LayoutChangeEvent,
     type NativeScrollEvent,
     type NativeSyntheticEvent,
@@ -17,6 +16,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Defs, LinearGradient, RadialGradient, Rect, Stop } from "react-native-svg";
 import { themeColors } from "../theme/colors";
+import { toImageSource } from "../utils/imageSource";
 
 type FooterIconValue = ReactNode | string | number;
 
@@ -50,36 +50,6 @@ export interface AppLayoutProps extends Omit<ScrollViewProps, "children"> {
 }
 
 const PAGE_NAV_SIDE_WIDTH = 96;
-
-function toImageSource(value: string | number | null | undefined): ImageSourcePropType | undefined {
-    if (value == null) {
-        return undefined;
-    }
-
-    if (typeof value === "number") {
-        return value;
-    }
-
-    const normalized = value.trim();
-    if (!normalized) {
-        return undefined;
-    }
-
-    const seemsImagePath =
-        normalized.startsWith("http://") ||
-        normalized.startsWith("https://") ||
-        normalized.startsWith("file://") ||
-        normalized.startsWith("data:") ||
-        normalized.includes("/") ||
-        normalized.endsWith(".png") ||
-        normalized.endsWith(".jpg") ||
-        normalized.endsWith(".jpeg") ||
-        normalized.endsWith(".webp") ||
-        normalized.endsWith(".gif") ||
-        normalized.endsWith(".svg");
-
-    return seemsImagePath ? { uri: normalized } : undefined;
-}
 
 export function AppLayout({
     children,

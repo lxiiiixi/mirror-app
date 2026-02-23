@@ -18,6 +18,7 @@ import {
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { themeColors } from "../../theme/colors";
+import { toImageSource } from "../../utils/imageSource";
 
 type RechargeTab = "recharge" | "withdraw";
 
@@ -36,16 +37,6 @@ const normalizeAmountString = (value?: string) => {
   if (!trimmed.includes(".")) return trimmed;
   const normalized = trimmed.replace(/\.?0+$/, "");
   return normalized === "" ? "0" : normalized;
-};
-
-const toImageSource = (value?: string | number) => {
-  if (value == null) {
-    return undefined;
-  }
-  if (typeof value === "number") {
-    return value;
-  }
-  return { uri: value };
 };
 
 const getAssetIcon = (name: string) => {

@@ -19,6 +19,7 @@ import {
 import { artsApiClient } from "../../api/artsClient";
 import { useAuth } from "../../hooks/useAuth";
 import { themeColors } from "../../theme/colors";
+import { toImageSource } from "../../utils/imageSource";
 import {
     clearPendingInviteParams,
     getPendingInviteParams,
@@ -28,16 +29,6 @@ import {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CODE_LENGTH = 6;
 const COUNTDOWN_SECONDS = 60;
-
-const toImageSource = (value?: string | number) => {
-    if (value == null) {
-        return undefined;
-    }
-    if (typeof value === "number") {
-        return value;
-    }
-    return { uri: value };
-};
 
 export default function AccountEmailPage() {
     const { t } = useTranslation();
