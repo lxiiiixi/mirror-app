@@ -26,7 +26,12 @@
       "package": "com.anonymous.mirrorapp"
     },
     "plugins": [
-      "expo-router"
+      [
+        "expo-router",
+        {
+          "root": "./src/app"
+        }
+      ]
     ],
     "web": {
       "favicon": "./assets/favicon.png"

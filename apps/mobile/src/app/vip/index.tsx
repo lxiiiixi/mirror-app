@@ -1,18 +1,45 @@
 import { ROUTE_PATHS, getRouteByKey } from "@mirror/routes";
+import { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { MainTabsLayout } from "../../layouts/MainTabsLayout";
+import { ProjectTabs, type ProjectTabItem } from "../../ui";
+import { useTranslation } from "react-i18next";
 
 export default function VipPage() {
+  const { t } = useTranslation();
   const route = getRouteByKey("vip");
+  const [activeProject, setActiveProject] = useState(0);
+
+  const tabs = useMemo<ProjectTabItem[]>(
+    () => [
+      { key: "vip", label: t("projectTabs.vip", { defaultValue: "VIP" }) },
+      { key: "mining", label: t("projectTabs.myMining", { defaultValue: "My Mining" }) },
+      { key: "node", label: t("projectTabs.node", { defaultValue: "Node" }) },
+    ],
+    [t],
+  );
+
   return (
     <MainTabsLayout activeFooterIndex={1}>
+      <ProjectTabs
+        tabs={tabs}
+        activeIndex={activeProject}
+        onTabChange={(index) => setActiveProject(index)}
+      />
+
       <View style={styles.card}>
         <Text style={styles.badge}>VIP</Text>
         <Text style={styles.title}>{route.title ?? "VIP"}</Text>
         <Text style={styles.path}>Path: {ROUTE_PATHS.vip}</Text>
-        <Text style={styles.description}>
-          This page is now rendered inside the shared mobile AppLayout.
-        </Text>
+        {activeProject === 0 ? (
+          <Text style={styles.description}>VIP About section (placeholder)</Text>
+        ) : null}
+        {activeProject === 1 ? (
+          <Text style={styles.description}>My Mining section (placeholder)</Text>
+        ) : null}
+        {activeProject === 2 ? (
+          <Text style={styles.description}>Node section (placeholder)</Text>
+        ) : null}
       </View>
     </MainTabsLayout>
   );

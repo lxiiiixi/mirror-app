@@ -3,6 +3,8 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+    Animated,
+    Easing,
     Image,
     Linking,
     PanResponder,
@@ -87,6 +89,9 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
     const router = useRouter();
     const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const activeIndexRef = useRef(0);
+    const cardAnimMapRef = useRef(
+        new Map<string | number, { offsetX: Animated.Value; scale: Animated.Value; opacity: Animated.Value }>(),
+    );
     const [activeIndex, setActiveIndex] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
 
@@ -290,6 +295,51 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
         [activeIndex, banners.length],
     );
 
+    useEffect(() => {
+        const map = cardAnimMapRef.current;
+        const alive = new Set(banners.map((item) => item.id));
+        for (const key of map.keys()) {
+            if (!alive.has(key)) {
+                map.delete(key);
+            }
+        }
+
+        banners.forEach((item, index) => {
+            const visual = getCardVisual(index);
+            const existing = map.get(item.id);
+
+            if (!existing) {
+                map.set(item.id, {
+                    offsetX: new Animated.Value(visual.offsetX),
+                    scale: new Animated.Value(visual.scale),
+                    opacity: new Animated.Value(visual.opacity),
+                });
+                return;
+            }
+
+            Animated.parallel([
+                Animated.timing(existing.offsetX, {
+                    toValue: visual.offsetX,
+                    duration: 320,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(existing.scale, {
+                    toValue: visual.scale,
+                    duration: 320,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: true,
+                }),
+                Animated.timing(existing.opacity, {
+                    toValue: visual.opacity,
+                    duration: 260,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        });
+    }, [banners, getCardVisual]);
+
     if (!banners.length) {
         return null;
     }
@@ -300,8 +350,17 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
                 <View style={styles.sceneWrapper}>
                     {banners.map((item, index) => {
                         const visual = getCardVisual(index);
+                        const animatedState = cardAnimMapRef.current.get(item.id) ?? {
+                            offsetX: new Animated.Value(visual.offsetX),
+                            scale: new Animated.Value(visual.scale),
+                            opacity: new Animated.Value(visual.opacity),
+                        };
+                        if (!cardAnimMapRef.current.has(item.id)) {
+                            cardAnimMapRef.current.set(item.id, animatedState);
+                        }
+
                         return (
-                            <Pressable
+                            <Animated.View
                                 key={item.id}
                                 pointerEvents={visual.visible ? "auto" : "none"}
                                 style={[
@@ -309,31 +368,30 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
                                     {
                                         width: cardWidth,
                                         height: cardHeight,
-                                        opacity: visual.opacity,
+                                        opacity: animatedState.opacity,
                                         zIndex: visual.zIndex,
-                                        transform: [
-                                            { translateX: -cardWidth / 2 + visual.offsetX },
-                                            { translateY: -cardHeight / 2 },
-                                            { scale: visual.scale },
-                                        ],
+                                        marginLeft: -cardWidth / 2,
+                                        marginTop: -cardHeight / 2,
+                                        transform: [{ translateX: animatedState.offsetX }, { scale: animatedState.scale }],
                                     },
                                     visual.active && styles.cardActive,
                                 ]}
-                                onPress={() => handleCardPress(index, item.link)}
                             >
-                                <Image
-                                    source={item.source}
-                                    style={styles.image}
-                                    resizeMode="cover"
-                                    accessibilityLabel={item.alt}
-                                />
-                                <View
-                                    style={[
-                                        styles.cardOverlay,
-                                        visual.active && styles.cardOverlayActive,
-                                    ]}
-                                />
-                            </Pressable>
+                                <Pressable style={styles.cardPressable} onPress={() => handleCardPress(index, item.link)}>
+                                    <Image
+                                        source={item.source}
+                                        style={styles.image}
+                                        resizeMode="cover"
+                                        accessibilityLabel={item.alt}
+                                    />
+                                    <View
+                                        style={[
+                                            styles.cardOverlay,
+                                            visual.active && styles.cardOverlayActive,
+                                        ]}
+                                    />
+                                </Pressable>
+                            </Animated.View>
                         );
                     })}
                 </View>
@@ -380,6 +438,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "rgba(255,205,244,0.5)",
         backgroundColor: "rgba(255,255,255,0.08)",
+    },
+    cardPressable: {
+        width: "100%",
+        height: "100%",
     },
     cardActive: {
         borderColor: "rgba(255,205,244,0.8)",

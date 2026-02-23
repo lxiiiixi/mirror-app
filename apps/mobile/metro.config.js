@@ -14,12 +14,13 @@ config.resolver.nodeModulesPaths = [
   workspaceNodeModules,
 ];
 config.resolver.disableHierarchicalLookup = true;
+const resolveWorkspaceModule = (name) => path.resolve(workspaceNodeModules, name);
 config.resolver.extraNodeModules = {
   '@mirror/routes': path.resolve(workspaceRoot, 'packages/routes/src'),
-  react: path.resolve(projectNodeModules, 'react'),
-  'react/jsx-runtime': path.resolve(projectNodeModules, 'react/jsx-runtime'),
-  'react/jsx-dev-runtime': path.resolve(projectNodeModules, 'react/jsx-dev-runtime'),
-  'react-native': path.resolve(workspaceNodeModules, 'react-native'),
+  react: resolveWorkspaceModule('react'),
+  'react/jsx-runtime': resolveWorkspaceModule('react/jsx-runtime'),
+  'react/jsx-dev-runtime': resolveWorkspaceModule('react/jsx-dev-runtime'),
+  'react-native': resolveWorkspaceModule('react-native'),
 };
 
 let withNativeWind;
