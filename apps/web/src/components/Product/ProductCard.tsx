@@ -1,7 +1,7 @@
+import { images } from "@mirror/assets";
 import { HTMLAttributes, forwardRef } from "react";
 import { ShareButton } from "./Common";
-import { resolveImageUrl } from "@mirror/utils";
-import { getWorkTypeInfo, goToWorkDetail, WorkType } from "../../utils/work";
+import { getWorkTypeInfo, goToWorkDetail, resolveImageUrl, type WorkType } from "@mirror/utils";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -39,6 +39,7 @@ export interface ProductCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "
 export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     ({ product, onLike, className = "", ...props }, ref) => {
         const workInfo = getWorkTypeInfo(product.type, true);
+        const workTypeIcon = workInfo ? images.works.product[workInfo.iconKey] : "";
         const creators = product.creators || [];
         const creatorText = creators.slice(0, 3).join("/");
 
@@ -107,7 +108,7 @@ export const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 <div className="absolute z-8 top-[14px] right-[12px] flex justify-center items-center">
                     <img
                         className="mr-[2px] w-[9px] h-[8px] invert brightness-100"
-                        src={workInfo!.icon}
+                        src={workTypeIcon}
                         alt={workInfo!.text}
                     />
                     <div className="text-[8px] font-normal leading-[19px] text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">

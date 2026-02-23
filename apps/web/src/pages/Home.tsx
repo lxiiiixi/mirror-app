@@ -7,6 +7,9 @@ import {
     buildInviteShareText,
     getInviteLink,
     getXForwardLink,
+    getWorkTypeByValue,
+    goToWorkDetail,
+    isTokenWork,
     resolveImageUrl,
     resolveLocalizedText,
     shareToX,
@@ -22,7 +25,6 @@ import {
     type ProjectTabItem,
 } from "../ui";
 import { HomeBanner } from "../components";
-import { getWorkTypeByValue, goToWorkDetail, isTokenWork } from "../utils/work";
 import { useUserWalletsStore } from "../store/useUserWalletsStore";
 import { useLoginModalStore } from "../store/useLoginModalStore";
 import { useAuth } from "../hooks/useAuth";

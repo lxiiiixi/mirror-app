@@ -6,6 +6,7 @@ import { TokenAvatar } from "../Common/TokenAvatar";
 import {
     buildInviteShareText,
     getInviteLink,
+    getWorkNameInitials,
     resolveImageUrl,
     resolveLocalizedText,
     shareToX,
@@ -19,7 +20,6 @@ import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check, Copy } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem, isWorkDetailAfterSignIn } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
-import { getWorkNameInitials } from "../../utils/work";
 
 export function WorkDetailLayout({
     children,

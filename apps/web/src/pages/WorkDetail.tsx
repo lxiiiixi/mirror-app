@@ -6,6 +6,7 @@ import { artsApiClient } from "../api/artsClient";
 import { Spinner } from "../ui";
 import {
     getInviteLink,
+    isTrailersStillsEnabledWorkType,
     MediaItem,
     parseMediaType,
     resolveImageUrl,
@@ -29,7 +30,6 @@ import { CheckInModal } from "../components/Modals";
 import { WorkDetailResponseData } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
 import { useAlertStore } from "../store/useAlertStore";
-import { getWorkTypeByValue } from "../utils/work";
 
 export default function WorkDetail() {
     const { t, i18n } = useTranslation();
@@ -241,9 +241,7 @@ export default function WorkDetail() {
                     contentLang={contentLang}
                     onContentLangChange={setContentLang}
                     availableLanguages={getAvailableContentLanguages(data)}
-                    showPlayButton={
-                        getWorkTypeByValue(data.work_type)?.isShowTrailersStills ?? false
-                    }
+                    showPlayButton={isTrailersStillsEnabledWorkType(data.work_type)}
                 />
 
                 {/* 制作团队 */}

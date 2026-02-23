@@ -8,3 +8,4 @@ export * from "./link";
 export * from "./token";
 export * from "./network";
 export * from "./mirror";
+export * from "./mirrorWorkConfig";

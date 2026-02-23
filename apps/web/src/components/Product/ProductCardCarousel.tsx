@@ -2,8 +2,7 @@ import { HTMLAttributes, forwardRef, useState, useEffect, useRef } from "react";
 import { ProductData } from "./ProductCard";
 import { ShareButton } from "./Common";
 import { images } from "@mirror/assets";
-import { resolveImageUrl } from "@mirror/utils";
-import { getWorkTypeInfo, goToWorkDetail } from "../../utils/work";
+import { getWorkTypeInfo, goToWorkDetail, resolveImageUrl } from "@mirror/utils";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -102,7 +101,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
             <div
                 id="product_card_carousel"
                 ref={ref}
-                className={`relative z-5 w-full max-w-[380px] mx-auto aspect-320/430 mt-[10px] ${className}`}
+                className={`relative z-5 w-full max-w-[330px] mx-auto aspect-320/430 mt-[10px] ${className}`}
                 {...props}
             >
                 {/* 阴影背景 */}
@@ -119,6 +118,9 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                     >
                         {displayProducts.map((product, index) => {
                             const workInfo = getWorkTypeInfo(product.type, true);
+                            const workTypeIcon = workInfo
+                                ? images.works.product[workInfo.iconKey]
+                                : "";
                             return (
                                 <div
                                     key={product.id}
@@ -171,7 +173,7 @@ export const ProductCardCarousel = forwardRef<HTMLDivElement, ProductCardCarouse
                                     <div className="absolute z-8 top-[15px] h-[25px] right-[15px] flex justify-center items-center">
                                         <img
                                             className="mr-[4px] w-[16px] h-[14px] invert brightness-100"
-                                            src={`${workInfo!.icon}`}
+                                            src={`${workTypeIcon}`}
                                             alt={workInfo!.text}
                                         />
                                         <div className="text-[16px] font-normal leading-[19px] text-white [text-shadow:0_1px_1px_rgba(35,35,35,0.8)]">

@@ -1,6 +1,12 @@
-import { MediaItem, parseMediaType, resolveImageUrl, resolveLocalizedText } from "@mirror/utils";
+import {
+    isChapterEnabledWorkType,
+    isTrailersStillsEnabledWorkType,
+    MediaItem,
+    parseMediaType,
+    resolveImageUrl,
+    resolveLocalizedText,
+} from "@mirror/utils";
 import { useTranslation } from "react-i18next";
-import { getWorkTypeByValue } from "../../utils/work";
 import { useEffect, useMemo, useState } from "react";
 import { Directory } from "./Directory";
 import { artsApiClient } from "../../api/artsClient";
@@ -395,10 +401,8 @@ export function WorkDetailContent({
 }) {
     const { t } = useTranslation();
     const [active, setActive] = useState(0);
-    const workInfo = getWorkTypeByValue(work_type);
-    if (!workInfo) return null;
-    const isShowChapter = workInfo.isShowChapter;
-    const isShowTrailersStills = workInfo.isShowTrailersStills;
+    const isShowChapter = isChapterEnabledWorkType(work_type);
+    const isShowTrailersStills = isTrailersStillsEnabledWorkType(work_type);
 
     const tabKeys = [
         isShowChapter ? ("chapters" as TabKey) : null,
