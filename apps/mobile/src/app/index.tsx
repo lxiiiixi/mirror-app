@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { MainTabsLayout } from "../layouts/MainTabsLayout";
-import { HomeNotice } from "../components";
+import { HomeBanner, HomeNotice } from "../components";
 import { useTranslation } from "react-i18next";
 
 export default function HomeRoutePage() {
@@ -15,6 +15,7 @@ export default function HomeRoutePage() {
                             "Blessed with good luck, tickets come at your fingertips! Good luck to you!",
                     })}
                 />
+                <HomeBanner autoplay interval={4000} />
             </View>
         </MainTabsLayout>
     );
