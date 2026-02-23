@@ -1,7 +1,6 @@
 import "../i18n";
 import "../../global.css";
 import { Stack } from "expo-router";
-import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { LoginModal } from "../components";
 import { AuthProvider, LoginModalProvider, WalletProvider } from "../providers";
@@ -23,19 +22,10 @@ export default function RootLayout() {
                             />
                             <LoginModal />
                         </LoginModalProvider>
-                        <View pointerEvents="box-none" style={styles.reownPortal}>
-                            <ReownModalPortal />
-                        </View>
+                        <ReownModalPortal />
                     </WalletProvider>
                 </AuthProvider>
             </ReownProvider>
         </GestureHandlerRootView>
     );
 }
-
-const styles = StyleSheet.create({
-    // Reown 模态挂载层（覆盖全屏）
-    reownPortal: {
-        ...StyleSheet.absoluteFillObject,
-    },
-});

@@ -11,11 +11,12 @@ import {
     useAppKit as useAppKitHook,
     useAccount as useAccountHook,
     useProvider as useProviderHook,
+    useAppKitState,
 } from "@reown/appkit-react-native";
 import { SolanaAdapter } from "@reown/appkit-solana-react-native";
 import { envConfigs } from "@mirror/utils";
-import { type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { Platform, StyleSheet, View } from "react-native";
 import { reownStorage } from "./reownStorage";
 
 const APP_SCHEME = "mirrorapp";
@@ -76,11 +77,32 @@ export function ReownModalPortal() {
         return null;
     }
 
-    return (
-        <View pointerEvents="box-none" style={styles.portalWrap}>
-            <AppKit />
-        </View>
-    );
+    return <ReownModalPortalInner />;
+}
+
+function ReownModalPortalInner() {
+    const { isOpen } = useAppKitState();
+    const [remountKey, setRemountKey] = useState(0);
+    const wasOpenRef = useRef(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            wasOpenRef.current = true;
+        } else if (wasOpenRef.current) {
+            wasOpenRef.current = false;
+            setRemountKey(k => k + 1);
+        }
+    }, [isOpen]);
+
+    if (Platform.OS === "android") {
+        return (
+            <View pointerEvents="box-none" style={styles.portalWrap} key={remountKey}>
+                <AppKit />
+            </View>
+        );
+    }
+
+    return <AppKit key={remountKey} />;
 }
 
 const appKitFallback = {

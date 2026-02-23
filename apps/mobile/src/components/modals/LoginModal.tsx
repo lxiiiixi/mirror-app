@@ -1,9 +1,9 @@
 import { ROUTE_PATHS } from "@mirror/routes";
 import { useRouter } from "expo-router";
 import { X } from "lucide-react-native";
-import { type ReactNode } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { useLoginModal } from "../../hooks/useLoginModal";
 import { useWallet } from "../../hooks/useWallet";
 
@@ -35,14 +35,36 @@ export function LoginModal() {
     const router = useRouter();
     const { open, closeModal } = useLoginModal();
     const { openWallet, isLoggingIn, available } = useWallet();
+    const [pendingWalletOpen, setPendingWalletOpen] = useState(false);
+
+    // iOS: Modal 的 onDismiss 在 dismiss 动画完全结束后触发，此时再 present AppKit Modal 不会冲突
+    const handleModalDismiss = useCallback(() => {
+        if (pendingWalletOpen) {
+            setPendingWalletOpen(false);
+            openWallet();
+        }
+    }, [pendingWalletOpen, openWallet]);
+
+    // Android fallback: onDismiss 仅 iOS 支持，Android 使用延时兜底
+    useEffect(() => {
+        if (Platform.OS === "ios") return;
+        if (open || !pendingWalletOpen) return;
+
+        const timer = setTimeout(() => {
+            setPendingWalletOpen(false);
+            openWallet();
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [open, openWallet, pendingWalletOpen]);
 
     const handleEmailLogin = () => {
+        setPendingWalletOpen(false);
         closeModal();
         router.push(ROUTE_PATHS.accountEmail);
     };
 
     const handleWalletLogin = () => {
-        closeModal();
         if (!available) {
             Alert.alert(
                 t("loginModal.wallet", { defaultValue: "Wallet" }),
@@ -50,11 +72,18 @@ export function LoginModal() {
             );
             return;
         }
-        openWallet();
+        setPendingWalletOpen(true);
+        closeModal();
     };
 
     return (
-        <Modal transparent animationType="fade" visible={open} onRequestClose={closeModal}>
+        <Modal
+            transparent
+            animationType="fade"
+            visible={open}
+            onRequestClose={closeModal}
+            onDismiss={handleModalDismiss}
+        >
             <Pressable style={styles.overlay} onPress={closeModal}>
                 <Pressable style={styles.panelContainer} onPress={() => undefined}>
                     <GlassPanel>
