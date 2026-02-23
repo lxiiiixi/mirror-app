@@ -5,6 +5,7 @@ import { type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import { useWallet } from "../../hooks/useWallet";
 
 function GlassPanel({ children }: { children: ReactNode }) {
     try {
@@ -33,6 +34,7 @@ export function LoginModal() {
     const { t } = useTranslation();
     const router = useRouter();
     const { open, closeModal } = useLoginModal();
+    const { openWallet, isLoggingIn, available } = useWallet();
 
     const handleEmailLogin = () => {
         closeModal();
@@ -41,10 +43,14 @@ export function LoginModal() {
 
     const handleWalletLogin = () => {
         closeModal();
-        Alert.alert(
-            t("loginModal.wallet", { defaultValue: "Wallet" }),
-            t("common.comingSoon", { defaultValue: "Coming soon" }),
-        );
+        if (!available) {
+            Alert.alert(
+                t("loginModal.wallet", { defaultValue: "Wallet" }),
+                "Wallet SDK is not installed. Please run pnpm install first.",
+            );
+            return;
+        }
+        openWallet();
     };
 
     return (
@@ -74,7 +80,9 @@ export function LoginModal() {
 
                             <Pressable style={styles.optionButton} onPress={handleWalletLogin}>
                                 <Text style={styles.optionText}>
-                                    {t("loginModal.wallet", { defaultValue: "Wallet" })}
+                                    {isLoggingIn
+                                        ? t("common.loading", { defaultValue: "Connecting..." })
+                                        : t("loginModal.wallet", { defaultValue: "Wallet" })}
                                 </Text>
                             </Pressable>
                         </View>

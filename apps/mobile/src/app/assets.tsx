@@ -9,6 +9,7 @@ import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } fr
 import { artsApiClient } from "../api/artsClient";
 import { RechargeWithdrawalDialog } from "../components";
 import { useAuth } from "../hooks/useAuth";
+import { useWallet } from "../hooks/useWallet";
 import { themeColors } from "../theme/colors";
 import { AppLayout } from "../ui";
 import { toImageSource } from "../utils/imageSource";
@@ -25,7 +26,8 @@ enum AssetName {
 export default function AssetsPage() {
     const { t } = useTranslation();
     const router = useRouter();
-    const { isLoggedIn, hydrated, clearToken } = useAuth();
+    const { isLoggedIn, hydrated, clearToken, loginMethod } = useAuth();
+    const { disconnectWallet } = useWallet();
     const [assets, setAssets] = useState<UserAssetItem[]>([]);
     const [walletAddress, setWalletAddress] = useState("");
     const [email, setEmail] = useState("");
@@ -122,6 +124,9 @@ export default function AssetsPage() {
     };
 
     const handleLogout = async () => {
+        if (loginMethod === "wallet") {
+            await disconnectWallet();
+        }
         await clearToken();
         router.replace(ROUTE_PATHS.home);
     };

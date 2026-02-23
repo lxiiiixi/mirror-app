@@ -2,6 +2,7 @@
   "expo": {
     "name": "Mirror App",
     "slug": "mirror-app",
+    "scheme": "mirrorapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +15,16 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.mirrorapp"
+      "bundleIdentifier": "com.anonymous.mirrorapp",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "phantom",
+          "solflare",
+          "backpack",
+          "metamask",
+          "trust"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

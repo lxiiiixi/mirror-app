@@ -2,7 +2,6 @@ module.exports = function (api) {
   api.cache(true);
   let hasNativeWind = true;
   let hasReanimated = true;
-  let hasExpoRouter = true;
   try {
     require.resolve('nativewind/package.json');
   } catch {
@@ -13,20 +12,13 @@ module.exports = function (api) {
   } catch {
     hasReanimated = false;
   }
-  try {
-    require.resolve('expo-router/package.json');
-  } catch {
-    hasExpoRouter = false;
-  }
-
-  const routerPlugins = hasExpoRouter ? ['expo-router/babel'] : [];
 
   if (!hasNativeWind) {
     return {
-      presets: ['babel-preset-expo'],
+      presets: [['babel-preset-expo', { unstable_transformImportMeta: true }]],
       plugins: hasReanimated
-        ? [...routerPlugins, 'react-native-reanimated/plugin']
-        : routerPlugins,
+        ? ['react-native-reanimated/plugin']
+        : [],
     };
   }
 
@@ -38,9 +30,9 @@ module.exports = function (api) {
   });
 
   return {
-    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }]],
+    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind', unstable_transformImportMeta: true }]],
     plugins: hasReanimated
-      ? [...nativewindPlugins, ...routerPlugins, 'react-native-reanimated/plugin']
-      : [...nativewindPlugins, ...routerPlugins],
+      ? [...nativewindPlugins, 'react-native-reanimated/plugin']
+      : [...nativewindPlugins],
   };
 };
