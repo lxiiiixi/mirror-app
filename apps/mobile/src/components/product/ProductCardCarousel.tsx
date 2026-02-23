@@ -18,7 +18,7 @@ import {
 import { themeColors } from "../../theme/colors";
 import { toImageSource } from "../../utils/imageSource";
 import type { ProductData } from "./ProductCard";
-import { AssetIcon, ShareButton } from "./Common";
+import { AssetIcon, GlassPanel, ShareButton } from "./Common";
 
 export interface ProductCardCarouselProps {
     products: ProductData[];
@@ -158,14 +158,16 @@ export function ProductCardCarousel({
                                         : { width: "100%" },
                                 ]}
                             >
-                                <Image
-                                    source={
-                                        toImageSource(product.coverUrl) ??
-                                        toImageSource(images.empty)
-                                    }
-                                    style={styles.slideImage}
-                                    resizeMode="cover"
-                                />
+                                <View style={styles.slideImageWrap}>
+                                    <Image
+                                        source={
+                                            toImageSource(product.coverUrl) ??
+                                            toImageSource(images.empty)
+                                        }
+                                        style={styles.slideImage}
+                                        resizeMode="cover"
+                                    />
+                                </View>
 
                                 <ShareButton
                                     size="large"
@@ -184,35 +186,41 @@ export function ProductCardCarousel({
                                 {workInfo ? (
                                     <View style={styles.typeWrap}>
                                         <AssetIcon icon={workTypeIcon} style={styles.typeIcon} />
-                                        <Text style={styles.typeText}>{workInfo.text}</Text>
+                                        <Text numberOfLines={1} style={styles.typeText}>
+                                            {workInfo.text}
+                                        </Text>
                                     </View>
                                 ) : null}
 
-                                <View style={styles.bottomPanel}>
-                                    <Text numberOfLines={1} style={styles.nameText}>
-                                        《{product.name}》
-                                    </Text>
-                                    <Text numberOfLines={1} style={styles.creatorText}>
-                                        {(product.creators ?? []).slice(0, 3).join("/")}
-                                    </Text>
-                                    {product.description ? (
-                                        <Pressable
-                                            onPress={() => {
-                                                if (index === currentIndex) {
-                                                    setExpandedDesc(prev => !prev);
-                                                }
-                                            }}
-                                        >
-                                            <Text
-                                                numberOfLines={
-                                                    expandedDesc && index === currentIndex ? 0 : 2
-                                                }
-                                                style={styles.descText}
+                                <View style={styles.bottomPanelWrap}>
+                                    <GlassPanel style={styles.bottomPanel}>
+                                        <Text numberOfLines={1} style={styles.nameText}>
+                                            《{product.name}》
+                                        </Text>
+                                        <Text numberOfLines={1} style={styles.creatorText}>
+                                            {(product.creators ?? []).slice(0, 3).join("/")}
+                                        </Text>
+                                        {product.description ? (
+                                            <Pressable
+                                                onPress={() => {
+                                                    if (index === currentIndex) {
+                                                        setExpandedDesc(prev => !prev);
+                                                    }
+                                                }}
                                             >
-                                                {product.description}
-                                            </Text>
-                                        </Pressable>
-                                    ) : null}
+                                                <Text
+                                                    numberOfLines={
+                                                        expandedDesc && index === currentIndex
+                                                            ? 0
+                                                            : 2
+                                                    }
+                                                    style={styles.descText}
+                                                >
+                                                    {product.description}
+                                                </Text>
+                                            </Pressable>
+                                        ) : null}
+                                    </GlassPanel>
                                     <AssetIcon
                                         icon={images.works.descTop}
                                         style={styles.descArrow}
@@ -243,136 +251,172 @@ export function ProductCardCarousel({
 }
 
 const styles = StyleSheet.create({
+    // 轮播外层容器
     root: {
         width: "100%",
         maxWidth: 330,
         alignSelf: "center",
-        aspectRatio: 320 / 430,
-        marginTop: 10,
+        aspectRatio: 320 / 462,
+        marginTop: 6,
         position: "relative",
     },
+    // 轮播阴影描边层（无背景色，仅阴影）
     shadowLayer: {
         position: "absolute",
         left: 0,
         right: 0,
         bottom: 0,
+        width: "100%",
         height: "92%",
         borderRadius: 25,
         borderWidth: 1,
         borderColor: "rgba(200, 28, 197, 0.41)",
         shadowColor: themeColors.primary,
-        shadowOpacity: 0.35,
+        shadowOpacity: 0.3,
         shadowRadius: 8,
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: { width: 0, height: 0 },
         boxShadow: "0 0 8px 0 rgba(228, 21, 153, 0.33) inset",
+        backgroundColor: "transparent",
+        pointerEvents: "none",
     },
+    // 轮播可视区域容器
     carouselFrame: {
         width: "92.5%",
         height: "100%",
         alignSelf: "center",
         borderRadius: 26,
-        overflow: "hidden",
-        paddingBottom: 28,
+        overflow: "visible",
     },
+    // 轮播滚动层
     scroll: {
         width: "100%",
-        height: "94.43%",
+        height: "100%",
     },
+    // 单个轮播页容器
     slide: {
         height: "100%",
         position: "relative",
+        overflow: "visible",
     },
+    // 大卡片图片容器（为底部信息面板预留安全区）
+    slideImageWrap: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 106,
+        borderRadius: 26,
+        overflow: "hidden",
+        backgroundColor: "#f5f5f5",
+    },
+    // 大卡片图片
     slideImage: {
         width: "100%",
         height: "100%",
-        borderRadius: 26,
         backgroundColor: "#f5f5f5",
     },
+    // 左上角分享按钮
     shareButton: {
         position: "absolute",
-        top: 15,
-        left: 15,
+        top: 14,
+        left: 14,
         zIndex: 8,
     },
+    // 右上角作品类型区域
     typeWrap: {
         position: "absolute",
-        top: 15,
-        right: 15,
+        top: 14,
+        right: 14,
         minHeight: 25,
         flexDirection: "row",
         alignItems: "center",
+        maxWidth: "58%",
+        justifyContent: "flex-end",
+        zIndex: 8,
     },
+    // 作品类型图标
     typeIcon: {
-        width: 16,
-        height: 14,
-        marginRight: 4,
+        width: 14,
+        height: 12,
+        marginRight: 3,
     },
+    // 作品类型文字
     typeText: {
         color: "#ffffff",
-        fontSize: 16,
-        lineHeight: 19,
+        fontSize: 12,
+        lineHeight: 14,
+        flexShrink: 1,
+        textAlign: "right",
     },
-    bottomPanel: {
+    // 底部信息区外层容器
+    bottomPanelWrap: {
         position: "absolute",
         zIndex: 9,
-        width: "94%",
-        minHeight: "21.88%",
-        borderRadius: 11,
-        left: "3%",
-        bottom: "-4.35%",
-        borderWidth: 1,
-        borderColor: "rgba(67,67,67,1)",
-        backgroundColor: "rgba(61, 61, 92, 0.78)",
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        left: "4%",
+        right: "4%",
+        bottom: 22,
         alignItems: "center",
     },
+    // 大卡片底部信息面板（毛玻璃）
+    bottomPanel: {
+        minHeight: 92,
+        borderRadius: 11,
+        width: "100%",
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        alignItems: "center",
+    },
+    // 底部作品名
     nameText: {
         color: "#ffffff",
-        fontSize: 17,
+        fontSize: 15,
         fontWeight: "600",
-        marginBottom: 5,
+        marginBottom: 3,
         width: "100%",
         textAlign: "center",
     },
+    // 底部作者名
     creatorText: {
         color: "#ffffff",
-        fontSize: 13,
-        marginBottom: 5,
+        fontSize: 11,
+        marginBottom: 4,
         width: "100%",
         textAlign: "center",
     },
+    // 底部描述文案
     descText: {
         color: "rgba(185,185,185,1)",
-        fontSize: 11,
-        lineHeight: 14,
+        fontSize: 10,
+        lineHeight: 13,
         textAlign: "center",
     },
+    // 底部装饰箭头
     descArrow: {
         width: 18,
         height: 18,
-        position: "absolute",
-        left: "50%",
-        marginLeft: -9,
-        bottom: -10,
+        marginTop: -8,
     },
+    // 底部轮播指示器容器
     dots: {
         position: "absolute",
-        bottom: 10,
+        bottom: 2,
         left: 0,
         right: 0,
         flexDirection: "row",
         justifyContent: "center",
     },
+    // 指示器圆点
     dot: {
         width: 8,
         height: 8,
         borderRadius: 4,
         marginHorizontal: 3,
     },
+    // 激活态指示器
     dotActive: {
         backgroundColor: "#eb1484",
     },
+    // 非激活态指示器
     dotInactive: {
         backgroundColor: "rgba(153, 153, 153, 0.4)",
     },

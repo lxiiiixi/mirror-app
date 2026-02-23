@@ -1,4 +1,5 @@
 import { images } from "@mirror/assets";
+import { type ReactNode } from "react";
 import {
     Image,
     StyleSheet,
@@ -27,6 +28,13 @@ export interface AssetIconProps {
     style?: StyleProp<ImageStyle>;
 }
 
+export interface GlassPanelProps {
+    children?: ReactNode;
+    style?: StyleProp<ViewStyle>;
+    intensity?: number;
+    tint?: "light" | "dark" | "default" | string;
+}
+
 export function AssetIcon({ icon, style }: AssetIconProps) {
     const source = toImageSource(icon);
     if (!source) {
@@ -45,6 +53,33 @@ export function AssetIcon({ icon, style }: AssetIconProps) {
     }
 
     return <Image source={source} style={style} resizeMode="contain" />;
+}
+
+export function GlassPanel({ children, style, intensity = 36, tint = "dark" }: GlassPanelProps) {
+    try {
+        const maybeExpoBlur = require("expo-blur");
+        if (maybeExpoBlur?.BlurView) {
+            const BlurViewComponent = maybeExpoBlur.BlurView as React.ComponentType<{
+                intensity?: number;
+                tint?: "light" | "dark" | "default" | string;
+                style?: StyleProp<ViewStyle>;
+                children?: ReactNode;
+            }>;
+            return (
+                <BlurViewComponent
+                    intensity={intensity}
+                    tint={tint}
+                    style={[styles.glassPanelBase, style]}
+                >
+                    {children}
+                </BlurViewComponent>
+            );
+        }
+    } catch {
+        // fallback to normal translucent panel
+    }
+
+    return <View style={[styles.glassPanelBase, styles.glassPanelFallback, style]}>{children}</View>;
 }
 
 const SMALL = {
@@ -137,6 +172,7 @@ export function ShareButton({
 }
 
 const styles = StyleSheet.create({
+    // 分享按钮外层容器
     wrapper: {
         flexDirection: "row",
         alignItems: "stretch",
@@ -145,21 +181,35 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         backgroundColor: "rgba(0,0,0,0.45)",
     },
+    // 分享按钮左侧图标区域
     iconArea: {
         flexDirection: "row",
         alignItems: "center",
         gap: 2,
     },
+    // 分享按钮左侧激活态背景
     iconAreaActive: {
         backgroundColor: "#eb1484",
     },
+    // 分享按钮右侧数字区域
     countArea: {
         alignItems: "center",
         justifyContent: "center",
     },
+    // 分享数字文案
     countText: {
         color: "#ffffff",
         fontWeight: "700",
     },
+    // 毛玻璃面板基础样式
+    glassPanelBase: {
+        borderWidth: 1,
+        borderColor: "rgba(127,127,127,0.45)",
+        backgroundColor: "rgba(66, 66, 96, 0.42)",
+        overflow: "hidden",
+    },
+    // 毛玻璃不可用时的降级背景
+    glassPanelFallback: {
+        backgroundColor: "rgba(40, 33, 79, 0.75)",
+    },
 });
-

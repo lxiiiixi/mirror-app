@@ -19,7 +19,13 @@ import {
 } from "react-native";
 import { artsApiClient } from "../api/artsClient";
 import { MainTabsLayout } from "../layouts/MainTabsLayout";
-import { HomeBanner, HomeNotice, ProductCard, ProductCardCarousel, type ProductData } from "../components";
+import {
+    HomeBanner,
+    HomeNotice,
+    ProductCard,
+    ProductCardCarousel,
+    type ProductData,
+} from "../components";
 import { useTranslation } from "react-i18next";
 import { themeColors } from "../theme/colors";
 import { ProjectTabs, type ProjectTabItem } from "../ui";
@@ -29,42 +35,6 @@ const LOAD_MORE_THRESHOLD = 260;
 
 type HomeProductData = ProductData & {
     isToken: boolean;
-};
-
-const getSeedFromId = (id: string | number) => {
-    if (typeof id === "number") return Math.abs(id);
-    return Array.from(String(id)).reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
-};
-
-const getCardAspectRatio = (id: string | number) => {
-    const seed = getSeedFromId(id) % 3;
-    if (seed === 0) return 0.62;
-    if (seed === 1) return 0.72;
-    return 0.82;
-};
-
-const splitWaterfallColumns = <T extends { id: string | number; description?: string }>(items: T[]) => {
-    const left: T[] = [];
-    const right: T[] = [];
-    let leftWeight = 0;
-    let rightWeight = 0;
-
-    items.forEach((item) => {
-        const seedWeight = (getSeedFromId(item.id) % 5) * 0.08;
-        const descWeight = Math.min((item.description?.length ?? 0) / 120, 0.22);
-        const weight = 1 + seedWeight + descWeight;
-
-        if (leftWeight <= rightWeight) {
-            left.push(item);
-            leftWeight += weight;
-            return;
-        }
-
-        right.push(item);
-        rightWeight += weight;
-    });
-
-    return { left, right };
 };
 
 export default function HomeRoutePage() {
@@ -117,12 +87,12 @@ export default function HomeRoutePage() {
                 const payload = response.data;
                 const list = Array.isArray(payload.list) ? payload.list : [];
 
-                setWorkList((prev) => {
+                setWorkList(prev => {
                     if (!append) return list;
 
                     const merged = [...prev, ...list];
                     const uniqueMap = new Map<number, WorkSummary>();
-                    merged.forEach((item) => {
+                    merged.forEach(item => {
                         if (!uniqueMap.has(item.id)) {
                             uniqueMap.set(item.id, item);
                         }
@@ -168,7 +138,7 @@ export default function HomeRoutePage() {
 
     const products = useMemo<HomeProductData[]>(
         () =>
-            workList.map((work) => {
+            workList.map(work => {
                 const rawType = Number(work.type ?? 4) || 4;
                 const name = resolveLocalizedText(work.name, languageKey) || "";
                 const creatorRaw = resolveLocalizedText(work.creator_name, languageKey) || "";
@@ -176,7 +146,7 @@ export default function HomeRoutePage() {
                 const coverRaw = resolveLocalizedText(work.cover_url, languageKey) || "";
                 const creators = creatorRaw
                     .split(/[/|、,，]/g)
-                    .map((item) => item.trim())
+                    .map(item => item.trim())
                     .filter(Boolean)
                     .slice(0, 3);
 
@@ -198,7 +168,7 @@ export default function HomeRoutePage() {
 
     const displayProducts = useMemo(() => {
         if (activeProject === 1) {
-            return products.filter((item) => item.isToken);
+            return products.filter(item => item.isToken);
         }
         return products;
     }, [activeProject, products]);
@@ -213,7 +183,7 @@ export default function HomeRoutePage() {
 
     const navigateToDetail = useCallback(
         (id: string | number, rawType?: number) => {
-            goToWorkDetail((path) => router.push(path as never), id, rawType);
+            goToWorkDetail(path => router.push(path as never), id, rawType);
         },
         [router],
     );
@@ -239,11 +209,7 @@ export default function HomeRoutePage() {
     );
 
     return (
-        <MainTabsLayout
-            activeFooterIndex={0}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-        >
+        <MainTabsLayout activeFooterIndex={0} onScroll={handleScroll} scrollEventThrottle={16}>
             <View style={styles.content}>
                 <HomeNotice
                     message={t("notice.defaultMessage", {
@@ -255,7 +221,7 @@ export default function HomeRoutePage() {
                 <ProjectTabs
                     tabs={tabs}
                     activeIndex={activeProject}
-                    onTabChange={(index) => setActiveProject(index)}
+                    onTabChange={index => setActiveProject(index)}
                 />
 
                 {isLoading && displayProducts.length === 0 ? (
@@ -283,62 +249,26 @@ export default function HomeRoutePage() {
                                     products={section}
                                     autoplay
                                     autoplayInterval={5000}
-                                    onProductPress={(product) => navigateToDetail(product.id, product.rawType)}
+                                    onProductPress={product =>
+                                        navigateToDetail(product.id, product.rawType)
+                                    }
                                 />
 
-                                {(() => {
-                                    const columns = splitWaterfallColumns(section);
-                                    return (
-                                        <View style={styles.waterfallRow}>
-                                            <View style={styles.waterfallCol}>
-                                                {columns.left.map((product, index) => (
-                                                    <View
-                                                        key={`card-left-${product.id}-${index}`}
-                                                        style={styles.waterfallItem}
-                                                    >
-                                                        <ProductCard
-                                                            product={product}
-                                                            style={{
-                                                                aspectRatio: getCardAspectRatio(
-                                                                    product.id,
-                                                                ),
-                                                            }}
-                                                            onPress={(item) =>
-                                                                navigateToDetail(
-                                                                    item.id,
-                                                                    item.rawType,
-                                                                )
-                                                            }
-                                                        />
-                                                    </View>
-                                                ))}
-                                            </View>
-                                            <View style={styles.waterfallCol}>
-                                                {columns.right.map((product, index) => (
-                                                    <View
-                                                        key={`card-right-${product.id}-${index}`}
-                                                        style={styles.waterfallItem}
-                                                    >
-                                                        <ProductCard
-                                                            product={product}
-                                                            style={{
-                                                                aspectRatio: getCardAspectRatio(
-                                                                    product.id,
-                                                                ),
-                                                            }}
-                                                            onPress={(item) =>
-                                                                navigateToDetail(
-                                                                    item.id,
-                                                                    item.rawType,
-                                                                )
-                                                            }
-                                                        />
-                                                    </View>
-                                                ))}
-                                            </View>
+                                <View style={styles.grid}>
+                                    {section.map((product, index) => (
+                                        <View
+                                            key={`card-grid-${product.id}-${index}`}
+                                            style={styles.gridItem}
+                                        >
+                                            <ProductCard
+                                                product={product}
+                                                onPress={item =>
+                                                    navigateToDetail(item.id, item.rawType)
+                                                }
+                                            />
                                         </View>
-                                    );
-                                })()}
+                                    ))}
+                                </View>
                             </View>
                         ))}
                     </View>
@@ -356,27 +286,24 @@ export default function HomeRoutePage() {
 
 const styles = StyleSheet.create({
     content: {
-        gap: 12,
+        gap: 8,
     },
     productSectionList: {
-        gap: 14,
-        paddingBottom: 8,
+        gap: 10,
+        paddingBottom: 6,
     },
     sectionBlock: {
-        gap: 10,
+        gap: 6,
     },
-    waterfallRow: {
+    grid: {
         width: "100%",
         flexDirection: "row",
-        alignItems: "flex-start",
+        flexWrap: "wrap",
         justifyContent: "space-between",
     },
-    waterfallCol: {
-        width: "49%",
-    },
-    waterfallItem: {
-        width: "100%",
-        marginBottom: 12,
+    gridItem: {
+        width: "32.6%",
+        marginBottom: 6,
     },
     loadingWrap: {
         minHeight: 220,
