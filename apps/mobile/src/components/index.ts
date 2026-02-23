@@ -16,5 +16,8 @@ export type {
 } from "./promotion/PromotionCards";
 export { PromotionDiscover } from "./promotion/PromotionDiscover";
 export type { PromotionDiscoverProps } from "./promotion/PromotionDiscover";
+export { VipAboutSection } from "./vip/VipAboutSection";
+export { VipMiningSection } from "./vip/VipMiningSection";
+export { VipNodeSection } from "./vip/VipNodeSection";
 export { LoginModal } from "./modals/LoginModal";
 export { RechargeWithdrawalDialog } from "./modals/RechargeWithdrawalDialog";
