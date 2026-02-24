@@ -1,6 +1,6 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { artsApiClient } from "../api/artsClient";
 import { useAuth } from "../hooks/useAuth";
 import { Button, Input } from "../ui";
@@ -16,9 +16,15 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CODE_LENGTH = 6;
 const COUNTDOWN_SECONDS = 60;
 
+type EmailLoginLocationState = {
+    backOnSuccess?: boolean;
+};
+
 function EmailLogin() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams] = useSearchParams();
     const { saveToken } = useAuth();
     const showAlert = useAlertStore(state => state.show);
 
@@ -37,6 +43,11 @@ function EmailLogin() {
 
     const normalizedEmail = email.trim();
     const normalizedCode = code.trim();
+    const redirect = searchParams.get("redirect") ?? "";
+    const nextPath =
+        redirect && redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "/";
+    const locationState = (location.state ?? {}) as EmailLoginLocationState;
+    const shouldBackOnSuccess = Boolean(locationState.backOnSuccess);
 
     const isEmailValid = useMemo(() => EMAIL_REGEX.test(normalizedEmail), [normalizedEmail]);
 
@@ -133,7 +144,11 @@ function EmailLogin() {
                     clearPendingInviteUid();
                     showAlert({ message: t("emailLogin.loginSuccess"), variant: "success" });
                     redirectRef.current = window.setTimeout(() => {
-                        navigate("/");
+                        if (shouldBackOnSuccess && window.history.length > 1) {
+                            navigate(-1);
+                            return;
+                        }
+                        navigate(nextPath, { replace: true });
                     }, 800);
                 } else {
                     showAlert({ message: t("emailLogin.loginFailed"), variant: "error" });
@@ -152,6 +167,8 @@ function EmailLogin() {
             inviteCode,
             saveToken,
             navigate,
+            nextPath,
+            shouldBackOnSuccess,
             showAlert,
             t,
         ],

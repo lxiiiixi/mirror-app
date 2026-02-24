@@ -200,7 +200,19 @@ function App() {
         };
     }, [clearWallets, hydrated, isLoggedIn, setWallets, setWalletsLoading, token]);
 
-    const handleEmailLogin = () => navigate("/account/email");
+    const handleEmailLogin = () => {
+        const from = `${location.pathname}${location.search}${location.hash}`;
+        const shouldKeepFrom =
+            Boolean(from) && from !== "/account/email" && !from.startsWith("/account/email?");
+        if (!shouldKeepFrom) {
+            navigate("/account/email");
+            return;
+        }
+        const params = new URLSearchParams({ redirect: from });
+        navigate(`/account/email?${params.toString()}`, {
+            state: { backOnSuccess: true },
+        });
+    };
     const handleWalletLogin = () => {
         openWallet();
     };
