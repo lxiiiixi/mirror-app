@@ -6,7 +6,6 @@ import { useInfiniteWorkList } from "../hooks/useInfiniteWorkList";
 import {
     buildInviteShareText,
     getInviteLink,
-    getXForwardLink,
     getWorkTypeByValue,
     goToWorkDetail,
     isTokenWork,
@@ -172,8 +171,7 @@ function Home() {
                     const data = response.data;
                     console.log("[WorkDetailAirdrop] generateInviteCode", data);
                     const code = String(data?.invite_code ?? "");
-                    const inviteUid = data?.uid;
-                    const url = getInviteLink(Number(product.id), code, inviteUid);
+                    const url = getInviteLink(Number(product.id), code);
 
                     const shareText = buildInviteShareText({
                         t,

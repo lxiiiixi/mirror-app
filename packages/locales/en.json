@@ -184,6 +184,7 @@
     "invited": "Invited",
     "pointsMall": "Points Mall",
     "checkIn": "Check in +5",
+    "dailySignInLimitReached": "Daily limit of 3 new work sign-ins reached",
     "productionTeam": "Production Team",
     "airdropStartsAt": "Airdrop starts on {{month}}/{{day}} {{hour}}:{{minute}}",
     "inviteShare": {

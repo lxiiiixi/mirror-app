@@ -21,6 +21,8 @@ import { Check, Copy } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem, isWorkDetailAfterSignIn } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
 import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
+import { useAlertStore } from "../../store/useAlertStore";
+import { isWorkSignInDailyLimitError } from "../../utils/workSignInError";
 
 export function WorkDetailLayout({
     children,
@@ -129,6 +131,7 @@ export function WorkDetailHero({
     const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
+    const showAlert = useAlertStore(state => state.show);
     const [searchParams] = useSearchParams();
     const [isChecked, setIsChecked] = useState(Boolean(workData.signed_in));
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -173,6 +176,14 @@ export function WorkDetailHero({
             })
             .catch(error => {
                 console.error("[WorkDetailHero] signIn failed", error);
+                if (isWorkSignInDailyLimitError(error)) {
+                    showAlert({
+                        message: t("workDetail.dailySignInLimitReached", {
+                            defaultValue: "Daily limit of 3 new work sign-ins reached",
+                        }),
+                        variant: "error",
+                    });
+                }
             })
             .finally(() => {
                 setIsSubmitting(false);
@@ -184,6 +195,8 @@ export function WorkDetailHero({
         isLoggedIn,
         onCheckInSuccess,
         openLoginModal,
+        showAlert,
+        t,
         workId,
     ]);
 
@@ -296,7 +309,7 @@ export function WorkDetailAirdrop({
                 const data = response.data;
                 console.log("[WorkDetailAirdrop] generateInviteCode", data);
                 const nextCode = String(data?.invite_code ?? "");
-                const nextUrl = getInviteLink(workId, nextCode, data?.uid);
+                const nextUrl = getInviteLink(workId, nextCode);
                 if (nextCode) {
                     setInviteCode(nextCode);
                 }

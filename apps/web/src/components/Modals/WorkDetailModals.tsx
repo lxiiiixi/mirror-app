@@ -9,6 +9,7 @@ import { useAlertStore } from "../../store/useAlertStore";
 import { useWalletStore } from "../../store/useWalletStore";
 import { getInviteLink } from "@mirror/utils";
 import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
+import { isWorkSignInDailyLimitError } from "../../utils/workSignInError";
 
 const ThreePersenTeamBox = ({
     item,
@@ -43,7 +44,16 @@ const ThreePersenTeamBox = ({
                 clearPendingWorkInviteCode();
                 onCheckInSuccess?.();
             })
-            .catch(() => {
+            .catch(error => {
+                if (isWorkSignInDailyLimitError(error)) {
+                    showAlert({
+                        message: t("workDetail.dailySignInLimitReached", {
+                            defaultValue: "Daily limit of 3 new work sign-ins reached",
+                        }),
+                        variant: "error",
+                    });
+                    return;
+                }
                 showAlert({
                     message: t("invitedListDialog.checkInFailed", {
                         defaultValue: "Check-in failed. Please try again.",

@@ -30,10 +30,6 @@ function EmailLogin() {
 
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
-    const [inviteCode, setInviteCode] = useState(() => {
-        const pending = getPendingInviteParams();
-        return pending.inviteUid ?? "";
-    });
     const [countdown, setCountdown] = useState(0);
     const [isSending, setIsSending] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -133,9 +129,6 @@ function EmailLogin() {
                     email: normalizedEmail,
                     code: normalizedCode,
                     ...(pending.inviteUid ? { invite_uid_code: pending.inviteUid } : {}),
-                    ...(!pending.inviteUid && inviteCode.trim()
-                        ? { invite_uid_code: inviteCode.trim() }
-                        : {}),
                 });
 
                 const token = response.data?.token;
@@ -164,7 +157,6 @@ function EmailLogin() {
             isEmailValid,
             normalizedCode,
             normalizedEmail,
-            inviteCode,
             saveToken,
             navigate,
             nextPath,
@@ -220,20 +212,6 @@ function EmailLogin() {
                                     : t("emailLogin.sendCode")}
                             </button>
                         </div>
-                    </label>
-
-                    <label className="field">
-                        <span className="field-label text-[13px]">
-                            {t("emailLogin.inviteCode")}
-                        </span>
-                        <Input
-                            value={inviteCode}
-                            onChange={event => setInviteCode(event.target.value)}
-                            inputSize="lg"
-                            type="text"
-                            autoComplete="off"
-                            placeholder={t("emailLogin.inviteCodePlaceholder")}
-                        />
                     </label>
 
                     <Button

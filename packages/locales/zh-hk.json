@@ -184,6 +184,7 @@
     "invited": "已邀請",
     "pointsMall": "積分商城",
     "checkIn": "簽到 +5",
+    "dailySignInLimitReached": "今日新增作品簽到已達 3 個上限",
     "productionTeam": "製作團隊",
     "airdropStartsAt": "將於{{month}}月{{day}}日{{hour}}時{{minute}}分空投",
     "inviteShare": {

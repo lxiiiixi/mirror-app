@@ -94,29 +94,21 @@ export const buildInviteShareText = ({
  * 主要用于详情页面邀请链接的生成
  * @param workId
  * @param inviteCode
- * @param inviteUid
  * @returns
- * @example: https://mirror.fan/works/detail?id=361&invite_code=00000X&invite_uid=463559014261824
+ * @example: https://mirror.fan/works/detail?id=361&invite_code=00000X
  */
-export const getInviteLink = (
-    workId: number,
-    inviteCode: string,
-    inviteUid?: string | number | null,
-) => {
+export const getInviteLink = (workId: number, inviteCode: string) => {
     const params = new URLSearchParams({
         id: String(workId),
         invite_code: inviteCode,
     });
-    if (inviteUid !== undefined && inviteUid !== null && String(inviteUid).trim()) {
-        params.set("invite_uid", String(inviteUid).trim());
-    }
     return `${window.location.origin}/works/detail?${params.toString()}`;
 };
 
 /**
  *@description 用于在首页列表点击作品左上角按钮生成分享邀请链接的文本内容
- *@example: https://mirror.fan/works/detail?id=439&type=9&invite_uid=463559014261824
+ *@example: https://mirror.fan/works/detail?id=439&type=9&invite_code=00000X
  */
-export const getXForwardLink = (workId: number, userId: string, workType: number) => {
-    return `${window.location.origin}/works/detail?id=${workId}&type=${workType}&invite_uid=${userId}`;
+export const getXForwardLink = (workId: number, inviteCode: string, workType: number) => {
+    return `${window.location.origin}/works/detail?id=${workId}&type=${workType}&invite_code=${inviteCode}`;
 };

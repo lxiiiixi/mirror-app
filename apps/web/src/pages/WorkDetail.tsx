@@ -95,9 +95,8 @@ export default function WorkDetail() {
             .generateInviteCode({ work_id: workId })
             .then(response => {
                 const inviteCode = String(response.data?.invite_code ?? data.my_invite_code ?? "");
-                const inviteUid = response.data?.uid;
                 if (!inviteCode) throw new Error("missing invite code");
-                const link = getInviteLink(workId, inviteCode, inviteUid);
+                const link = getInviteLink(workId, inviteCode);
                 return navigator.clipboard.writeText(link);
             })
             .then(() => {
