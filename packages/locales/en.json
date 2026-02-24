@@ -55,6 +55,7 @@
     "codeRequired": "Please enter the 6-digit code",
     "codeSent": "Verification code sent",
     "sendFailed": "Failed to send code",
+    "sendTooFrequent": "Too many requests. Please try again in 1 minute.",
     "loginSuccess": "Login successful",
     "loginFailed": "Login failed, please try again"
   },

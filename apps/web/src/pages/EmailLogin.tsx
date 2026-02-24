@@ -15,6 +15,7 @@ import {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CODE_LENGTH = 6;
 const COUNTDOWN_SECONDS = 60;
+const SEND_CODE_TOO_FREQUENT_CODE = 503;
 
 type EmailLoginLocationState = {
     backOnSuccess?: boolean;
@@ -101,7 +102,20 @@ function EmailLogin() {
             startCountdown();
         } catch (error) {
             console.error("[EmailLogin] send code failed", error);
-            showAlert({ message: t("emailLogin.sendFailed"), variant: "error" });
+            const code =
+                error && typeof error === "object"
+                    ? Number((error as { code?: unknown }).code)
+                    : NaN;
+            if (code === SEND_CODE_TOO_FREQUENT_CODE) {
+                showAlert({
+                    message: t("emailLogin.sendTooFrequent", {
+                        defaultValue: "Too many requests. Please try again in 1 minute.",
+                    }),
+                    variant: "error",
+                });
+            } else {
+                showAlert({ message: t("emailLogin.sendFailed"), variant: "error" });
+            }
         } finally {
             setIsSending(false);
         }

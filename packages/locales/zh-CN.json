@@ -55,6 +55,7 @@
     "codeRequired": "请输入6位验证码",
     "codeSent": "验证码已发送",
     "sendFailed": "发送验证码失败",
+    "sendTooFrequent": "发送过于频繁，请1分钟后再试",
     "loginSuccess": "登录成功",
     "loginFailed": "登录失败，请重试"
   },

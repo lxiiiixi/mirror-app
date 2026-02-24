@@ -55,6 +55,7 @@
     "codeRequired": "請輸入6位驗證碼",
     "codeSent": "驗證碼已發送",
     "sendFailed": "發送驗證碼失敗",
+    "sendTooFrequent": "發送過於頻繁，請1分鐘後再試",
     "loginSuccess": "登錄成功",
     "loginFailed": "登錄失敗，請重試"
   },
