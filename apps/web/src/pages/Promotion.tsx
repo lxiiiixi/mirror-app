@@ -63,19 +63,28 @@ function Promotion() {
         }
     }, []);
 
+    const checkCanBind = useCallback(async () => {
+        if (!isLoggedIn) {
+            setIsCanBind(false);
+            return;
+        }
+        try {
+            const response = await artsApiClient.user.checkUserWhitelist();
+            setIsCanBind(!response.data?.is_invite);
+        } catch {
+            setIsCanBind(false);
+        }
+    }, [isLoggedIn]);
+
     const refreshInviteData = useCallback(async () => {
         if (!isLoggedIn) return;
-        await Promise.all([getInviteInfo(), getInviteNumbers()]);
-    }, [getInviteInfo, getInviteNumbers, isLoggedIn]);
+        await Promise.all([getInviteInfo(), getInviteNumbers(), checkCanBind()]);
+    }, [getInviteInfo, getInviteNumbers, checkCanBind, isLoggedIn]);
 
     const bindUser = useCallback(async () => {
         if (!inviteCode) return;
         try {
-            // TODO 绑定接口有问题 可能是功能没有实现
-            await artsApiClient.user.bindUser({
-                username: "",
-                avatar: "",
-            });
+            await artsApiClient.user.bindUser({ code: inviteCode });
             showAlert({ message: t("promotion.bindSu"), variant: "success" });
             setIsCanBind(false);
             void refreshInviteData();
@@ -92,10 +101,6 @@ function Promotion() {
     useEffect(() => {
         void refreshInviteData();
     }, [refreshInviteData]);
-
-    useEffect(() => {
-        setIsCanBind(Boolean(isLoggedIn && inviteCode));
-    }, [inviteCode, isLoggedIn]);
 
     return (
         <div id="promotion-page" className="text-[12px]">

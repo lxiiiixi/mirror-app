@@ -73,8 +73,8 @@ function createUserModule<E>(client: ArtsApiClient<E>) {
             client.requestJson<Types.UserRegionResponseData>("GET", "/arts/user/region", {
                 auth: "none",
             }),
-        bindUser: (payload: Types.UserBindProfileRequest) =>
-            client.requestJson<Types.UserBindProfileResponseData>("POST", "/arts/user/bind", {
+        bindUser: (payload: Types.UserBindRequest) =>
+            client.requestJson<Types.UserBindResponseData>("POST", "/arts/user/bind", {
                 auth: "required",
                 body: payload,
             }),

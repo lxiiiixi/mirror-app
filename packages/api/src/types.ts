@@ -290,12 +290,11 @@ export interface UserWhitelistResponseData {
     is_wallet_while: boolean;
 }
 
-export interface UserBindProfileRequest {
-    username?: string;
-    avatar?: string;
+export interface UserBindRequest {
+    code: string;
 }
 
-export interface UserBindProfileResponseData extends ApiMessageData {}
+export type UserBindResponseData = string;
 
 export interface UserNodeCountsResponseData {
     total_nodes: number;

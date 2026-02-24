@@ -87,12 +87,25 @@ export default function PromotionPage() {
         }
     }, []);
 
+    const checkCanBind = useCallback(async () => {
+        if (!isLoggedIn) {
+            setIsCanBind(false);
+            return;
+        }
+        try {
+            const response = await artsApiClient.user.checkUserWhitelist();
+            setIsCanBind(!response.data?.is_invite);
+        } catch {
+            setIsCanBind(false);
+        }
+    }, [isLoggedIn]);
+
     const refreshInviteData = useCallback(async () => {
         if (!isLoggedIn) {
             return;
         }
-        await Promise.all([getInviteInfo(), getInviteNumbers()]);
-    }, [getInviteInfo, getInviteNumbers, isLoggedIn]);
+        await Promise.all([getInviteInfo(), getInviteNumbers(), checkCanBind()]);
+    }, [getInviteInfo, getInviteNumbers, checkCanBind, isLoggedIn]);
 
     const bindUser = useCallback(async () => {
         if (!inviteCode || !isLoggedIn) {
@@ -100,10 +113,7 @@ export default function PromotionPage() {
         }
 
         try {
-            await artsApiClient.user.bindUser({
-                username: "",
-                avatar: "",
-            });
+            await artsApiClient.user.bindUser({ code: inviteCode });
             Alert.alert(
                 t("common.success", { defaultValue: "Success" }),
                 t("promotion.bindSu", { defaultValue: "Bind successful" }),
@@ -173,10 +183,6 @@ export default function PromotionPage() {
     useEffect(() => {
         void refreshInviteData();
     }, [refreshInviteData]);
-
-    useEffect(() => {
-        setIsCanBind(Boolean(isLoggedIn && inviteCode));
-    }, [inviteCode, isLoggedIn]);
 
     return (
         <MainTabsLayout activeFooterIndex={2}>
