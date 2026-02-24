@@ -19,11 +19,13 @@ import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ChevronDown } from "lucide-react-native";
 import {
     ActivityIndicator,
     Alert,
     Image,
     Pressable,
+    ScrollView,
     Share,
     StyleSheet,
     Text,
@@ -70,10 +72,10 @@ type DirectoryItem = {
 
 const CONTENT_LANGUAGE_ORDER: ContentLanguage[] = ["zh", "en", "zh_hant"];
 
-const CONTENT_LANGUAGE_LABELS: Record<ContentLanguage, string> = {
-    zh: "简",
-    en: "EN",
-    zh_hant: "繁",
+const CONTENT_LANGUAGE_SELECT_LABELS: Record<ContentLanguage, string> = {
+    zh: "中文简体",
+    en: "English",
+    zh_hant: "中文繁体",
 };
 
 const EXTERNAL_LINK_ICON_MAP: Record<string, string | number> = {
@@ -94,6 +96,26 @@ const EXTERNAL_LINK_ICON_MAP: Record<string, string | number> = {
 };
 
 const DIRECTORY_PREVIEW_COUNT = 16;
+const DESCRIPTION_FLOAT_PREVIEW_LENGTH = 180;
+
+type ExpoLinearGradientModule = {
+    LinearGradient?: React.ComponentType<{
+        colors: string[];
+        locations?: number[];
+        start?: { x: number; y: number };
+        end?: { x: number; y: number };
+        style?: object;
+    }>;
+};
+
+const HERO_LINEAR_GRADIENT_COMPONENT = (() => {
+    try {
+        const module = require("expo-linear-gradient") as ExpoLinearGradientModule;
+        return module.LinearGradient ?? null;
+    } catch {
+        return null;
+    }
+})();
 
 function normalizeQueryValue(value?: string | string[]) {
     if (Array.isArray(value)) {
@@ -219,6 +241,132 @@ function WorkDetailExternalLinks({
     );
 }
 
+function WorkDetailHeroGradient() {
+    if (!HERO_LINEAR_GRADIENT_COMPONENT) {
+        return <View style={styles.heroGradientFallback} pointerEvents="none" />;
+    }
+
+    const LinearGradientComponent = HERO_LINEAR_GRADIENT_COMPONENT;
+    return (
+        <LinearGradientComponent
+            colors={["#030620", "rgba(13, 25, 134, 0.1)"]}
+            locations={[0.1, 0.8]}
+            start={{ x: 0.5, y: 1 }}
+            end={{ x: 0.5, y: 0 }}
+            style={styles.heroGradient}
+        />
+    );
+}
+
+function splitDescriptionForFloatView(description: string) {
+    const normalized = description.trim();
+    if (!normalized) {
+        return { preview: "", remain: "" };
+    }
+
+    if (normalized.length <= DESCRIPTION_FLOAT_PREVIEW_LENGTH) {
+        return { preview: normalized, remain: "" };
+    }
+
+    const segment = normalized.slice(0, DESCRIPTION_FLOAT_PREVIEW_LENGTH);
+    const lastSpace = segment.lastIndexOf(" ");
+    const splitAt =
+        lastSpace > 0 ? lastSpace : DESCRIPTION_FLOAT_PREVIEW_LENGTH;
+
+    return {
+        preview: normalized.slice(0, splitAt).trimEnd(),
+        remain: normalized.slice(splitAt).trimStart(),
+    };
+}
+
+function WorkDetailContentLanguageSelect({
+    value,
+    availableLanguages,
+    onChange,
+}: {
+    value: ContentLanguage;
+    availableLanguages: ContentLanguage[];
+    onChange: (value: ContentLanguage) => void;
+}) {
+    const [open, setOpen] = useState(false);
+    const options = useMemo(
+        () =>
+            availableLanguages.map(option => ({
+                value: option,
+                label: CONTENT_LANGUAGE_SELECT_LABELS[option],
+            })),
+        [availableLanguages],
+    );
+    const selectedLabel = options.find(option => option.value === value)?.label ?? "中文简体";
+
+    useEffect(() => {
+        setOpen(false);
+    }, [value]);
+
+    return (
+        <View style={styles.contentLangSelectWrap}>
+            <Pressable
+                onPress={() => setOpen(prev => !prev)}
+                style={styles.contentLangTrigger}
+                accessibilityRole="button"
+                accessibilityLabel="Select content language"
+                accessibilityState={{ expanded: open }}
+            >
+                <Text style={styles.contentLangTriggerText}>{selectedLabel}</Text>
+                <ChevronDown
+                    size={12}
+                    color="#ffffff"
+                    strokeWidth={2.4}
+                    style={open ? styles.contentLangTriggerArrowOpen : undefined}
+                />
+            </Pressable>
+
+            {open ? (
+                <View style={styles.contentLangDropdown}>
+                    {options.map(option => {
+                        const selected = option.value === value;
+                        return (
+                            <Pressable
+                                key={option.value}
+                                onPress={() => {
+                                    onChange(option.value);
+                                    setOpen(false);
+                                }}
+                            >
+                                {({ pressed }) => (
+                                    <View
+                                        style={[
+                                            styles.contentLangOption,
+                                            selected && styles.contentLangOptionSelected,
+                                            pressed && styles.contentLangOptionPressed,
+                                        ]}
+                                    >
+                                        <Text
+                                            style={[
+                                                styles.contentLangOptionText,
+                                                selected && styles.contentLangOptionTextSelected,
+                                            ]}
+                                        >
+                                            {option.label}
+                                        </Text>
+                                        {selected ? (
+                                            <View style={styles.contentLangSelectedIconWrap}>
+                                                <Text style={styles.contentLangSelectedIconText}>
+                                                    ✓
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                    </View>
+                                )}
+                            </Pressable>
+                        );
+                    })}
+                </View>
+            ) : null}
+        </View>
+    );
+}
+
 function WorkDetailDirectory({
     total,
     unlocked,
@@ -339,9 +487,9 @@ export default function WorksDetailPage() {
     const [chapterLoading, setChapterLoading] = useState(false);
     const [chapterText, setChapterText] = useState("");
     const [chapterImages, setChapterImages] = useState<string[]>([]);
-    const [chapterMediaLinks, setChapterMediaLinks] = useState<Array<{ kind: string; url: string }>>(
-        [],
-    );
+    const [chapterMediaLinks, setChapterMediaLinks] = useState<
+        Array<{ kind: string; url: string }>
+    >([]);
 
     const [trailersLoading, setTrailersLoading] = useState(false);
     const [trailers, setTrailers] = useState<TrailerCardItem[]>([]);
@@ -355,6 +503,7 @@ export default function WorksDetailPage() {
         "00",
         "00",
     ]);
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
     const shareResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -408,6 +557,20 @@ export default function WorksDetailPage() {
         const language = contentLanguageToI18n(contentLanguage);
         return resolveLocalizedText(workData?.work_description, language);
     }, [contentLanguage, workData?.work_description]);
+    const expandedDescriptionParts = useMemo(
+        () => splitDescriptionForFloatView(resolvedDescription),
+        [resolvedDescription],
+    );
+
+    useEffect(() => {
+        setDescriptionExpanded(false);
+    }, [
+        contentLanguage,
+        resolvedDescription,
+        resolvedCoverUrl,
+        resolvedCreatorName,
+        resolvedWorkName,
+    ]);
 
     const heroCoverUrl = useMemo(
         () => resolveImageUrl(resolveLocalizedText(workData?.work_cover_url, languageKey)),
@@ -428,7 +591,9 @@ export default function WorksDetailPage() {
         return `${initials}s`;
     }, [workData?.token_name, workData?.work_name]);
 
-    const signedInToday = Boolean(workData && isWorkDetailAfterSignIn(workData) && workData.signed_in);
+    const signedInToday = Boolean(
+        workData && isWorkDetailAfterSignIn(workData) && workData.signed_in,
+    );
 
     const fetchWorkDetail = useCallback(
         async (silent = false) => {
@@ -511,8 +676,7 @@ export default function WorksDetailPage() {
             setInviteUrl(String(payload?.invite_url ?? ""));
         } else {
             console.error("[WorkDetail] generateInviteCode failed", inviteResult.reason);
-            const signedInDetail =
-                workData && isWorkDetailAfterSignIn(workData) ? workData : null;
+            const signedInDetail = workData && isWorkDetailAfterSignIn(workData) ? workData : null;
             if (signedInDetail) {
                 setInviteCode(String(signedInDetail.my_invite_code ?? ""));
                 setInviteUrl(String(signedInDetail.my_invite_url ?? ""));
@@ -652,7 +816,9 @@ export default function WorksDetailPage() {
                     .split(",")
                     .map(part => part.trim())
                     .filter(Boolean);
-                const imageParts = parts.filter(isLikelyImageUrl).map(part => resolveImageUrl(part));
+                const imageParts = parts
+                    .filter(isLikelyImageUrl)
+                    .map(part => resolveImageUrl(part));
 
                 if (imageParts.length > 0 && imageParts.length === parts.length) {
                     setChapterImages(imageParts);
@@ -760,10 +926,7 @@ export default function WorksDetailPage() {
             await Linking.openURL(normalizedUrl);
         } catch (error) {
             console.error("[WorkDetail] open url failed", error);
-            Alert.alert(
-                "Error",
-                "Unable to open link",
-            );
+            Alert.alert("Error", "Unable to open link");
         }
     }, []);
 
@@ -828,7 +991,9 @@ export default function WorksDetailPage() {
 
     const currentInviteCode =
         inviteCode ||
-        (workData && isWorkDetailAfterSignIn(workData) ? String(workData.my_invite_code ?? "") : "");
+        (workData && isWorkDetailAfterSignIn(workData)
+            ? String(workData.my_invite_code ?? "")
+            : "");
 
     const currentInviteUrl =
         inviteUrl ||
@@ -933,10 +1098,7 @@ export default function WorksDetailPage() {
             return;
         }
 
-        Alert.alert(
-            t("workDetail.invited", { defaultValue: "Invited" }),
-            `${inviteCount}`,
-        );
+        Alert.alert(t("workDetail.invited", { defaultValue: "Invited" }), `${inviteCount}`);
     }, [inviteCount, isLoggedIn, openModal, t]);
 
     const handleOpenPointsMall = useCallback(() => {
@@ -945,7 +1107,9 @@ export default function WorksDetailPage() {
             return;
         }
 
-        router.push(`${ROUTE_PATHS.pointsRedemption}?work_id=${encodeURIComponent(String(workId))}` as never);
+        router.push(
+            `${ROUTE_PATHS.pointsRedemption}?work_id=${encodeURIComponent(String(workId))}` as never,
+        );
     }, [isLoggedIn, openModal, router, workId]);
 
     const handlePressDirectoryPage = useCallback(
@@ -973,14 +1137,16 @@ export default function WorksDetailPage() {
 
     if (status === "loading" || status === "idle") {
         return (
-            <AppLayout
-                showWalletBar={false}
-                showPageNav
-                showFooter={false}
-                pageTitle={t("works.detail", { defaultValue: "Work Detail" })}
-                onBackPress={handleBack}
-                autoHideHeaderOnScroll={false}
-            >
+            <AppLayout showWalletBar={false} showFooter={false} autoHideHeaderOnScroll={false}>
+                <View style={styles.standaloneTopBar}>
+                    <Pressable style={styles.heroBackButton} onPress={handleBack}>
+                        <Image
+                            source={toImageSource(images.works.backBtn)}
+                            style={styles.heroBackIcon}
+                            resizeMode="contain"
+                        />
+                    </Pressable>
+                </View>
                 <View style={styles.loadingWrap}>
                     <ActivityIndicator size="large" color={themeColors.primary} />
                 </View>
@@ -990,14 +1156,16 @@ export default function WorksDetailPage() {
 
     if (status === "error" || !workData) {
         return (
-            <AppLayout
-                showWalletBar={false}
-                showPageNav
-                showFooter={false}
-                pageTitle={t("works.detail", { defaultValue: "Work Detail" })}
-                onBackPress={handleBack}
-                autoHideHeaderOnScroll={false}
-            >
+            <AppLayout showWalletBar={false} showFooter={false} autoHideHeaderOnScroll={false}>
+                <View style={styles.standaloneTopBar}>
+                    <Pressable style={styles.heroBackButton} onPress={handleBack}>
+                        <Image
+                            source={toImageSource(images.works.backBtn)}
+                            style={styles.heroBackIcon}
+                            resizeMode="contain"
+                        />
+                    </Pressable>
+                </View>
                 <View style={styles.errorWrap}>
                     <Text style={styles.errorText}>{errorText || t("ticket.empty")}</Text>
                 </View>
@@ -1010,20 +1178,8 @@ export default function WorksDetailPage() {
             ? `${Number(workData.token_balance ?? 0)} `
             : "";
 
-    const sectionTitle =
-        resolveLocalizedText(workData.work_name, languageKey) ||
-        t("works.detail", { defaultValue: "Work Detail" });
-
     return (
-        <AppLayout
-            showWalletBar={false}
-            showPageNav
-            showFooter={false}
-            pageTitle={sectionTitle}
-            onBackPress={handleBack}
-            autoHideHeaderOnScroll={false}
-            headerRight={<WorkDetailExternalLinks links={externalLinks} onPress={openExternalUrl} />}
-        >
+        <AppLayout showWalletBar={false} showFooter={false} autoHideHeaderOnScroll={false}>
             <View style={styles.heroSection}>
                 {heroCoverUrl ? (
                     <Image
@@ -1034,7 +1190,17 @@ export default function WorksDetailPage() {
                 ) : (
                     <View style={styles.heroFallback} />
                 )}
-                <View style={styles.heroGradient} />
+                <WorkDetailHeroGradient />
+                <View style={styles.heroTopBar}>
+                    <Pressable style={styles.heroBackButton} onPress={handleBack}>
+                        <Image
+                            source={toImageSource(images.works.backBtn)}
+                            style={styles.heroBackIcon}
+                            resizeMode="contain"
+                        />
+                    </Pressable>
+                    <WorkDetailExternalLinks links={externalLinks} onPress={openExternalUrl} />
+                </View>
 
                 <View style={styles.heroContent}>
                     <View style={styles.tokenAvatarWrap}>
@@ -1093,11 +1259,11 @@ export default function WorksDetailPage() {
 
                 <View style={styles.progressHeader}>
                     <Text style={styles.progressHeaderText}>
-                        {t("workDetail.airdropAmount", { defaultValue: "Airdrop Amount" })}: {" "}
+                        {t("workDetail.airdropAmount", { defaultValue: "Airdrop Amount" })}:{" "}
                         {Number(airdropInfo?.total_amount ?? 0).toLocaleString()}
                     </Text>
                     <Text style={styles.progressHeaderText}>
-                        {t("workDetail.visits", { defaultValue: "There have been" })}: {" "}
+                        {t("workDetail.visits", { defaultValue: "There have been" })}:{" "}
                         {Number(workData.number_of_participants ?? 0).toLocaleString()}
                     </Text>
                 </View>
@@ -1113,14 +1279,18 @@ export default function WorksDetailPage() {
                     {isLoggedIn ? (
                         <>
                             <Text style={styles.inviteLine}>
-                                {t("workDetail.invitationCode", { defaultValue: "Invitation Code" })}:{" "}
-                                {currentInviteCode || "--"}
+                                {t("workDetail.invitationCode", {
+                                    defaultValue: "Invitation Code",
+                                })}
+                                : {currentInviteCode || "--"}
                             </Text>
                             <View style={styles.inviteDivider} />
                             <View style={styles.inviteLinkRow}>
                                 <Text numberOfLines={1} style={styles.inviteLineFlex}>
-                                    {t("workDetail.invitationLink", { defaultValue: "Invitation Link" })}:{" "}
-                                    {currentInviteUrl || "--"}
+                                    {t("workDetail.invitationLink", {
+                                        defaultValue: "Invitation Link",
+                                    })}
+                                    : {currentInviteUrl || "--"}
                                 </Text>
                                 <Pressable
                                     style={styles.copyButton}
@@ -1167,7 +1337,10 @@ export default function WorksDetailPage() {
                         </Text>
                     </Pressable>
 
-                    <Pressable style={styles.actionButton} onPress={handleOpenPointsMall}>
+                    <Pressable
+                        style={[styles.actionButton, styles.actionButtonPrimary]}
+                        onPress={handleOpenPointsMall}
+                    >
                         <Text style={styles.actionButtonText}>
                             {t("workDetail.pointsMall", { defaultValue: "Points Mall" })}
                         </Text>
@@ -1175,88 +1348,123 @@ export default function WorksDetailPage() {
                 </View>
             </View>
 
-            <GlassPanel style={styles.productInfoCard}>
-                <View style={styles.languageSwitchWrap}>
-                    {availableLanguages.map(language => {
-                        const selected = language === contentLanguage;
-                        return (
-                            <Pressable
-                                key={language}
-                                style={[
-                                    styles.languageButton,
-                                    selected && styles.languageButtonActive,
-                                ]}
-                                onPress={() => setContentLanguage(language)}
-                            >
-                                <Text
-                                    style={[
-                                        styles.languageButtonText,
-                                        selected && styles.languageButtonTextActive,
-                                    ]}
-                                >
-                                    {CONTENT_LANGUAGE_LABELS[language]}
+            <View style={styles.productInfoCard}>
+                <View style={styles.productLangSelectRow}>
+                    <WorkDetailContentLanguageSelect
+                        value={contentLanguage}
+                        availableLanguages={availableLanguages}
+                        onChange={setContentLanguage}
+                    />
+                </View>
+
+                {!descriptionExpanded ? (
+                    <View style={styles.productInfoRow}>
+                        <View style={styles.productCoverWrap}>
+                            {resolvedCoverUrl ? (
+                                <Image
+                                    source={toImageSource(resolvedCoverUrl)}
+                                    style={styles.productCover}
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                <View style={styles.productCoverFallback} />
+                            )}
+                        </View>
+
+                        <View style={styles.productTextCard}>
+                            <Text numberOfLines={1} style={styles.productTitle}>
+                                {resolvedWorkName || "-"}
+                            </Text>
+                            <Text numberOfLines={1} style={styles.productAuthor}>
+                                {resolvedCreatorName || "-"}
+                            </Text>
+                            <Pressable onPress={() => setDescriptionExpanded(true)}>
+                                <Text numberOfLines={7} style={styles.productDescription}>
+                                    {resolvedDescription || "-"}
                                 </Text>
                             </Pressable>
-                        );
-                    })}
-                </View>
-
-                <View style={styles.productInfoRow}>
-                    <View style={styles.productCoverWrap}>
-                        {resolvedCoverUrl ? (
-                            <Image
-                                source={toImageSource(resolvedCoverUrl)}
-                                style={styles.productCover}
-                                resizeMode="cover"
-                            />
-                        ) : (
-                            <View style={styles.productCoverFallback} />
-                        )}
+                        </View>
                     </View>
-
-                    <View style={styles.productTextWrap}>
-                        <Text style={styles.productTitle}>{resolvedWorkName || "-"}</Text>
-                        <Text style={styles.productAuthor}>{resolvedCreatorName || "-"}</Text>
-                        <Text style={styles.productDescription}>{resolvedDescription || "-"}</Text>
+                ) : (
+                    <View style={styles.productExpandedWrap}>
+                        <View style={styles.productFloatImageWrap}>
+                            {resolvedCoverUrl ? (
+                                <Image
+                                    source={toImageSource(resolvedCoverUrl)}
+                                    style={styles.productCover}
+                                    resizeMode="cover"
+                                />
+                            ) : (
+                                <View style={styles.productCoverFallback} />
+                            )}
+                        </View>
+                        <View style={styles.productExpandedTextCard}>
+                            <Text style={styles.productExpandedTitle}>
+                                {resolvedWorkName || "-"}
+                            </Text>
+                            <Text style={styles.productExpandedAuthor}>
+                                {resolvedCreatorName || "-"}
+                            </Text>
+                            <Pressable onPress={() => setDescriptionExpanded(false)}>
+                                <Text style={styles.productExpandedDescTop}>
+                                    {expandedDescriptionParts.preview || "-"}
+                                </Text>
+                                {expandedDescriptionParts.remain ? (
+                                    <Text style={styles.productExpandedDescBottom}>
+                                        {expandedDescriptionParts.remain}
+                                    </Text>
+                                ) : null}
+                            </Pressable>
+                        </View>
                     </View>
-                </View>
-            </GlassPanel>
+                )}
+            </View>
 
-            {Array.isArray(workData.creative_team_members) && workData.creative_team_members.length > 0 ? (
+            {Array.isArray(workData.creative_team_members) &&
+            workData.creative_team_members.length > 0 ? (
                 <View style={styles.teamSection}>
                     <Text style={styles.sectionTitle}>
                         {t("workDetail.productionTeam", { defaultValue: "Production Team" })}
                     </Text>
 
-                    <View style={styles.teamRow}>
-                        {workData.creative_team_members.map((member: CreativeTeamMembersItem, index) => {
-                            const memberName = resolveLocalizedText(member.name, languageKey) || "-";
-                            const memberRole = resolveLocalizedText(member.role, languageKey) || "-";
-                            const memberAvatar = resolveImageUrl(member.avatar_url || "");
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.teamRowContent}
+                        style={styles.teamRowScroll}
+                    >
+                        {workData.creative_team_members.map(
+                            (member: CreativeTeamMembersItem, index) => {
+                                const memberName =
+                                    resolveLocalizedText(member.name, languageKey) || "-";
+                                const memberRole =
+                                    resolveLocalizedText(member.role, languageKey) || "-";
+                                const memberAvatar = resolveImageUrl(member.avatar_url || "");
 
-                            return (
-                                <View key={`${memberName}-${index}`} style={styles.teamItem}>
-                                    <View style={styles.teamAvatarWrap}>
-                                        {memberAvatar ? (
-                                            <Image
-                                                source={toImageSource(memberAvatar)}
-                                                style={styles.teamAvatar}
-                                                resizeMode="cover"
-                                            />
-                                        ) : (
-                                            <View style={styles.teamAvatarFallback} />
-                                        )}
+                                return (
+                                    <View key={`${memberName}-${index}`} style={styles.teamItem}>
+                                        <View style={styles.teamAvatarWrap}>
+                                            {memberAvatar ? (
+                                                <Image
+                                                    source={toImageSource(memberAvatar)}
+                                                    style={styles.teamAvatar}
+                                                    resizeMode="cover"
+                                                />
+                                            ) : (
+                                                <View style={styles.teamAvatarFallback} />
+                                            )}
+                                        </View>
+                                        <Text numberOfLines={1} style={styles.teamName}>
+                                            {memberName}
+                                        </Text>
+                                        <Text numberOfLines={1} style={styles.teamRole}>
+                                            {memberRole}
+                                        </Text>
                                     </View>
-                                    <Text numberOfLines={1} style={styles.teamName}>
-                                        {memberName}
-                                    </Text>
-                                    <Text numberOfLines={1} style={styles.teamRole}>
-                                        {memberRole}
-                                    </Text>
-                                </View>
-                            );
-                        })}
-                    </View>
+                                );
+                            },
+                        )}
+                    </ScrollView>
                 </View>
             ) : null}
 
@@ -1266,8 +1474,14 @@ export default function WorksDetailPage() {
                         {tabKeys.map(tab => {
                             const selected = tab === activeTab;
                             return (
-                                <Pressable key={tab} onPress={() => setActiveTab(tab)}>
-                                    <Text style={[styles.tabLabel, selected && styles.tabLabelActive]}>
+                                <Pressable
+                                    key={tab}
+                                    onPress={() => setActiveTab(tab)}
+                                    style={styles.tabPressable}
+                                >
+                                    <Text
+                                        style={[styles.tabLabel, selected && styles.tabLabelActive]}
+                                    >
                                         {tab === "chapters"
                                             ? t("workDetail.chapters", { defaultValue: "Chapters" })
                                             : t("workDetail.trailersStills", {
@@ -1297,14 +1511,19 @@ export default function WorksDetailPage() {
                             {chapterImages.length > 0 ? (
                                 <View style={styles.chapterImagesWrap}>
                                     {chapterImages.map((url, index) => (
-                                        <View key={`${url}-${index}`} style={styles.chapterImageItem}>
+                                        <View
+                                            key={`${url}-${index}`}
+                                            style={styles.chapterImageItem}
+                                        >
                                             <AutoImage source={toImageSource(url)} />
                                         </View>
                                     ))}
                                 </View>
                             ) : null}
 
-                            {chapterText ? <Text style={styles.chapterText}>{chapterText}</Text> : null}
+                            {chapterText ? (
+                                <Text style={styles.chapterText}>{chapterText}</Text>
+                            ) : null}
 
                             {chapterMediaLinks.length > 0 ? (
                                 <View style={styles.chapterMediaWrap}>
@@ -1350,7 +1569,9 @@ export default function WorksDetailPage() {
                                         <GlassPanel key={item.id} style={styles.trailerCard}>
                                             {item.coverUrl ? (
                                                 <View style={styles.trailerCoverWrap}>
-                                                    <AutoImage source={toImageSource(item.coverUrl)} />
+                                                    <AutoImage
+                                                        source={toImageSource(item.coverUrl)}
+                                                    />
                                                 </View>
                                             ) : null}
 
@@ -1397,7 +1618,9 @@ export default function WorksDetailPage() {
 
                             {!trailersLoading && trailers.length === 0 && stills.length === 0 ? (
                                 <Text style={styles.emptyText}>
-                                    {t("workDetail.trailersEmpty", { defaultValue: "No media yet" })}
+                                    {t("workDetail.trailersEmpty", {
+                                        defaultValue: "No media yet",
+                                    })}
                                 </Text>
                             ) : null}
                         </>
@@ -1409,6 +1632,11 @@ export default function WorksDetailPage() {
 }
 
 const styles = StyleSheet.create({
+    // 无 hero 场景的顶部操作行
+    standaloneTopBar: {
+        minHeight: 36,
+        justifyContent: "center",
+    },
     // 加载状态容器
     loadingWrap: {
         minHeight: 280,
@@ -1473,10 +1701,47 @@ const styles = StyleSheet.create({
     },
     // hero 渐变遮罩
     heroGradient: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(3,6,32,0.35)",
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: -2,
         borderBottomWidth: 1,
         borderBottomColor: "rgba(255,255,255,0.08)",
+    },
+    // hero 渐变遮罩降级背景
+    heroGradientFallback: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: -2,
+        backgroundColor: "rgba(3,6,32,0.5)",
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(255,255,255,0.08)",
+    },
+    // hero 顶部导航层（返回 + 社交图标）
+    heroTopBar: {
+        position: "absolute",
+        top: 12,
+        left: 16,
+        right: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        zIndex: 20,
+    },
+    // hero 返回按钮
+    heroBackButton: {
+        width: 32,
+        height: 28,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    // hero 返回图标
+    heroBackIcon: {
+        width: 20,
+        height: 20,
     },
     // hero 内容容器
     heroContent: {
@@ -1597,7 +1862,6 @@ const styles = StyleSheet.create({
     },
     // 进度信息文案
     progressHeaderText: {
-        flex: 1,
         color: "#ffffff",
         fontSize: 13,
         fontWeight: "500",
@@ -1696,8 +1960,8 @@ const styles = StyleSheet.create({
     // 空投操作按钮
     actionButton: {
         flex: 1,
-        minHeight: 38,
-        borderRadius: 8,
+        minHeight: 34,
+        borderRadius: 6,
         borderWidth: 1,
         borderColor: "rgba(255,255,255,0.45)",
         alignItems: "center",
@@ -1718,44 +1982,106 @@ const styles = StyleSheet.create({
 
     // 作品信息卡片
     productInfoCard: {
-        borderRadius: 12,
-        paddingHorizontal: 12,
-        paddingVertical: 12,
-        gap: 10,
-        backgroundColor: "rgba(19, 17, 56, 0.72)",
-        borderColor: "rgba(255,255,255,0.22)",
+        position: "relative",
     },
-    // 内容语言切换容器
-    languageSwitchWrap: {
-        alignSelf: "flex-end",
+    // 作品语言选择行
+    productLangSelectRow: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        zIndex: 10,
+    },
+    // 作品语言选择器容器
+    contentLangSelectWrap: {
+        position: "relative",
+        minWidth: 90,
+        zIndex: 30,
+    },
+    // 作品语言触发按钮
+    contentLangTrigger: {
+        height: 24,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.72)",
+        paddingHorizontal: 2,
         flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 2,
+        backgroundColor: "rgba(255,255,255,0.05)",
+    },
+    // 作品语言触发按钮文案
+    contentLangTriggerText: {
+        color: "#ffffff",
+        fontSize: 11,
+        fontWeight: "600",
+    },
+    // 作品语言触发箭头展开态
+    contentLangTriggerArrowOpen: {
+        transform: [{ rotate: "180deg" }],
+    },
+    // 作品语言下拉面板
+    contentLangDropdown: {
+        position: "absolute",
+        top: "100%",
+        right: 0,
+        marginTop: 3,
+        minWidth: 94,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.3)",
+        backgroundColor: "rgba(40, 38, 70, 0.98)",
+        paddingVertical: 4,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.32,
+        shadowRadius: 16,
+        elevation: 10,
+    },
+    // 作品语言下拉选项
+    contentLangOption: {
+        width: "100%",
+        minHeight: 30,
+        paddingHorizontal: 8,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         gap: 6,
     },
-    // 内容语言切换按钮
-    languageButton: {
-        minWidth: 32,
-        height: 24,
-        paddingHorizontal: 8,
-        borderRadius: 4,
+    // 作品语言下拉选项选中态
+    contentLangOptionSelected: {
+        backgroundColor: "rgba(255,255,255,0.15)",
+    },
+    // 作品语言下拉选项按压态
+    contentLangOptionPressed: {
+        backgroundColor: "rgba(255,255,255,0.15)",
+    },
+    // 作品语言下拉选项文案
+    contentLangOptionText: {
+        color: "#ffffff",
+        fontSize: 11,
+        fontWeight: "500",
+    },
+    // 作品语言下拉选项文案选中态
+    contentLangOptionTextSelected: {
+        fontWeight: "700",
+    },
+    // 作品语言下拉选中图标容器
+    contentLangSelectedIconWrap: {
+        width: 14,
+        height: 14,
+        borderRadius: 7,
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.35)",
+        borderColor: "rgba(255,255,255,0.75)",
         alignItems: "center",
         justifyContent: "center",
     },
-    // 内容语言切换按钮激活态
-    languageButtonActive: {
-        borderColor: "transparent",
-        backgroundColor: themeColors.primary,
-    },
-    // 内容语言切换文字
-    languageButtonText: {
+    // 作品语言下拉选中图标文字
+    contentLangSelectedIconText: {
         color: "#ffffff",
-        fontSize: 12,
-        fontWeight: "600",
-    },
-    // 内容语言切换文字激活态
-    languageButtonTextActive: {
+        fontSize: 9,
         fontWeight: "700",
+        lineHeight: 10,
     },
 
     // 作品信息行
@@ -1767,25 +2093,24 @@ const styles = StyleSheet.create({
     // 作品封面容器
     productCoverWrap: {
         width: 120,
-        borderRadius: 8,
+        minWidth: 120,
+        borderRadius: 6,
         overflow: "hidden",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.65)",
     },
     // 作品封面
     productCover: {
         width: "100%",
-        height: 168,
+        aspectRatio: 3 / 4,
         backgroundColor: "#f5f5f5",
     },
     // 作品封面兜底
     productCoverFallback: {
         width: "100%",
-        height: 168,
+        aspectRatio: 3 / 4,
         backgroundColor: "rgba(255,255,255,0.2)",
     },
     // 作品文字内容容器
-    productTextWrap: {
+    productTextCard: {
         flex: 1,
         gap: 6,
     },
@@ -1793,20 +2118,71 @@ const styles = StyleSheet.create({
     productTitle: {
         color: "#ffffff",
         fontSize: 16,
-        fontWeight: "700",
+        fontWeight: "600",
         lineHeight: 22,
+        paddingRight: 75,
     },
     // 作品作者
     productAuthor: {
-        color: "rgba(255,255,255,0.78)",
-        fontSize: 13,
-        lineHeight: 18,
+        color: "rgba(255,255,255,0.70)",
+        fontSize: 12,
+        lineHeight: 16,
     },
     // 作品简介
     productDescription: {
-        color: "rgba(255,255,255,0.75)",
-        fontSize: 13,
-        lineHeight: 18,
+        color: "rgba(255,255,255,0.70)",
+        fontSize: 12,
+        lineHeight: 16,
+    },
+    // 展开态内容容器
+    productExpandedWrap: {
+        position: "relative",
+        minHeight: 190,
+    },
+    // 展开态浮动封面容器
+    productFloatImageWrap: {
+        position: "absolute",
+        left: 0,
+        top: 0,
+        width: 120,
+        borderRadius: 6,
+        overflow: "hidden",
+    },
+    // 展开态文案卡片
+    productExpandedTextCard: {
+        gap: 6,
+    },
+    // 展开态标题（环绕在图片右侧）
+    productExpandedTitle: {
+        color: "#ffffff",
+        fontSize: 16,
+        fontWeight: "600",
+        lineHeight: 22,
+        paddingRight: 75,
+        paddingBottom: 6,
+        marginLeft: 132,
+    },
+    // 展开态作者（环绕在图片右侧）
+    productExpandedAuthor: {
+        color: "rgba(255,255,255,0.70)",
+        fontSize: 12,
+        lineHeight: 16,
+        paddingBottom: 6,
+        marginLeft: 132,
+    },
+    // 展开态描述上半部分（环绕在图片右侧）
+    productExpandedDescTop: {
+        color: "rgba(255,255,255,0.70)",
+        fontSize: 12,
+        lineHeight: 16,
+        marginLeft: 132,
+    },
+    // 展开态描述下半部分（全宽，在图片下方）
+    productExpandedDescBottom: {
+        color: "rgba(255,255,255,0.70)",
+        fontSize: 12,
+        lineHeight: 16,
+        marginTop: 20,
     },
 
     // 制作团队区容器
@@ -1819,11 +2195,15 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "700",
     },
-    // 制作团队列表行
-    teamRow: {
+    // 制作团队横向滚动
+    teamRowScroll: {
+        marginHorizontal: -4,
+    },
+    teamRowContent: {
         flexDirection: "row",
-        flexWrap: "wrap",
-        gap: 12,
+        gap: 8,
+        paddingRight: 16,
+        paddingBottom: 8,
     },
     // 制作团队单项
     teamItem: {
@@ -1871,15 +2251,18 @@ const styles = StyleSheet.create({
         gap: 12,
         paddingBottom: 14,
     },
-    // 内容标签行
+    // 内容标签行（无背景无边框，与 web Details 一致）
     tabRow: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: 8,
+    },
+    tabPressable: {
+        paddingVertical: 4,
     },
     // 内容标签文案
     tabLabel: {
-        color: "#aeb1ce",
+        color: "#AEB1CE",
         fontSize: 18,
         fontWeight: "600",
     },
