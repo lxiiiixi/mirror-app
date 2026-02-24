@@ -6,7 +6,7 @@ import { useAuth } from "./useAuth";
 import { useWalletStore } from "../store/useWalletStore";
 import { useAlertStore } from "../store/useAlertStore";
 import { envConfigs } from "@mirror/utils";
-import { clearPendingInviteParams, getPendingInviteParams } from "../utils/inviteParams";
+import { clearPendingInviteUid, getPendingInviteParams } from "../utils/inviteParams";
 
 // const buildLoginMessage = (address: string) =>
 //     `Welcome to Mirror.Fan! Click to sign in and accept the Terms of Service. This request will not trigger a blockchain transaction or cost any gas fees. Wallet address: ${address} Nonce: ${Date.now()}`;
@@ -115,14 +115,13 @@ export const useWallet = () => {
                 login_type: "wallet",
                 message,
                 sign,
-                ...(pending.workInviteCode ? { work_invite_code: pending.workInviteCode } : {}),
                 ...(pending.inviteUid ? { invite_uid_code: pending.inviteUid } : {}),
             });
 
             const nextToken = response.data?.token;
             if (nextToken) {
                 saveToken(nextToken, "wallet");
-                clearPendingInviteParams();
+                clearPendingInviteUid();
             } else {
                 await disconnectWallet();
             }

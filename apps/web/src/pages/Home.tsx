@@ -172,7 +172,8 @@ function Home() {
                     const data = response.data;
                     console.log("[WorkDetailAirdrop] generateInviteCode", data);
                     const code = String(data?.invite_code ?? "");
-                    const url = getInviteLink(Number(product.id), code);
+                    const inviteUid = data?.uid;
+                    const url = getInviteLink(Number(product.id), code, inviteUid);
 
                     const shareText = buildInviteShareText({
                         t,

@@ -91,11 +91,15 @@ export default function WorkDetail() {
     const handleGoInvite = useCallback(() => {
         if (!data) return;
         if (!data.signed_in) return;
-        // const link = data.my_invite_url;
-        const link = getInviteLink(workId, data.my_invite_code);
-        if (!link) return;
-        navigator.clipboard
-            .writeText(link)
+        artsApiClient.work
+            .generateInviteCode({ work_id: workId })
+            .then(response => {
+                const inviteCode = String(response.data?.invite_code ?? data.my_invite_code ?? "");
+                const inviteUid = response.data?.uid;
+                if (!inviteCode) throw new Error("missing invite code");
+                const link = getInviteLink(workId, inviteCode, inviteUid);
+                return navigator.clipboard.writeText(link);
+            })
             .then(() => {
                 showAlert({
                     message: t("works.invitedListDialog.remindCopySuccess", {

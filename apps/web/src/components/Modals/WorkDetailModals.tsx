@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { Button, Modal } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
 import type { WorkFriendItem } from "@mirror/api";
@@ -7,16 +8,19 @@ import { images } from "@mirror/assets";
 import { useAlertStore } from "../../store/useAlertStore";
 import { useWalletStore } from "../../store/useWalletStore";
 import { getInviteLink } from "@mirror/utils";
+import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
 
 const ThreePersenTeamBox = ({
     item,
     workId,
+    signInInviteCode,
     handleRemind,
     onCheckInSuccess,
     address,
 }: {
     item: WorkFriendItem;
     workId: number;
+    signInInviteCode?: string;
     handleRemind: () => void;
     onCheckInSuccess?: () => void;
     address?: string;
@@ -31,8 +35,12 @@ const ThreePersenTeamBox = ({
         if (isSubmitting || !workId || Number.isNaN(workId)) return;
         setIsSubmitting(true);
         artsApiClient.work
-            .signIn({ work_id: workId })
+            .signIn({
+                work_id: workId,
+                ...(signInInviteCode ? { invite_code: signInInviteCode } : {}),
+            })
             .then(() => {
+                clearPendingWorkInviteCode();
                 onCheckInSuccess?.();
             })
             .catch(() => {
@@ -46,7 +54,7 @@ const ThreePersenTeamBox = ({
             .finally(() => {
                 setIsSubmitting(false);
             });
-    }, [workId, isSubmitting, onCheckInSuccess, showAlert, t]);
+    }, [signInInviteCode, workId, isSubmitting, onCheckInSuccess, showAlert, t]);
     return (
         <div className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]">
             <span className="truncate text-left" title={item.invite}>
@@ -111,6 +119,7 @@ export function InvitationListModal({
     onClose,
     workId,
     inviteCode,
+    inviteUrl,
     sign_in_time,
     hasTeam = false,
 }: {
@@ -118,6 +127,7 @@ export function InvitationListModal({
     onClose?: () => void;
     workId: number;
     inviteCode?: string;
+    inviteUrl?: string;
     sign_in_time?: string;
     hasTeam?: boolean;
 }) {
@@ -125,8 +135,11 @@ export function InvitationListModal({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const { t } = useTranslation();
+    const [searchParams] = useSearchParams();
     const showAlert = useAlertStore(state => state.show);
     const address = useWalletStore(state => state.address);
+    const inviteCodeFromUrl = searchParams.get("invite_code")?.trim() ?? "";
+    const inviteCodeForSignIn = inviteCodeFromUrl || getPendingInviteParams().workInviteCode || "";
 
     const fetchList = useCallback(() => {
         if (!workId || !open) return;
@@ -176,7 +189,7 @@ export function InvitationListModal({
     // console.log("[InvitationListModal] state", { teamMembers });
 
     const handleRemind = useCallback(() => {
-        const link = getInviteLink(workId, inviteCode ?? "");
+        const link = inviteUrl || getInviteLink(workId, inviteCode ?? "");
         if (!link) return;
         navigator.clipboard
             .writeText(link)
@@ -196,7 +209,7 @@ export function InvitationListModal({
                     variant: "error",
                 });
             });
-    }, [inviteCode, showAlert, t, workId]);
+    }, [inviteCode, inviteUrl, showAlert, t, workId]);
 
     const title = t("works.invitedListDialog.title", { defaultValue: "Invitation List" });
     const walletLabel = t("works.invitedListDialog.wallet", { defaultValue: "Wallet" });
@@ -252,6 +265,7 @@ export function InvitationListModal({
                                             key={`team-${item.wallet_display}-${item.invitation_time}-${index}`}
                                             item={item}
                                             workId={workId}
+                                            signInInviteCode={inviteCodeForSignIn || undefined}
                                             handleRemind={handleRemind}
                                             onCheckInSuccess={fetchList}
                                             address={address ?? undefined}

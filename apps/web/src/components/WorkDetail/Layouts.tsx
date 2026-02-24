@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { images } from "@mirror/assets";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSafeBack } from "../../hooks/useSafeBack";
 import { TokenAvatar } from "../Common/TokenAvatar";
 import {
@@ -20,6 +20,7 @@ import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check, Copy } from "lucide-react";
 import { WorkDetailResponseData, WorkExternalLinkItem, isWorkDetailAfterSignIn } from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
+import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
 
 export function WorkDetailLayout({
     children,
@@ -128,8 +129,11 @@ export function WorkDetailHero({
     const lang = i18n.resolvedLanguage ?? i18n.language ?? "en";
     const { isLoggedIn } = useAuth();
     const openLoginModal = useLoginModalStore(state => state.openModal);
+    const [searchParams] = useSearchParams();
     const [isChecked, setIsChecked] = useState(Boolean(workData.signed_in));
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const inviteCodeFromUrl = searchParams.get("invite_code")?.trim() ?? "";
+    const inviteCodeForSignIn = inviteCodeFromUrl || getPendingInviteParams().workInviteCode || "";
 
     useEffect(() => {
         setIsChecked(Boolean(workData.signed_in));
@@ -158,8 +162,12 @@ export function WorkDetailHero({
         if (!workId || Number.isNaN(workId)) return;
         setIsSubmitting(true);
         artsApiClient.work
-            .signIn({ work_id: workId })
+            .signIn({
+                work_id: workId,
+                ...(inviteCodeForSignIn ? { invite_code: inviteCodeForSignIn } : {}),
+            })
             .then(() => {
+                clearPendingWorkInviteCode();
                 setIsChecked(true);
                 onCheckInSuccess?.();
             })
@@ -169,7 +177,15 @@ export function WorkDetailHero({
             .finally(() => {
                 setIsSubmitting(false);
             });
-    }, [isChecked, isSubmitting, isLoggedIn, openLoginModal, workId, onCheckInSuccess]);
+    }, [
+        inviteCodeForSignIn,
+        isChecked,
+        isSubmitting,
+        isLoggedIn,
+        onCheckInSuccess,
+        openLoginModal,
+        workId,
+    ]);
 
     const checkInText = isChecked
         ? t("productShare.checked", { defaultValue: "Checked" })
@@ -280,7 +296,7 @@ export function WorkDetailAirdrop({
                 const data = response.data;
                 console.log("[WorkDetailAirdrop] generateInviteCode", data);
                 const nextCode = String(data?.invite_code ?? "");
-                const nextUrl = getInviteLink(workId, nextCode);
+                const nextUrl = getInviteLink(workId, nextCode, data?.uid);
                 if (nextCode) {
                     setInviteCode(nextCode);
                 }
@@ -580,6 +596,7 @@ export function WorkDetailAirdrop({
                 open={showInvitationListModal}
                 onClose={() => setShowInvitationListModal(false)}
                 inviteCode={inviteCode}
+                inviteUrl={inviteUrl}
                 sign_in_time={
                     workData.signed_in === true ? (workData.sign_in_time ?? undefined) : undefined
                 }

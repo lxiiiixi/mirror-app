@@ -4,7 +4,7 @@ import { persistInviteParamsFromSearch } from "../utils/inviteParams";
 
 /**
  * 每次进入应用/路由变化时，若 URL 带有 invite_uid 或 invite_code，
- * 则写入本地缓存，供登录时读取并带上；登录成功后由调用方清除。
+ * 则写入本地缓存：invite_uid 供登录时读取，invite_code 供签到时读取。
  * 应在 App 根组件中调用。
  */
 export function usePersistInviteParams() {

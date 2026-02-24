@@ -94,11 +94,23 @@ export const buildInviteShareText = ({
  * 主要用于详情页面邀请链接的生成
  * @param workId
  * @param inviteCode
+ * @param inviteUid
  * @returns
- * @example: https://mirror.fan/work/detail/361?invite_code=00000X
+ * @example: https://mirror.fan/works/detail?id=361&invite_code=00000X&invite_uid=463559014261824
  */
-export const getInviteLink = (workId: number, inviteCode: string) => {
-    return `${window.location.origin}/works/detail?id=${workId}&invite_code=${inviteCode}`;
+export const getInviteLink = (
+    workId: number,
+    inviteCode: string,
+    inviteUid?: string | number | null,
+) => {
+    const params = new URLSearchParams({
+        id: String(workId),
+        invite_code: inviteCode,
+    });
+    if (inviteUid !== undefined && inviteUid !== null && String(inviteUid).trim()) {
+        params.set("invite_uid", String(inviteUid).trim());
+    }
+    return `${window.location.origin}/works/detail?${params.toString()}`;
 };
 
 /**

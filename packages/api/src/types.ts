@@ -551,6 +551,10 @@ export interface WorkFinishedListResponseData {
 
 export interface WorkSignInRequest {
     work_id: number;
+    /** 作品邀请码（从邀请链接 invite_code 透传） */
+    invite_code?: string;
+    /** 兼容字段：与 invite_code 含义相同 */
+    work_invite_code?: string;
 }
 
 export interface WorkSignInResponseData {

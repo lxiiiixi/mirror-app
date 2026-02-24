@@ -8,7 +8,7 @@ import { images } from "@mirror/assets";
 import { BackButton } from "../components/Common/BackButton";
 import { useAlertStore } from "../store/useAlertStore";
 import {
-    clearPendingInviteParams,
+    clearPendingInviteUid,
     getPendingInviteParams,
 } from "../utils/inviteParams";
 
@@ -26,7 +26,7 @@ function EmailLogin() {
     const [code, setCode] = useState("");
     const [inviteCode, setInviteCode] = useState(() => {
         const pending = getPendingInviteParams();
-        return pending.workInviteCode ?? pending.inviteUid ?? "";
+        return pending.inviteUid ?? "";
     });
     const [countdown, setCountdown] = useState(0);
     const [isSending, setIsSending] = useState(false);
@@ -121,18 +121,16 @@ function EmailLogin() {
                 const response = await artsApiClient.user.emailLogin({
                     email: normalizedEmail,
                     code: normalizedCode,
-                    ...(pending.workInviteCode ? { work_invite_code: pending.workInviteCode } : {}),
                     ...(pending.inviteUid ? { invite_uid_code: pending.inviteUid } : {}),
-                    // 若本地无缓存但用户手动输入了邀请码，优先用输入值（作品码多为 6 位）
-                    ...(!pending.workInviteCode && !pending.inviteUid && inviteCode.trim()
-                        ? { work_invite_code: inviteCode.trim() }
+                    ...(!pending.inviteUid && inviteCode.trim()
+                        ? { invite_uid_code: inviteCode.trim() }
                         : {}),
                 });
 
                 const token = response.data?.token;
                 if (token) {
                     saveToken(token, "email");
-                    clearPendingInviteParams();
+                    clearPendingInviteUid();
                     showAlert({ message: t("emailLogin.loginSuccess"), variant: "success" });
                     redirectRef.current = window.setTimeout(() => {
                         navigate("/");
