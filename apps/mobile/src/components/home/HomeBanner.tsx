@@ -63,15 +63,11 @@ function resolveBannerAsset(imgKey: string, language: string) {
 
     const slot = getBannerSlot(imgKey);
     const langSuffix =
-        language === "zh-CN"
-            ? "_cn"
-            : language === "zh-HK" || language === "zh-TW"
-              ? "_hk"
-              : "_en";
+        language === "zh-CN" ? "_cn" : language === "zh-HK" || language === "zh-TW" ? "_hk" : "_en";
 
     const fallbackKeys = [
         slot + langSuffix,
-        ...LOCALE_SUFFIXES.filter((s) => s !== langSuffix).map((s) => slot + s),
+        ...LOCALE_SUFFIXES.filter(s => s !== langSuffix).map(s => slot + s),
         slot,
     ];
 
@@ -90,7 +86,10 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
     const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const activeIndexRef = useRef(0);
     const cardAnimMapRef = useRef(
-        new Map<string | number, { offsetX: Animated.Value; scale: Animated.Value; opacity: Animated.Value }>(),
+        new Map<
+            string | number,
+            { offsetX: Animated.Value; scale: Animated.Value; opacity: Animated.Value }
+        >(),
     );
     const [activeIndex, setActiveIndex] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
@@ -142,9 +141,12 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
         }
 
         stopAutoplay();
-        autoplayRef.current = setInterval(() => {
-            goToSlide(activeIndexRef.current + 1);
-        }, Math.max(1000, interval));
+        autoplayRef.current = setInterval(
+            () => {
+                goToSlide(activeIndexRef.current + 1);
+            },
+            Math.max(1000, interval),
+        );
     }, [autoplay, banners.length, goToSlide, interval, stopAutoplay]);
 
     const resetAutoplay = useCallback(() => {
@@ -297,7 +299,7 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
 
     useEffect(() => {
         const map = cardAnimMapRef.current;
-        const alive = new Set(banners.map((item) => item.id));
+        const alive = new Set(banners.map(item => item.id));
         for (const key of map.keys()) {
             if (!alive.has(key)) {
                 map.delete(key);
@@ -346,7 +348,11 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
 
     return (
         <View style={styles.root}>
-            <View style={[styles.scene, { height: sceneHeight }]} onLayout={handleLayout} {...panResponder.panHandlers}>
+            <View
+                style={[styles.scene, { height: sceneHeight }]}
+                onLayout={handleLayout}
+                {...panResponder.panHandlers}
+            >
                 <View style={styles.sceneWrapper}>
                     {banners.map((item, index) => {
                         const visual = getCardVisual(index);
@@ -372,12 +378,18 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
                                         zIndex: visual.zIndex,
                                         marginLeft: -cardWidth / 2,
                                         marginTop: -cardHeight / 2,
-                                        transform: [{ translateX: animatedState.offsetX }, { scale: animatedState.scale }],
+                                        transform: [
+                                            { translateX: animatedState.offsetX },
+                                            { scale: animatedState.scale },
+                                        ],
                                     },
                                     visual.active && styles.cardActive,
                                 ]}
                             >
-                                <Pressable style={styles.cardPressable} onPress={() => handleCardPress(index, item.link)}>
+                                <Pressable
+                                    style={styles.cardPressable}
+                                    onPress={() => handleCardPress(index, item.link)}
+                                >
                                     <Image
                                         source={item.source}
                                         style={styles.image}
@@ -418,7 +430,7 @@ export function HomeBanner({ autoplay = true, interval = 4000 }: HomeBannerProps
 const styles = StyleSheet.create({
     root: {
         width: "100%",
-        gap: 8,
+        // gap: 0,
     },
     scene: {
         width: "100%",

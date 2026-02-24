@@ -286,7 +286,7 @@ export default function HomeRoutePage() {
 
 const styles = StyleSheet.create({
     content: {
-        gap: 8,
+        gap: 2,
     },
     productSectionList: {
         gap: 10,

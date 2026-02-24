@@ -287,7 +287,8 @@ export function AppLayout({
                             <View style={[styles.pageNavSide, styles.pageNavLeft]}>
                                 <Pressable style={styles.backButton} onPress={onBackPress}>
                                     {backIcon ? (
-                                        typeof backIcon === "string" || typeof backIcon === "number" ? (
+                                        typeof backIcon === "string" ||
+                                        typeof backIcon === "number" ? (
                                             toImageSource(backIcon) ? (
                                                 <Image
                                                     source={toImageSource(backIcon)}
@@ -436,8 +437,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     logoImage: {
-        width: 90,
-        height: 30,
+        width: 110,
+        height: 40,
+        marginTop: -10,
     },
     logoText: {
         color: "#ffffff",
@@ -452,7 +454,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     walletButton: {
-        width: 90,
+        width: 80,
         height: 27,
         borderRadius: 4,
         backgroundColor: themeColors.primary,
