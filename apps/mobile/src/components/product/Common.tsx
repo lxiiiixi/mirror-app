@@ -83,14 +83,14 @@ export function GlassPanel({ children, style, intensity = 36, tint = "dark" }: G
 }
 
 const SMALL = {
-    height: 16,
-    iconWidth: 8,
-    iconHeight: 8,
-    iconPadLeft: 7,
-    iconPadRight: 5,
-    countPadLeft: 5,
-    countPadRight: 7,
-    countSize: 9,
+    height: 13,
+    iconWidth: 6,
+    iconHeight: 6,
+    iconPadLeft: 5,
+    iconPadRight: 4,
+    countPadLeft: 4,
+    countPadRight: 5,
+    countSize: 7,
 };
 
 const LARGE = {

@@ -88,7 +88,7 @@ export function ProductCardCarousel({
     }, [currentIndex, displayProducts.length]);
 
     const handleLayout = (event: LayoutChangeEvent) => {
-        const width = Math.floor(event.nativeEvent.layout.width);
+        const width = event.nativeEvent.layout.width;
         if (width > 0 && width !== containerWidth) {
             setContainerWidth(width);
             requestAnimationFrame(() => {
@@ -126,10 +126,10 @@ export function ProductCardCarousel({
     }
 
     return (
-        <View style={[styles.root, style]} onLayout={handleLayout}>
+        <View style={[styles.root, style]}>
             <View style={styles.shadowLayer} />
 
-            <View style={styles.carouselFrame}>
+            <View style={styles.carouselFrame} onLayout={handleLayout}>
                 <ScrollView
                     ref={scrollRef}
                     horizontal
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
         height: "100%",
         alignSelf: "center",
         borderRadius: 26,
-        overflow: "visible",
+        overflow: "hidden",
     },
     // 轮播滚动层
     scroll: {
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     // 底部轮播指示器容器
     dots: {
         position: "absolute",
-        bottom: 2,
+        bottom: 8,
         left: 0,
         right: 0,
         flexDirection: "row",

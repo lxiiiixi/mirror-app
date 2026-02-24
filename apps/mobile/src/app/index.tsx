@@ -288,37 +288,45 @@ const styles = StyleSheet.create({
     content: {
         gap: 2,
     },
+    // 作品列表
     productSectionList: {
         gap: 10,
         paddingBottom: 6,
     },
+    // 作品列表区块
     sectionBlock: {
-        gap: 6,
+        gap: 10,
     },
+    // 作品列表网格
     grid: {
         width: "100%",
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-between",
     },
+    // 作品列表网格项
     gridItem: {
-        width: "32.6%",
-        marginBottom: 6,
+        width: "32%",
+        marginBottom: 10,
     },
+    // 加载中
     loadingWrap: {
         minHeight: 220,
         alignItems: "center",
         justifyContent: "center",
     },
+    // 空状态
     placeholderWrap: {
         minHeight: 120,
         alignItems: "center",
         justifyContent: "center",
     },
+    // 空状态文本
     placeholderText: {
         color: "rgba(255,255,255,0.76)",
         fontSize: 13,
     },
+    // 加载更多
     loadMoreWrap: {
         paddingVertical: 14,
         alignItems: "center",
