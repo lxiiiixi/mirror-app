@@ -127,6 +127,7 @@
     },
     "invitedListDialog": {
       "title": "Invitation list",
+      "user": "User",
       "wallet": "Wallet",
       "invitationTime": "Invitation time",
       "checkIn": "Check-in",

@@ -11,6 +11,14 @@ import { getInviteLink } from "@mirror/utils";
 import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
 import { isWorkSignInDailyLimitError } from "../../utils/workSignInError";
 
+const getUserDisplayText = (item: WorkFriendItem) => {
+    const email = item.email?.trim() ?? "";
+    if (email) return email;
+    const walletDisplay = item.wallet_display?.trim() ?? "";
+    if (walletDisplay) return walletDisplay;
+    return item.invite?.trim() ?? "";
+};
+
 const ThreePersenTeamBox = ({
     item,
     workId,
@@ -29,7 +37,12 @@ const ThreePersenTeamBox = ({
     const { t } = useTranslation();
     const showAlert = useAlertStore(s => s.show);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const isSelf = address && item.invite?.toLowerCase() === address.toLowerCase();
+    const normalizedAddress = address?.toLowerCase();
+    const isSelf = Boolean(
+        normalizedAddress &&
+            ((item.wallet_address && item.wallet_address.toLowerCase() === normalizedAddress) ||
+                item.invite?.toLowerCase() === normalizedAddress),
+    );
     const isDone = item.signed_in;
 
     const handleSelfCheckIn = useCallback(() => {
@@ -67,8 +80,8 @@ const ThreePersenTeamBox = ({
     }, [signInInviteCode, workId, isSubmitting, onCheckInSuccess, showAlert, t]);
     return (
         <div className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]">
-            <span className="truncate text-left" title={item.invite}>
-                {item.wallet_display || item.invite}
+            <span className="truncate text-left" title={item.email || item.wallet_address || item.invite}>
+                {getUserDisplayText(item)}
             </span>
             <span className="text-center">{item.invitation_time}</span>
             {/* 三个状态：
@@ -188,6 +201,8 @@ export function InvitationListModal({
         return [
             {
                 invite: address ?? "",
+                email: "",
+                wallet_address: address ?? "",
                 invitation_time: selfDateString,
                 wallet_display: address ?? "",
                 signed_in: sign_in_time ? true : false,
@@ -222,7 +237,7 @@ export function InvitationListModal({
     }, [inviteCode, inviteUrl, showAlert, t, workId]);
 
     const title = t("works.invitedListDialog.title", { defaultValue: "Invitation List" });
-    const walletLabel = t("works.invitedListDialog.wallet", { defaultValue: "Wallet" });
+    const userLabel = t("works.invitedListDialog.user", { defaultValue: "User" });
     const timeLabel = t("works.invitedListDialog.invitationTime", {
         defaultValue: "Invitation Time",
     });
@@ -249,7 +264,7 @@ export function InvitationListModal({
             <h3 className="text-center text-[18px] font-bold mb-4">{title}</h3>
             <div className="">
                 <div className="mb-2 grid grid-cols-3 items-center gap-2 text-[14px] font-medium text-white/90">
-                    <span className="text-left">{walletLabel}</span>
+                    <span className="text-left">{userLabel}</span>
                     <span className="text-center text-nowrap">{timeLabel}</span>
                     <span className="text-right">{checkInLabel}</span>
                 </div>
@@ -303,8 +318,8 @@ export function InvitationListModal({
                             key={`all-${item.wallet_display}-${item.invitation_time}-${index}`}
                             className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]"
                         >
-                            <span className="truncate text-left" title={item.invite}>
-                                {item.wallet_display || item.invite}
+                            <span className="truncate text-left" title={item.email || item.wallet_address || item.invite}>
+                                {getUserDisplayText(item)}
                             </span>
                             <span className="text-center">{item.invitation_time}</span>
                         </div>

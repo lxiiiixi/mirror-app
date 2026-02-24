@@ -127,6 +127,7 @@
     },
     "invitedListDialog": {
       "title": "邀请列表",
+      "user": "用户",
       "wallet": "钱包",
       "invitationTime": "邀请时间",
       "checkIn": "签到",

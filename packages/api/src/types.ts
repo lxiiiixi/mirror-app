@@ -931,16 +931,20 @@ export interface WorkFriendsListParams extends PaginationParams {
 /**
  * @example
  * {
- *     "invite": "friend@example.com",
+ *     "invite": "temp_hello33xx@gmail.com",
+ *     "email": "temp_hello33xx@gmail.com",
+ *     "wallet_address": "CQE...Lh",
  *     "invitation_time": "01/26/2026",
- *     "wallet_display": "FTj***bm63",
+ *     "wallet_display": "CQE***Lh",
  *     "signed_in": true
  * }
  */
 export interface WorkFriendItem {
-    invite: string; // 被邀请人的钱包地址（用这个展示钱包）
+    invite: string; // 优先邮箱，无邮箱时返回 username（钱包地址）
+    email: string; // 被邀请人邮箱（可为空字符串）
+    wallet_address: string; // 被邀请人完整钱包地址
     invitation_time: string; // 邀请时间
-    wallet_display: string;
+    wallet_display: string; // 脱敏钱包地址
     signed_in: boolean; // 是否已签到
 }
 export interface WorkFriendsListResponseData {
