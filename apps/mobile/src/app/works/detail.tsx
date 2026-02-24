@@ -270,8 +270,7 @@ function splitDescriptionForFloatView(description: string) {
 
     const segment = normalized.slice(0, DESCRIPTION_FLOAT_PREVIEW_LENGTH);
     const lastSpace = segment.lastIndexOf(" ");
-    const splitAt =
-        lastSpace > 0 ? lastSpace : DESCRIPTION_FLOAT_PREVIEW_LENGTH;
+    const splitAt = lastSpace > 0 ? lastSpace : DESCRIPTION_FLOAT_PREVIEW_LENGTH;
 
     return {
         preview: normalized.slice(0, splitAt).trimEnd(),
