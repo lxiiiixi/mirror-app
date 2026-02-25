@@ -18,11 +18,16 @@ import { useAuth } from "../../hooks/useAuth";
 import { InvitationListModal } from "../Modals";
 import { useLoginModalStore } from "../../store/useLoginModalStore";
 import { Check, Copy } from "lucide-react";
-import { WorkDetailResponseData, WorkExternalLinkItem, isWorkDetailAfterSignIn } from "@mirror/api";
+import {
+    API_ERROR_CODES,
+    WorkDetailResponseData,
+    WorkExternalLinkItem,
+    isApiErrorCode,
+    isWorkDetailAfterSignIn,
+} from "@mirror/api";
 import { ExternalLink } from "./ExternalLink";
 import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
 import { useAlertStore } from "../../store/useAlertStore";
-import { isWorkSignInDailyLimitError } from "../../utils/workSignInError";
 
 export function WorkDetailLayout({
     children,
@@ -176,7 +181,7 @@ export function WorkDetailHero({
             })
             .catch(error => {
                 console.error("[WorkDetailHero] signIn failed", error);
-                if (isWorkSignInDailyLimitError(error)) {
+                if (isApiErrorCode(error, API_ERROR_CODES.WORK_SIGN_IN_DAILY_LIMIT_REACHED)) {
                     showAlert({
                         message: t("workDetail.dailySignInLimitReached", {
                             defaultValue: "Daily limit of 3 new work sign-ins reached",

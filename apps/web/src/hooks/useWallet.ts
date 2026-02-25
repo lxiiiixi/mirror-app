@@ -6,6 +6,7 @@ import { useAuth } from "./useAuth";
 import { useWalletStore } from "../store/useWalletStore";
 import { useAlertStore } from "../store/useAlertStore";
 import { envConfigs } from "@mirror/utils";
+import { API_ERROR_CODES, isApiErrorCode } from "@mirror/api";
 import { clearPendingInviteUid, getPendingInviteParams } from "../utils/inviteParams";
 
 // const buildLoginMessage = (address: string) =>
@@ -127,6 +128,10 @@ export const useWallet = () => {
             }
         } catch (error) {
             console.error("[Wallet] login failed", error);
+            // 后端 30013 表示 invite_uid_code 不合法，清理本地缓存避免后续重复携带导致持续失败。
+            if (isApiErrorCode(error, API_ERROR_CODES.INVALID_INVITE_UID_CODE)) {
+                clearPendingInviteUid();
+            }
             showAlert({ message: "Wallet login failed", variant: "error" });
             await disconnectWallet();
         } finally {

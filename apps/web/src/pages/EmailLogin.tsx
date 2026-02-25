@@ -2,6 +2,7 @@ import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } fro
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { artsApiClient } from "../api/artsClient";
+import { API_ERROR_CODES, isApiErrorCode } from "@mirror/api";
 import { useAuth } from "../hooks/useAuth";
 import { Button, Input } from "../ui";
 import { images } from "@mirror/assets";
@@ -15,7 +16,6 @@ import {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CODE_LENGTH = 6;
 const COUNTDOWN_SECONDS = 60;
-const SEND_CODE_TOO_FREQUENT_CODE = 503;
 
 type EmailLoginLocationState = {
     backOnSuccess?: boolean;
@@ -102,11 +102,7 @@ function EmailLogin() {
             startCountdown();
         } catch (error) {
             console.error("[EmailLogin] send code failed", error);
-            const code =
-                error && typeof error === "object"
-                    ? Number((error as { code?: unknown }).code)
-                    : NaN;
-            if (code === SEND_CODE_TOO_FREQUENT_CODE) {
+            if (isApiErrorCode(error, API_ERROR_CODES.SEND_EMAIL_CODE_TOO_FREQUENT)) {
                 showAlert({
                     message: t("emailLogin.sendTooFrequent", {
                         defaultValue: "Too many requests. Please try again in 1 minute.",
@@ -162,6 +158,10 @@ function EmailLogin() {
                 }
             } catch (error) {
                 console.error("[EmailLogin] login failed", error);
+                // 若 invite_uid_code 非法（30013），清理本地缓存，避免用户重试时继续携带错误参数。
+                if (isApiErrorCode(error, API_ERROR_CODES.INVALID_INVITE_UID_CODE)) {
+                    clearPendingInviteUid();
+                }
                 showAlert({ message: t("emailLogin.loginFailed"), variant: "error" });
             } finally {
                 setIsSubmitting(false);

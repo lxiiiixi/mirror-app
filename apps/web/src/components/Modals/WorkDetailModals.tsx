@@ -3,13 +3,12 @@ import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { Button, Modal } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
-import type { WorkFriendItem } from "@mirror/api";
+import { API_ERROR_CODES, type WorkFriendItem, isApiErrorCode } from "@mirror/api";
 import { images } from "@mirror/assets";
 import { useAlertStore } from "../../store/useAlertStore";
 import { useWalletStore } from "../../store/useWalletStore";
 import { getInviteLink } from "@mirror/utils";
 import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
-import { isWorkSignInDailyLimitError } from "../../utils/workSignInError";
 
 const getUserDisplayText = (item: WorkFriendItem) => {
     const email = item.email?.trim() ?? "";
@@ -58,7 +57,7 @@ const ThreePersenTeamBox = ({
                 onCheckInSuccess?.();
             })
             .catch(error => {
-                if (isWorkSignInDailyLimitError(error)) {
+                if (isApiErrorCode(error, API_ERROR_CODES.WORK_SIGN_IN_DAILY_LIMIT_REACHED)) {
                     showAlert({
                         message: t("workDetail.dailySignInLimitReached", {
                             defaultValue: "Daily limit of 3 new work sign-ins reached",
