@@ -50,7 +50,13 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
     const reward = item.total_amount ?? item.reward ?? 0;
     const time = item.time ?? item.create_time ?? "";
 
-    const arrowIcon = !hasChildren ? images.mining.inviteArrowRight : images.mining.inviteArrowDown;
+    // 根级根据是否有子节点选箭头；后续子 item 统一用下箭头
+    const arrowIcon =
+        depth > 0
+            ? images.mining.inviteArrowUp
+            : hasChildren
+              ? images.mining.inviteArrowUp
+              : images.mining.inviteArrowDown;
 
     return (
         <>

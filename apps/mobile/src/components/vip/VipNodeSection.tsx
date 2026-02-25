@@ -44,7 +44,7 @@ function InviteTreeItem({ item, depth = 0 }: InviteTreeItemProps) {
     const level = item.level ?? depth + 1;
     const reward = item.total_amount ?? 0;
     const time = item.time ?? item.node_create_time ?? "";
-    const arrowIcon = hasChildren ? images.mining.inviteArrowDown : images.mining.inviteArrowRight;
+    const arrowIcon = hasChildren ? images.mining.inviteArrowUp : images.mining.inviteArrowDown;
 
     return (
         <View style={[styles.treeCard, { marginLeft: depth > 0 ? 12 : 0 }]}>

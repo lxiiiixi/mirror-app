@@ -26,6 +26,8 @@ function Promotion() {
     // URL/本地存储中的 club_invite，用于「绑定上级」
     const [inviteCode, setInviteCode] = useState("");
     const [isCanBind, setIsCanBind] = useState(false);
+    // user/check 返回的 is_wallet_while，为 false 时不展示 CommunityCard
+    const [isWalletWhile, setIsWalletWhile] = useState(false);
     // 直推/间推人数（来自 levelProgress）
     const [inviteNum, setInviteNum] = useState({ direct_invites: "0/0", indirect_invites: "0/0" });
     // 当前用户自己的邀请链接（inviteBase + 会员邀请码），仅会员有值
@@ -78,17 +80,20 @@ function Promotion() {
         }
     }, []);
 
-    /** 检查是否可绑定上级：已登录且尚未绑定过（/user/check 的 is_invite 为 false） */
+    /** 检查是否可绑定上级及钱包白名单：已登录时调 /user/check，is_invite 决定可绑定，is_wallet_while 决定是否展示邀请卡片 */
     const checkCanBind = useCallback(async () => {
         if (!isLoggedIn) {
             setIsCanBind(false);
+            setIsWalletWhile(false);
             return;
         }
         try {
             const response = await artsApiClient.user.checkUserWhitelist();
             setIsCanBind(!response.data?.is_invite);
+            setIsWalletWhile(response.data?.is_wallet_while ?? false);
         } catch {
             setIsCanBind(false);
+            setIsWalletWhile(false);
         }
     }, [isLoggedIn]);
 
@@ -120,8 +125,8 @@ function Promotion() {
         void refreshInviteData();
     }, [refreshInviteData]);
 
-    // 仅当已登录且当前用户有会员邀请码时展示邀请卡片（非会员无 invite_code，不展示）
-    const showCommunityCard = Boolean(isLoggedIn && myInviteCode);
+    // 已登录、有会员邀请码、且 user/check 的 is_wallet_while 为 true 时展示邀请卡片（非会员无 invite_code；白名单为 false 不展示）
+    const showCommunityCard = Boolean(isLoggedIn && myInviteCode && isWalletWhile);
 
     return (
         <div id="promotion-page" className="text-[12px]">

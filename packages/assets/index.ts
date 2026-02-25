@@ -136,7 +136,7 @@ import miningBorder3 from "./images/mining/border-3.png";
 import miningBtn1 from "./images/mining/btn-1.png";
 import miningShareBg from "./images/mining/share-bg.png";
 import miningInviteArrowDown from "./images/mining/invite/arrow-down.png";
-import miningInviteArrowRight from "./images/mining/invite/arrow-right.png";
+import miningInviteArrowUp from "./images/mining/invite/arrow-up.png";
 import miningInviteLevel1 from "./images/mining/invite/v1.png";
 import miningInviteLevel2 from "./images/mining/invite/v2.png";
 import miningInviteLevel3 from "./images/mining/invite/v3.png";
@@ -315,7 +315,7 @@ export const images = {
         btn1: miningBtn1,
         shareBg: miningShareBg,
         inviteArrowDown: miningInviteArrowDown,
-        inviteArrowRight: miningInviteArrowRight,
+        inviteArrowUp: miningInviteArrowUp,
         inviteLevel1: miningInviteLevel1,
         inviteLevel2: miningInviteLevel2,
         inviteLevel3: miningInviteLevel3,

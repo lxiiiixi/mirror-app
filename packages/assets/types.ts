@@ -145,7 +145,7 @@ export interface ImagesMap {
         btn1: string;
         shareBg: string;
         inviteArrowDown: string;
-        inviteArrowRight: string;
+        inviteArrowUp: string;
         inviteLevel1: string;
         inviteLevel2: string;
         inviteLevel3: string;
