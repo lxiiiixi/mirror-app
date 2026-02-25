@@ -54,6 +54,8 @@ export default function WorkDetail() {
 
     useEffect(() => {
         document.body.classList.add("work-detail-page");
+        // Ensure detail page always starts at viewport top after route transition from list pages.
+        window.scrollTo(0, 0);
         return () => {
             document.body.classList.remove("work-detail-page");
         };

@@ -37,7 +37,10 @@ export function WorkDetailLayout({
     workId: number;
 }) {
     return (
-        <div className="min-h-screen bg-[#030620] text-white w-dvw">
+        <div
+            className="min-h-dvh bg-[#030620] text-white w-dvw"
+            style={{ paddingTop: "max(env(safe-area-inset-top), 0px)" }}
+        >
             <WorkDetailHeader workId={workId} />
             {children}
         </div>
