@@ -135,7 +135,7 @@
       "teamLabel": "隊員",
       "loading": "載入中...",
       "error": "載入失敗",
-      "noData": "暫無組隊",
+      "noData": "暫無成功組隊",
       "otherLabel": "三人組隊",
       "teamReward": "三人組隊全部簽到後，每人可獲得 3 枚代幣",
       "statusSelf": "完成簽到",
