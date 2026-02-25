@@ -140,6 +140,7 @@
       "teamReward": "三人组队全部签到后，每人可获得 3 枚代币",
       "statusSelf": "完成签到",
       "statusCompleted": "完成",
+      "statusPending": "待签到",
       "statusRemind": "提醒签到",
       "remindCopySuccess": "复制邀请链接，去邀请你的好友吧",
       "remindCopyFailed": "复制失败，请重试",

@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { Button, Modal } from "../../ui";
 import { artsApiClient } from "../../api/artsClient";
-import { API_ERROR_CODES, type WorkFriendItem, isApiErrorCode } from "@mirror/api";
+import { type WorkFriendItem, type WorkTeamMemberItem } from "@mirror/api";
 import { images } from "@mirror/assets";
 import { useAlertStore } from "../../store/useAlertStore";
-import { useWalletStore } from "../../store/useWalletStore";
 import { getInviteLink } from "@mirror/utils";
-import { clearPendingWorkInviteCode, getPendingInviteParams } from "../../utils/inviteParams";
 
 const getUserDisplayText = (item: WorkFriendItem) => {
     const email = item.email?.trim() ?? "";
@@ -18,96 +15,36 @@ const getUserDisplayText = (item: WorkFriendItem) => {
     return item.invite?.trim() ?? "";
 };
 
-const ThreePersenTeamBox = ({
+const getTeamMemberDisplayText = (item: WorkTeamMemberItem) => {
+    const email = item.email?.trim() ?? "";
+    if (email) return email;
+    const username = item.username?.trim() ?? "";
+    if (username) return username;
+    return item.wallet_display?.trim() ?? "";
+};
+
+const TeamMemberRow = ({
     item,
-    workId,
-    signInInviteCode,
     handleRemind,
-    onCheckInSuccess,
-    address,
 }: {
-    item: WorkFriendItem;
-    workId: number;
-    signInInviteCode?: string;
+    item: WorkTeamMemberItem;
     handleRemind: () => void;
-    onCheckInSuccess?: () => void;
-    address?: string;
 }) => {
     const { t } = useTranslation();
-    const showAlert = useAlertStore(s => s.show);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const normalizedAddress = address?.toLowerCase();
-    const isSelf = Boolean(
-        normalizedAddress &&
-            ((item.wallet_address && item.wallet_address.toLowerCase() === normalizedAddress) ||
-                item.invite?.toLowerCase() === normalizedAddress),
-    );
     const isDone = item.signed_in;
 
-    const handleSelfCheckIn = useCallback(() => {
-        if (isSubmitting || !workId || Number.isNaN(workId)) return;
-        setIsSubmitting(true);
-        artsApiClient.work
-            .signIn({
-                work_id: workId,
-                ...(signInInviteCode ? { invite_code: signInInviteCode } : {}),
-            })
-            .then(() => {
-                clearPendingWorkInviteCode();
-                onCheckInSuccess?.();
-            })
-            .catch(error => {
-                if (isApiErrorCode(error, API_ERROR_CODES.WORK_SIGN_IN_DAILY_LIMIT_REACHED)) {
-                    showAlert({
-                        message: t("workDetail.dailySignInLimitReached", {
-                            defaultValue: "Daily limit of 3 new work sign-ins reached",
-                        }),
-                        variant: "error",
-                    });
-                    return;
-                }
-                showAlert({
-                    message: t("invitedListDialog.checkInFailed", {
-                        defaultValue: "Check-in failed. Please try again.",
-                    }),
-                    variant: "error",
-                });
-            })
-            .finally(() => {
-                setIsSubmitting(false);
-            });
-    }, [signInInviteCode, workId, isSubmitting, onCheckInSuccess, showAlert, t]);
     return (
         <div className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]">
-            <span className="truncate text-left" title={item.email || item.wallet_address || item.invite}>
-                {getUserDisplayText(item)}
+            <span className="truncate text-left" title={item.email || item.wallet_display}>
+                {getTeamMemberDisplayText(item)}
             </span>
-            <span className="text-center">{item.invitation_time}</span>
-            {/* 三个状态：
-            1. Completed - 完成了签到
-            2. Check-in - 还没有签到，点击后可以签到（针对自己）
-            3. Remind to Check-in - 提醒队友签到（针对队友）
-            */}
+            <span className="text-center">--</span>
             <span className="text-right text-[#37ffc6]">
                 {isDone ? (
-                    // 完成
                     <span className="text-right text-[#37FFC6]">
                         {t("invitedListDialog.statusCompleted", { defaultValue: "Completed" })}
                     </span>
-                ) : isSelf ? (
-                    // 自己没完成 => 点击后可以签到
-                    <button
-                        type="button"
-                        className="cursor-pointer text-[#37FFC6] text-right disabled:opacity-60 disabled:cursor-not-allowed"
-                        onClick={handleSelfCheckIn}
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting
-                            ? t("invitedListDialog.loading", { defaultValue: "Loading..." })
-                            : t("invitedListDialog.checkIn", { defaultValue: "Check-in" })}
-                    </button>
                 ) : (
-                    // 队友没完成
                     <button
                         type="button"
                         className="text-right text-[#37FFC6] cursor-pointer"
@@ -118,50 +55,37 @@ const ThreePersenTeamBox = ({
                         })}
                     </button>
                 )}
-
-                {/* {isSelf || isDone ? (
-                    getCheckInLabel(item, Boolean(isSelf))
-                ) : (
-                    <button
-                        type="button"
-                        className="cursor-pointer text-[#37FFC6] text-right"
-                        onClick={handleRemind}
-                    >
-                        {getCheckInLabel(item, false)}
-                    </button>
-                )} */}
             </span>
         </div>
     );
 };
 
-/** 邀请列表弹窗：请求 getFriendsList 展示实际数据 */
+/** 邀请列表弹窗：
+ * - 组队区域：使用 work/detail 的 team_members
+ * - 邀请列表区域：使用 work/friendsList
+ */
 export function InvitationListModal({
     open,
     onClose,
     workId,
     inviteCode,
     inviteUrl,
-    sign_in_time,
     hasTeam = false,
+    teamMembers = [],
 }: {
     open: boolean;
     onClose?: () => void;
     workId: number;
     inviteCode?: string;
     inviteUrl?: string;
-    sign_in_time?: string;
     hasTeam?: boolean;
+    teamMembers?: WorkTeamMemberItem[];
 }) {
     const [list, setList] = useState<WorkFriendItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const { t } = useTranslation();
-    const [searchParams] = useSearchParams();
     const showAlert = useAlertStore(state => state.show);
-    const address = useWalletStore(state => state.address);
-    const inviteCodeFromUrl = searchParams.get("invite_code")?.trim() ?? "";
-    const inviteCodeForSignIn = inviteCodeFromUrl || getPendingInviteParams().workInviteCode || "";
 
     const fetchList = useCallback(() => {
         if (!workId || !open) return;
@@ -185,32 +109,10 @@ export function InvitationListModal({
         if (open && workId) fetchList();
     }, [open, workId, fetchList]);
 
-    const teamMembers = useMemo(() => {
-        // 展示逻辑
-        if (!hasTeam) return []; // 如果没有组队，就展示空
-        // const self = sign_in_time ? new Date(sign_in_time).toLocaleDateString() : "";
-        // 显示 日/月/年 格式
-        const selfDate = new Date(sign_in_time ?? "");
-        const selfDateString = selfDate.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-        });
-        // 如果组队了，展示三个人，第一个是自己的信息，其他两个人是另外的信息
-        return [
-            {
-                invite: address ?? "",
-                email: "",
-                wallet_address: address ?? "",
-                invitation_time: selfDateString,
-                wallet_display: address ?? "",
-                signed_in: sign_in_time ? true : false,
-            },
-            ...list.slice(0, 2),
-        ];
-    }, [hasTeam, list, sign_in_time, address]);
-
-    // console.log("[InvitationListModal] state", { teamMembers });
+    const effectiveTeamMembers = useMemo(
+        () => (hasTeam ? teamMembers : []),
+        [hasTeam, teamMembers],
+    );
 
     const handleRemind = useCallback(() => {
         const link = inviteUrl || getInviteLink(workId, inviteCode ?? "");
@@ -241,11 +143,16 @@ export function InvitationListModal({
         defaultValue: "Invitation Time",
     });
     const checkInLabel = t("works.invitedListDialog.checkIn", { defaultValue: "Check-in" });
-    const _teamLabel = t("works.invitedListDialog.teamLabel", { defaultValue: "Team Members" });
     const otherLabel = t("works.invitedListDialog.otherLabel", { defaultValue: "3-Person Team" });
     const loadingLabel = t("works.invitedListDialog.loading", { defaultValue: "Loading..." });
     const errorLabel = t("works.invitedListDialog.error", { defaultValue: "Failed to load list" });
     const emptyLabel = t("works.invitedListDialog.noData", { defaultValue: "No Team yet" });
+    const statusCompletedLabel = t("works.invitedListDialog.statusCompleted", {
+        defaultValue: "Completed",
+    });
+    const statusPendingLabel = t("works.invitedListDialog.statusPending", {
+        defaultValue: "Pending",
+    });
     const teamRewardLabel = t("works.invitedListDialog.teamReward", {
         defaultValue: "If all team members check in, each member gets 3 tokens",
     });
@@ -267,62 +174,61 @@ export function InvitationListModal({
                     <span className="text-center text-nowrap">{timeLabel}</span>
                     <span className="text-right">{checkInLabel}</span>
                 </div>
+
+                {/* 组队区域：独立使用 work/detail 的 team_members */}
                 <div className="rounded-lg bg-[#1b1d23] px-3 py-3">
+                    <p className="mb-2 px-4 text-center text-[13px] font-medium">{otherLabel}</p>
+                    {effectiveTeamMembers.length > 0 ? (
+                        effectiveTeamMembers.map((item, index) => (
+                            <TeamMemberRow
+                                key={`team-${item.uid}-${item.wallet_display || item.email}-${index}`}
+                                item={item}
+                                handleRemind={handleRemind}
+                            />
+                        ))
+                    ) : (
+                        <p className="mt-2 px-4 text-center text-[12px] text-white/90">
+                            {emptyLabel}
+                        </p>
+                    )}
+                    {hasTeam && effectiveTeamMembers.length > 0 && (
+                        <p className="mt-2 px-4 text-center text-[12px] text-white/90">
+                            {teamRewardLabel}
+                        </p>
+                    )}
+                </div>
+
+                {/* 邀请列表区域：独立使用 work/friendsList */}
+                <div className="mt-2">
                     {loading && (
                         <p className="py-6 text-center text-[13px] text-white/70">{loadingLabel}</p>
                     )}
                     {error && (
                         <p className="py-6 text-center text-[13px] text-red-400">{errorLabel}</p>
                     )}
-                    {!loading && !error && list.length === 0 && (
+                    {/* {!loading && !error && list.length === 0 && (
                         <p className="py-6 text-center text-[13px] text-white/70">{emptyLabel}</p>
-                    )}
-                    {!loading && !error && list.length > 0 && (
-                        <>
-                            <p className="mb-2 px-4 text-center text-[13px] font-medium">
-                                {otherLabel}
-                            </p>
-                            {teamMembers.length > 0 ? (
-                                teamMembers.map((item, index) => {
-                                    return (
-                                        <ThreePersenTeamBox
-                                            key={`team-${item.wallet_display}-${item.invitation_time}-${index}`}
-                                            item={item}
-                                            workId={workId}
-                                            signInInviteCode={inviteCodeForSignIn || undefined}
-                                            handleRemind={handleRemind}
-                                            onCheckInSuccess={fetchList}
-                                            address={address ?? undefined}
-                                        />
-                                    );
-                                })
-                            ) : (
-                                <p className="mt-2 px-4 text-center text-[12px] text-white/90">
-                                    {emptyLabel}
-                                </p>
-                            )}
-                            {/* 提示句 */}
-                            {hasTeam && teamMembers.length > 0 && (
-                                <p className="mt-2 px-4 text-center text-[12px] text-white/90">
-                                    {teamRewardLabel}
-                                </p>
-                            )}
-                        </>
-                    )}
-                </div>
-                {/* 不管是否组队，都展示所有成员 */}
-                <div className="mt-2">
-                    {list.map((item, index) => (
-                        <div
-                            key={`all-${item.wallet_display}-${item.invitation_time}-${index}`}
-                            className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]"
-                        >
-                            <span className="truncate text-left" title={item.email || item.wallet_address || item.invite}>
-                                {getUserDisplayText(item)}
-                            </span>
-                            <span className="text-center">{item.invitation_time}</span>
-                        </div>
-                    ))}
+                    )} */}
+                    {!loading &&
+                        !error &&
+                        list.length > 0 &&
+                        list.map((item, index) => (
+                            <div
+                                key={`all-${item.wallet_display}-${item.invitation_time}-${index}`}
+                                className="grid grid-cols-3 items-center gap-2 py-1 text-[12px]"
+                            >
+                                <span
+                                    className="truncate text-left"
+                                    title={item.email || item.wallet_address || item.invite}
+                                >
+                                    {getUserDisplayText(item)}
+                                </span>
+                                <span className="text-center">{item.invitation_time}</span>
+                                {/* <span className="text-right text-[#37FFC6]">
+                                    {item.signed_in ? statusCompletedLabel : statusPendingLabel}
+                                </span> */}
+                            </div>
+                        ))}
                 </div>
             </div>
         </Modal>

@@ -378,11 +378,6 @@ export interface WorkDetailBase {
     creative_team_members: CreativeTeamMembersItem[];
 }
 
-/** 未登录用户的作品详情：仅包含基础字段，不携带任何「当前用户」相关信息 */
-export interface WorkDetailBeforeSignIn extends WorkDetailBase {
-    signed_in?: false;
-}
-
 /** 制作团队成员 */
 export interface WorkDetailCreativeTeamMember {
     name: string;
@@ -390,13 +385,20 @@ export interface WorkDetailCreativeTeamMember {
     avatar_url?: string;
 }
 
+/** 作品组队成员（来自 work/detail） */
+export interface WorkTeamMemberItem {
+    uid: Int64String | number;
+    email: string;
+    wallet_display: string;
+    username: string;
+    signed_in: boolean;
+}
+
 /**
- * 携带「当前用户」信息的作品详情：
- * - 请求头里带上用户 token 时返回
- * - `signed_in` 表示「今天是否已完成签到」，true/false 均可能
- * - 只要用户已登录，这一整组字段都会存在（包括 ever_signed_in / token_balance 等）
+ * 已登录时作品详情会多出的字段（与「今日是否签到」signed_in 无直接关系，仅与当前用户是否登录有关）。
+ * 未登录时接口不返回这些字段；已登录时返回。
  */
-export interface WorkDetailAfterSignIn extends WorkDetailBase {
+export interface WorkDetailUserFields {
     signed_in: boolean;
     can_show_team_btn: boolean;
     ever_signed_in: boolean;
@@ -410,7 +412,8 @@ export interface WorkDetailAfterSignIn extends WorkDetailBase {
     my_invite_count: number;
     my_invite_url: string;
     points_mall_url: string;
-    team_sign_in_progress: string; // 组队签到进度（格式："0/3"～"3/3"，三人今日签到人数；未组队时也返回，前端可用 has_team 判断是否展示）
+    team_members: WorkTeamMemberItem[];
+    team_sign_in_progress: string; // 组队签到进度（"0/3"～"3/3"）；未组队时也返回，可用 has_team 判断是否展示
     team_sign_in_reward_claimed: boolean;
     token_balance: number;
     tread_count: number;
@@ -419,23 +422,20 @@ export interface WorkDetailAfterSignIn extends WorkDetailBase {
 }
 
 /**
- * 作品详情接口返回：
- * - 未登录：WorkDetailBeforeSignIn（不返回任何用户相关字段，signed_in 缺失）
- * - 已登录：WorkDetailAfterSignIn（返回签到/邀请/团队相关字段，signed_in 为 boolean）
+ * 作品详情接口返回：始终包含 WorkDetailBase；已登录时额外返回用户相关字段（WorkDetailUserFields）。
+ * 未登录时不包含 signed_in 等用户字段；已登录时这些字段存在。
  *
  * 使用示例（判断是否已登录）：
- *   if (typeof data.signed_in === "boolean") {
- *     // data 被收窄为 WorkDetailAfterSignIn，可访问 my_invite_code、token_balance 等
- *   } else {
- *     // data 为 WorkDetailBeforeSignIn，仅有基础字段
+ *   if (isWorkDetailAfterSignIn(data)) {
+ *     // data 被收窄为含用户字段，可访问 data.my_invite_code、data.token_balance 等
  *   }
  */
-export type WorkDetailResponseData = WorkDetailBeforeSignIn | WorkDetailAfterSignIn;
+export interface WorkDetailResponseData extends WorkDetailBase, Partial<WorkDetailUserFields> {}
 
-/** 类型守卫：判断当前是否为「已登录」的作品详情结构（不再表示“已签到”） */
+/** 类型守卫：判断是否为「已登录」的作品详情（含用户相关字段），收窄后可安全访问 my_invite_code 等 */
 export function isWorkDetailAfterSignIn(
     data: WorkDetailResponseData,
-): data is WorkDetailAfterSignIn {
+): data is WorkDetailResponseData & WorkDetailUserFields {
     return typeof data.signed_in === "boolean";
 }
 

@@ -140,6 +140,7 @@
       "teamReward": "三人組隊全部簽到後，每人可獲得 3 枚代幣",
       "statusSelf": "完成簽到",
       "statusCompleted": "完成",
+      "statusPending": "待簽到",
       "statusRemind": "提醒簽到",
       "remindCopySuccess": "複製邀請連結，去邀請你的好友吧",
       "remindCopyFailed": "複製失敗，請重試",

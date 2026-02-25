@@ -140,6 +140,7 @@
       "teamReward": "If all team members check in, each member gets 3 tokens",
       "statusSelf": "Checked-in",
       "statusCompleted": "Completed",
+      "statusPending": "Pending",
       "statusRemind": "Remind to Check-in",
       "remindCopySuccess": "Copy the invitation link and invite your friends",
       "remindCopyFailed": "Copy failed. Please try again.",
