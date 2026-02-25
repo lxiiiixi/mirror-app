@@ -213,13 +213,6 @@ export default function PromotionPage() {
 
                 <PromotionCommissionCard today={today} total={total} />
 
-                <Text style={styles.tipText}>
-                    {t("promotion.tipText", {
-                        defaultValue:
-                            "Claim a token that will increase a hundredfold Double the airdrop when three people form a team",
-                    })}
-                </Text>
-
                 <PromotionDiscover onNewsPress={() => router.push(ROUTE_PATHS.vip)} />
             </View>
         </MainTabsLayout>
@@ -253,13 +246,5 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         textAlign: "center",
         lineHeight: 24,
-    },
-    // 提示文案
-    tipText: {
-        color: "#ffffff",
-        fontSize: 14,
-        lineHeight: 21,
-        textAlign: "center",
-        marginTop: -2,
     },
 });

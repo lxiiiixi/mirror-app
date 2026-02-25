@@ -389,8 +389,7 @@
     "directCommission": "直接佣金 10%:",
     "indirectCommission": "間接佣金 5%:",
     "todaysCommission": "今日佣金",
-    "cumulativeCommission": "累計佣金",
-    "tipText": "領取百倍增值代幣，三人成團空投翻倍"
+    "cumulativeCommission": "累計佣金"
   },
   "vipAbout": {
     "whitePaper": "白皮書",
