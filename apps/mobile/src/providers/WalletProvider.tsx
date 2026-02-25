@@ -10,8 +10,9 @@ import {
     useState,
 } from "react";
 import { Alert } from "react-native";
+import { API_ERROR_CODES, isApiErrorCode } from "@mirror/api";
 import { artsApiClient } from "../api/artsClient";
-import { clearPendingInviteParams, getPendingInviteParams } from "../utils/inviteParams";
+import { clearPendingInviteUid, getPendingInviteParams } from "../utils/inviteParams";
 import { useAuth } from "./AuthProvider";
 import {
     reownAvailable,
@@ -189,7 +190,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
                 login_type: "wallet",
                 message,
                 sign,
-                ...(pending.workInviteCode ? { work_invite_code: pending.workInviteCode } : {}),
                 ...(pending.inviteUid ? { invite_uid_code: pending.inviteUid } : {}),
             });
 
@@ -199,9 +199,14 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             }
 
             await saveToken(nextToken, "wallet");
-            await clearPendingInviteParams();
+            await clearPendingInviteUid();
         } catch (error) {
             console.error("[WalletProvider] wallet login failed", error);
+            // Backend code 30013 means invite_uid_code is invalid.
+            // Clear cached value to avoid repeated wallet-login failures with stale invite params.
+            if (isApiErrorCode(error, API_ERROR_CODES.INVALID_INVITE_UID_CODE)) {
+                await clearPendingInviteUid();
+            }
             Alert.alert("Wallet", getReadableErrorMessage(error));
             await disconnectWallet();
         } finally {

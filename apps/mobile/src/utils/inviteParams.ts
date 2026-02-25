@@ -15,14 +15,17 @@ const normalizeParam = (value: MaybeParam): string => {
 };
 
 export async function persistInviteParams(params: {
-  invite_uid?: MaybeParam;
+  club_invite?: MaybeParam;
   invite_code?: MaybeParam;
 }): Promise<void> {
-  const inviteUid = normalizeParam(params.invite_uid);
+  const clubInvite = normalizeParam(params.club_invite);
   const inviteCode = normalizeParam(params.invite_code);
 
-  if (inviteUid) {
-    await setStorageItem(STORAGE_KEYS.pendingInviteUid, inviteUid);
+  if (clubInvite) {
+    await Promise.all([
+      setStorageItem(STORAGE_KEYS.clubInvite, clubInvite),
+      setStorageItem(STORAGE_KEYS.pendingInviteUid, clubInvite),
+    ]);
   }
 
   if (inviteCode) {
@@ -31,10 +34,20 @@ export async function persistInviteParams(params: {
 }
 
 export async function getPendingInviteParams(): Promise<PendingInviteParams> {
-  const [inviteUid, workInviteCode] = await Promise.all([
+  const [pendingInviteUid, clubInvite, workInviteCode] = await Promise.all([
     getStorageItem(STORAGE_KEYS.pendingInviteUid),
+    getStorageItem(STORAGE_KEYS.clubInvite),
     getStorageItem(STORAGE_KEYS.pendingWorkInviteCode),
   ]);
+  const inviteUid =
+    pendingInviteUid && clubInvite && pendingInviteUid === clubInvite
+      ? pendingInviteUid
+      : null;
+
+  // Historical compatibility: clear stale pendingInviteUid values not derived from club_invite.
+  if (pendingInviteUid && !inviteUid) {
+    await removeStorageItem(STORAGE_KEYS.pendingInviteUid);
+  }
 
   return {
     inviteUid,
@@ -42,9 +55,14 @@ export async function getPendingInviteParams(): Promise<PendingInviteParams> {
   };
 }
 
+export async function clearPendingInviteUid(): Promise<void> {
+  await removeStorageItem(STORAGE_KEYS.pendingInviteUid);
+}
+
+export async function clearPendingWorkInviteCode(): Promise<void> {
+  await removeStorageItem(STORAGE_KEYS.pendingWorkInviteCode);
+}
+
 export async function clearPendingInviteParams(): Promise<void> {
-  await Promise.all([
-    removeStorageItem(STORAGE_KEYS.pendingInviteUid),
-    removeStorageItem(STORAGE_KEYS.pendingWorkInviteCode),
-  ]);
+  await Promise.all([clearPendingInviteUid(), clearPendingWorkInviteCode()]);
 }

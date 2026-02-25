@@ -4,7 +4,7 @@ import type {
     WorkExternalLinkItem,
     WorkLinkListItem,
 } from "@mirror/api";
-import { isWorkDetailAfterSignIn } from "@mirror/api";
+import { API_ERROR_CODES, isApiErrorCode, isWorkDetailAfterSignIn } from "@mirror/api";
 import { images } from "@mirror/assets";
 import { ROUTE_PATHS } from "@mirror/routes";
 import {
@@ -38,10 +38,17 @@ import { useLoginModal } from "../../hooks/useLoginModal";
 import { themeColors } from "../../theme/colors";
 import { AppLayout, AutoImage } from "../../ui";
 import { toImageSource } from "../../utils/imageSource";
+import {
+    clearPendingWorkInviteCode,
+    getPendingInviteParams,
+    persistInviteParams,
+} from "../../utils/inviteParams";
 
 type WorkDetailSearchParams = {
     id?: string | string[];
     type?: string | string[];
+    club_invite?: string | string[];
+    invite_code?: string | string[];
 };
 
 type LoadStatus = "idle" | "loading" | "success" | "error";
@@ -515,6 +522,13 @@ export default function WorksDetailPage() {
     const availableLanguages = useMemo(() => getAvailableContentLanguages(workData), [workData]);
 
     useEffect(() => {
+        void persistInviteParams({
+            club_invite: params.club_invite,
+            invite_code: params.invite_code,
+        });
+    }, [params.club_invite, params.invite_code]);
+
+    useEffect(() => {
         if (!availableLanguages.includes(contentLanguage)) {
             setContentLanguage(availableLanguages[0] ?? "en");
         }
@@ -957,16 +971,30 @@ export default function WorksDetailPage() {
 
         setIsSigningIn(true);
         try {
-            await artsApiClient.work.signIn({ work_id: workId });
+            const pending = await getPendingInviteParams();
+            await artsApiClient.work.signIn({
+                work_id: workId,
+                ...(pending.workInviteCode ? { invite_code: pending.workInviteCode } : {}),
+            });
             Alert.alert(
                 t("common.success", { defaultValue: "Success" }),
                 t("workDetail.checkInSuccess", {
                     defaultValue: "Checked in successfully.",
                 }),
             );
+            await clearPendingWorkInviteCode();
             await Promise.all([fetchWorkDetail(true), fetchAirdropAndInviteData()]);
         } catch (error) {
             console.error("[WorkDetail] signIn failed", error);
+            if (isApiErrorCode(error, API_ERROR_CODES.WORK_SIGN_IN_DAILY_LIMIT_REACHED)) {
+                Alert.alert(
+                    t("common.error", { defaultValue: "Error" }),
+                    t("workDetail.dailySignInLimitReached", {
+                        defaultValue: "Daily limit of 3 new work sign-ins reached",
+                    }),
+                );
+                return;
+            }
             Alert.alert(
                 t("common.error", { defaultValue: "Error" }),
                 t("workDetail.checkInFailed", {

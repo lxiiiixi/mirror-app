@@ -1,4 +1,5 @@
 import { images } from "@mirror/assets";
+import { API_ERROR_CODES, isApiErrorCode } from "@mirror/api";
 import { ROUTE_PATHS } from "@mirror/routes";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -21,7 +22,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { themeColors } from "../../theme/colors";
 import { toImageSource } from "../../utils/imageSource";
 import {
-    clearPendingInviteParams,
+    clearPendingInviteUid,
     getPendingInviteParams,
     persistInviteParams,
 } from "../../utils/inviteParams";
@@ -33,12 +34,11 @@ const COUNTDOWN_SECONDS = 60;
 export default function AccountEmailPage() {
     const { t } = useTranslation();
     const router = useRouter();
-    const params = useLocalSearchParams<{ invite_uid?: string; invite_code?: string }>();
+    const params = useLocalSearchParams<{ club_invite?: string; invite_code?: string }>();
     const { saveToken } = useAuth();
 
     const [email, setEmail] = useState("slowlyxixi@outlook.com");
     const [code, setCode] = useState("");
-    const [inviteCode, setInviteCode] = useState("");
     const [countdown, setCountdown] = useState(0);
     const [isSending, setIsSending] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,27 +81,10 @@ export default function AccountEmailPage() {
 
     useEffect(() => {
         void persistInviteParams({
-            invite_uid: params.invite_uid,
+            club_invite: params.club_invite,
             invite_code: params.invite_code,
         });
-    }, [params.invite_code, params.invite_uid]);
-
-    useEffect(() => {
-        let active = true;
-
-        void (async () => {
-            const pending = await getPendingInviteParams();
-            if (!active) {
-                return;
-            }
-
-            setInviteCode(pending.workInviteCode ?? pending.inviteUid ?? "");
-        })();
-
-        return () => {
-            active = false;
-        };
-    }, []);
+    }, [params.club_invite, params.invite_code]);
 
     useEffect(() => {
         return () => {
@@ -140,7 +123,11 @@ export default function AccountEmailPage() {
             startCountdown();
         } catch (error) {
             console.error("[EmailLogin] send code failed", error);
-            showError(t("emailLogin.sendFailed"));
+            if (isApiErrorCode(error, API_ERROR_CODES.SEND_EMAIL_CODE_TOO_FREQUENT)) {
+                showError(t("emailLogin.sendTooFrequent"));
+            } else {
+                showError(t("emailLogin.sendFailed"));
+            }
         } finally {
             setIsSending(false);
         }
@@ -164,11 +151,7 @@ export default function AccountEmailPage() {
             const response = await artsApiClient.user.emailLogin({
                 email: normalizedEmail,
                 code: normalizedCode,
-                ...(pending.workInviteCode ? { work_invite_code: pending.workInviteCode } : {}),
                 ...(pending.inviteUid ? { invite_uid_code: pending.inviteUid } : {}),
-                ...(!pending.workInviteCode && !pending.inviteUid && inviteCode.trim()
-                    ? { work_invite_code: inviteCode.trim() }
-                    : {}),
             });
 
             const token = response.data?.token;
@@ -178,7 +161,7 @@ export default function AccountEmailPage() {
             }
 
             await saveToken(token, "email");
-            await clearPendingInviteParams();
+            await clearPendingInviteUid();
             showSuccess(t("emailLogin.loginSuccess"));
 
             redirectRef.current = setTimeout(() => {
@@ -186,11 +169,16 @@ export default function AccountEmailPage() {
             }, 800);
         } catch (error) {
             console.error("[EmailLogin] login failed", error);
+            // Backend code 30013 means invite_uid_code is invalid.
+            // Clear cached value to avoid repeated login failures with stale invite params.
+            if (isApiErrorCode(error, API_ERROR_CODES.INVALID_INVITE_UID_CODE)) {
+                await clearPendingInviteUid();
+            }
             showError(t("emailLogin.loginFailed"));
         } finally {
             setIsSubmitting(false);
         }
-    }, [inviteCode, isEmailValid, normalizedCode, normalizedEmail, router, saveToken, t]);
+    }, [isEmailValid, normalizedCode, normalizedEmail, router, saveToken, t]);
 
     const handleBack = () => {
         if (router.canGoBack()) {
@@ -265,19 +253,6 @@ export default function AccountEmailPage() {
                                         </Text>
                                     </Pressable>
                                 </View>
-                            </View>
-
-                            <View style={styles.field}>
-                                <Text style={styles.fieldLabel}>{t("emailLogin.inviteCode")}</Text>
-                                <TextInput
-                                    value={inviteCode}
-                                    onChangeText={setInviteCode}
-                                    style={styles.input}
-                                    autoCapitalize="none"
-                                    autoComplete="off"
-                                    placeholder={t("emailLogin.inviteCodePlaceholder")}
-                                    placeholderTextColor="rgba(255,255,255,0.42)"
-                                />
                             </View>
 
                             <Pressable
