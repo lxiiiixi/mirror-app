@@ -620,7 +620,7 @@
     "claim": "領取",
     "releaseInfo": "礦机共60億ENT，第一年釋放20%，之後每年減少20%",
     "todaysMiningData": "今日挖礦收益",
-    "todaysTip": "每 20 分鐘進行一次區塊挖礦更新",
+    "todaysTip": "每 60 分鐘進行一次區塊挖礦更新",
     "directEarnings": "今日社區收益",
     "dividendEarnings": "今日贡献",
     "destructionEarnings": "今日销毁收益"

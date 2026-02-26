@@ -53,10 +53,12 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
     // 根级根据是否有子节点选箭头；后续子 item 统一用下箭头
     const arrowIcon =
         depth > 0
-            ? images.mining.inviteArrowUp
+            ? null // 根级
             : hasChildren
-              ? images.mining.inviteArrowUp
-              : images.mining.inviteArrowDown;
+              ? open
+                  ? images.mining.inviteArrowUp
+                  : images.mining.inviteArrowDown // 有子节点的父级
+              : null; // 没有子节点的父级
 
     return (
         <>
@@ -74,7 +76,9 @@ const InviteTreeItem = ({ item, depth = 0 }: { item: InviteRecord; depth?: numbe
                     }}
                 >
                     <div className="flex min-w-0 flex-1 gap-2">
-                        <img className="h-6 w-6 shrink-0" src={arrowIcon} alt="" />
+                        {arrowIcon ? (
+                            <img className="h-6 w-6 shrink-0" src={arrowIcon} alt="" />
+                        ) : null}
                         <div className="flex min-w-0 flex-col gap-0.5">
                             <div className="flex items-center">
                                 <img

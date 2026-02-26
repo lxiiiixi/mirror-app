@@ -82,7 +82,7 @@ body {
     min-width: 320px;
     min-height: 100vh;
     background-color: var(--color-bg);
-    background-image: var(--gradient-page);
+    /* background-image: var(--gradient-page); */
     color: var(--color-text);
     position: relative;
     overflow-x: hidden;
@@ -99,33 +99,23 @@ body::after {
     content: "";
     position: fixed;
     border-radius: 50%;
-    filter: blur(80px);
+    filter: blur(20px);
     pointer-events: none;
     z-index: 0;
 }
 body::before {
-    width: min(70vmax, 420px);
-    height: min(70vmax, 420px);
-    top: -15%;
-    left: -20%;
-    background: radial-gradient(
-        circle at 30% 30%,
-        #03254c 0%,
-        rgba(3, 37, 76, 0.4) 50%,
-        transparent 75%
-    );
+    width: min(40vmax, 240px);
+    height: min(40vmax, 240px);
+    top: -5%;
+    left: -8%;
+    background: radial-gradient(circle at 30% 30%, #093567 0%, transparent 100%);
 }
 body::after {
-    width: min(60vmax, 360px);
-    height: min(60vmax, 360px);
-    top: -10%;
-    right: -15%;
-    background: radial-gradient(
-        circle at 70% 30%,
-        #4e18f045 0%,
-        rgba(78, 24, 240, 0.15) 55%,
-        transparent 80%
-    );
+    width: min(50vmax, 290px);
+    height: min(50vmax, 290px);
+    top: -4%;
+    right: -8%;
+    background: radial-gradient(circle at 70% 30%, #764afa5e 0%, transparent 100%);
 }
 
 #root {

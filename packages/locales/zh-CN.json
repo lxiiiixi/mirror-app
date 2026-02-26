@@ -620,7 +620,7 @@
     "claim": "领取",
     "releaseInfo": "矿机共60亿ENT，第一年释放20%，之后每年减少20%",
     "todaysMiningData": "今日挖矿收益",
-    "todaysTip": "每 20 分钟进行一次区块挖矿更新",
+    "todaysTip": "每 60 分钟进行一次区块挖矿更新",
     "directEarnings": "今日社区收益",
     "dividendEarnings": "今日贡献",
     "destructionEarnings": "今日销毁收益"

@@ -299,7 +299,7 @@ export function VipMiningSection() {
                             <Text style={styles.todaySubValue}>{purchasedNodes}X SPEEDUP</Text>
                             <Text style={styles.todayTip}>
                                 {t("miningMy.todaysTip", {
-                                    defaultValue: "Block mining is updated every 20 minutes",
+                                    defaultValue: "Block mining is updated every 60 minutes",
                                 })}
                             </Text>
                         </View>
