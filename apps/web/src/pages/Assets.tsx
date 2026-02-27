@@ -32,7 +32,7 @@ function Assets() {
                 artsApiClient.user.getWallets(),
             ]);
 
-            setAssets(assetResponse.data ?? {});
+            setAssets(assetResponse.data ?? []);
 
             const wallets = walletResponse.data?.wallets ?? [];
             const primary = wallets.find(wallet => wallet.is_primary) ?? wallets[0];
@@ -51,7 +51,14 @@ function Assets() {
     }, [refreshAssets]);
 
     const total = useMemo(() => {
-        const sum = assets.reduce((acc, item) => acc + Number(item.balance ?? 0), 0);
+        const sum = assets.reduce((acc, item) => {
+            const balance = Number(item.balance ?? 0);
+            const price = Number(item.price ?? 0);
+            if (!Number.isFinite(balance) || !Number.isFinite(price)) {
+                return acc;
+            }
+            return acc + balance * price;
+        }, 0);
         return Number.isFinite(sum) ? sum : 0;
     }, [assets]);
 

@@ -31,6 +31,20 @@ const parseInviteProgress = (str: string): { current: number; max: number } => {
     return { current, max };
 };
 
+/**
+ * VIP 矿机页 - 用户视角的产品需求：
+ *
+ * 1. 身份与资产：让用户一眼看到「我是 VIP 几」「有几台矿机」，以及矿机算力、加速比例等基础信息。
+ *
+ * 2. 升级进度（两个进度条）：
+ *    - 直推进度：升到下一级还差多少「直接邀请人数」。用户理解：「再邀请多少人就能在直推条件上升级」。
+ *    - 有效用户进度：升到下一级还差多少「团队内达标用户」。用户理解：「团队里还要多少有效用户才能升级」。
+ *    两者都服务于「如何升到下一级 VIP」，给用户明确的努力方向。
+ *
+ * 3. 今日收益：展示今日挖矿、直推、贡献、销毁、总收益等，让用户知道「今天赚了多少」。
+ *
+ * 4. 行动入口：「购买 VIP」引导用户完成付费或升级，形成「看进度 → 做任务/邀请 → 升级/复购」的闭环。
+ */
 export function VipMining() {
     const { t } = useTranslation();
     const { isLoggedIn } = useAuth();
@@ -179,7 +193,9 @@ export function VipMining() {
                         </span>{" "}
                         <span className={`text-[12px] ${gradientText}`}>({purchasedNodes}x)</span>
                     </div>
-                    {/* 第一个 Progress：升级所需有效用户数，对应 next_level_progress.team_user_progress */}
+                    {/* 进度条含义（数据均来自 GET /arts/user/levelProgress）：
+                        1. 直推进度：当前 VIP 等级升级所需的「直推人数」进度，来自 next_level_progress.v{N}_invites_progress（N=current_level，仅 VIP1~4 有）。展示为 已直推数/所需直推数。
+                        2. 有效用户进度：升级下一级所需的「有效用户（团队内达标用户）」进度，来自 next_level_progress.team_user_progress。无则用 direct_invites 解析结果兜底。 */}
                     {invitesProgress && (
                         <Progress
                             label={""}
@@ -189,10 +205,9 @@ export function VipMining() {
                             size="small"
                         />
                     )}
-                    {/* 第二个 Progress：直推/间推进度，对应 vN_invites_progress（VIP 有），valueLabel 为直推/间推数量 */}
+                    {/* 有效用户进度：当前有效用户数 / 升级所需有效用户数（team_user_progress） */}
                     <Progress
                         label={t("vipMining.validUsers")}
-                        // valueLabel={`${}`}
                         value={
                             teamProgress
                                 ? teamProgress.current

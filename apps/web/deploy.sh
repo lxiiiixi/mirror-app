@@ -23,7 +23,7 @@ if [ "${ENV}" = "test" ]; then
 else
   # 正式环境参考 arts-app/deploy-pro.sh
   REMOTE_HOST="${REMOTE_HOST_PROD:-root@47.243.108.203}"
-  REMOTE_DIR="${REMOTE_DIR_PROD:-/data/mirror/web}"
+  REMOTE_DIR="${REMOTE_DIR_PROD:-/data/4arts/static/h5}"
   BUILD_CMD="pnpm build:prod"
 fi
 
